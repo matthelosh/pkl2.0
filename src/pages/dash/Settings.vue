@@ -4,14 +4,14 @@
 		v-layout(column)
 			v-container(fluid grid-list-md)
 				v-layout(row wrap)
-					v-flex(xs4)
+					v-flex(xs12)
 						v-card(color="amber" dark)
 							v-card-title
-								h3 Periode
+								h3.headline Periode
 								v-btn(small color="orange darken-3" dark fab right absolute ripple icon)
 									v-icon mdi-plus
 							v-card-text
-					v-flex(xs4)
+					v-flex(xs12)
 						v-card(color="orange" dark)
 							v-card-title
 								h3 Kelas
@@ -19,31 +19,43 @@
 									v-icon mdi-plus
 							v-card-text
 
-					v-flex(xs4)
-						v-card(color="red lighten-1" dark)
+					v-flex(xs12)
+						v-card(color="red lighten-1" dark )
 							v-card-title
-								h3 Periode
-								v-btn(small color="grey lighten-3" light fab right absolute ripple icon)
-									v-icon mdi-plus
-							v-card-text
-					v-flex(xs4)
+								h3 Jadwal
+								v-btn(small color="grey lighten-3" light fab right absolute ripple icon @click="showJadwal")
+									v-icon mdi-calendar
+							v-card-text(v-show="jadwal")
+								jadwal
+					v-flex(xs12)
 						v-card(color="pink lighten-1" dark)
 							v-card-title
 								h3 Periode
 								v-btn(small color="grey" dark fab right absolute ripple icon)
 									v-icon mdi-plus
 							v-card-text
+		
 </template>
 
 <script>
+import Jadwal from './../guru/Jadwal'
 export default {
-
+  components: {Jadwal},
   name: 'Settings',
 
   data () {
     return {
-
+		jadwal : false
     }
+  },
+  created() {
+
+  },
+  methods: {
+	  showJadwal() {
+		  var self = this
+		  self.jadwal = !self.jadwal
+	  }
   }
 }
 </script>

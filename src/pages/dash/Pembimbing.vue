@@ -1,27 +1,28 @@
 <template lang="pug">
   div
     v-layout(row)
-      v-flex(xs6)
+      v-flex(xs12)
         v-card(flat)
-          v-btn(color="primary" @click.native="dialog=true" flat) 
+          v-btn(color="primary" @click.native="dialog=true" depressed) 
             i.fa.fa-user-plus
             | Tambah Guru
-          v-btn(color="success" @click.native="cetak_data" flat)
+          v-btn(color="success" @click.native="cetak_data" depressed)
             i.fa.fa-print
             | &nbsp; Cetak
-          v-btn(color="warning" @click.native="export_xls" flat)
+          v-btn(color="warning" @click.native="export_xls" depressed)
             i.fa.fa-table
             | &nbsp; Export
-      v-flex(xs6)
+      v-flex(xs12)
         v-card(flat)
           v-container(grid-list-md)
-              v-layout(wrap)
-                v-flex(xs6)
+              v-layout(no-wrap)
+                v-flex(xs12 md-6)
                   input(type="file" id="fileGuru" ref="fileGuru" style="display:none" @change="onFilePicked")
                   v-text-field(label="Upload File" append-icon="mdi-file-excel-box" flat @click.native="pickFile" v-model="filename")
-                v-flex(xs4)
-                  v-btn(color="green" dark @click.native="importGuru")
-                    v-icon mdi-send
+                v-flex(xs12 md-4)
+                  v-btn(color="green" dark @click.native="importGuru" flat)
+                    v-icon mdi-file-import
+                    | Import
     br
     v-layout(row)
       v-flex(xs-12)
@@ -40,7 +41,27 @@
                 <v-card-text>
                   <v-container grid-list-md>
                     <v-layout wrap>
-                      
+                      <v-flex xs12 md3>
+                        <v-text-field id="_id" label="ID Guru" v-model="editedGuru._id" required  append-icon="fa code"></v-text-field>
+                      </v-flex>
+                      <v-flex xs12 md3>
+                        <v-text-field id="uname" label="Username" v-model="editedGuru.uname" required  append-icon="fa fa-user"></v-text-field>
+                      </v-flex>
+                      <v-flex xs12 md6>
+                        <v-text-field id="password" label="Password" v-model="editedGuru.pasword" required  append-icon="fa fa-lock"></v-text-field>
+                      </v-flex>
+                      <v-flex xs12 md6>
+                        <v-text-field id="nama" label="Nama" v-model="editedGuru.nama" required  append-icon="mdi mdi-label"></v-text-field>
+                      </v-flex>
+                      <v-flex xs12 md6>
+                        <v-text-field id="nip" label="NIP" v-model="editedGuru.nip" required  append-icon="mdi mdi-barcode"></v-text-field>
+                      </v-flex>
+                      <v-flex xs12 md12>
+                        <v-text-field id="alamat" label="Alamat" v-model="editedGuru.alamat" required  append-icon="mdi mdi-home" multi-line="2"></v-text-field>
+                      </v-flex>
+                      <v-flex xs12 md6>
+                        <v-text-field id="hp" label="HP" v-model="editedGuru.hp" required  append-icon="mdi mdi-cellphone-android"></v-text-field>
+                      </v-flex>
                     </v-layout>
                   </v-container>
                 </v-card-text>
@@ -104,13 +125,34 @@ export default {
 
         ],
       gurus: [],
+      editedGuru: {
+        _id: '',
+        uname: '',
+        password: '',
+        nip: '',
+        nama: '',
+        alamat: '',
+        hp: ''
+      },
+      defaultGuru: {
+        _id: '',
+        uname: '',
+        password: '',
+        nip: '',
+        nama: '',
+        alamat: '',
+        hp: ''
+      },
       foto: [],
       add: true,
       editedIndex: -1,
-      rules:{
-                required: (value) => !!value || 'Harus diisi'
-              },
-          }
+      rules:
+        {
+          required: (value) => !!value || 'Harus diisi'
+        },
+      server: this.$store.state.server
+      }
+      
   },
   created(){
     this.getGurus();
@@ -134,6 +176,10 @@ export default {
     importGuru(){
       var self = this;
       var url = self.fileUrl;
+      if (!url) {
+        alert('Ambil File Excel Dulu!');
+        return false;
+      }
       var req = new XMLHttpRequest();
       req.open("GET", url, true);
       req.responseType = "arraybuffer";
@@ -145,7 +191,7 @@ export default {
         var first_sheet_name = workbook.SheetNames[0];
         var ws = workbook.Sheets[first_sheet_name];
         var newGurus = XLSX.utils.sheet_to_json(ws);
-        axios.post('http://localhost:4567/api/importgurus', newGurus, {headers: {'X-Access-Token': self.token}}).then((res)=>{
+        axios.post(self.server+'/api/importgurus', newGurus, {headers: {'X-Access-Token': self.token}}).then((res)=>{
           self.getGurus();
           self.fileUrl = '';
           self.filename = '';
@@ -169,7 +215,7 @@ export default {
     },
     getGurus(){
       var self = this;
-      axios.get('http://localhost:4567/api/getgurus', {headers: {'X-Access-Token': self.token}})
+      axios.get(self.server+'/api/getgurus', {headers: {'X-Access-Token': self.token}})
            .then((res) => {
              self.gurus = res.data;
              var i = 0;

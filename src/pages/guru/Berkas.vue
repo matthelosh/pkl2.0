@@ -17,7 +17,7 @@
                 :hint="`${selDudi.namaDudi}, ${selDudi._id}`"
                 persistent-hint
                 input="selDudi._id"
-                @change=""
+                @change="getSiswas"
                 )
         v-flex(xs2 offset-xs1)
             v-select(
@@ -31,14 +31,18 @@
                 return-object
                 :hint="`${select.text}, ${select.val}`"
                 persistent-hint
+                scrollable
                 )
         v-flex(xs1 offset-xs1)
-            v-btn(color="success" @click.stop="getSiswas()")
-                i.fa.fa-search
-            <v-btn color="info" @click.stop="print" v-if="select.val == 'monitoring' || select.val == 'permohonan' || select.val == 'srt_antar' || select.val == 'ba_antar' || select.val == 'lamp_permohonan'"><i class="fa fa-print"></i></v-btn>
+            //- v-btn(color="success" @click.stop="getSiswas()")
+            //-     i.fa.fa-search
+            <v-btn color="info" @click.stop="print" v-if="select.val == 'form_nilai' || select.val == 'monitoring' || select.val == 'permohonan' || select.val == 'srt_antar' || select.val == 'ba_antar' || select.val == 'lamp_permohonan'"><i class="fa fa-print"></i></v-btn>
+            //- <v-btn color="info" @click.stop="cetak" v-if="select.val == 'form_nilai' || select.val == 'monitoring' || select.val == 'permohonan' || select.val == 'srt_antar' || select.val == 'ba_antar' || select.val == 'lamp_permohonan'"><i class="fa fa-print"></i> Cetak</v-btn>
 
     br
-    .sheet(v-if="select.val == 'default'")
+    .sheet#blangkoNilai(v-if="select.val == 'form_nilai'")
+        form-nilai(:dudi="selDudi" :siswas="siswas")
+    .sheet#default(v-if="select.val == 'default'")
         h2 Pilih Berkas yang akan dicetak.
         v-layout
             v-flex(xs3)
@@ -91,7 +95,7 @@
                     v-card-text 
                         p sLorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus quae consectetur reiciendis. Dolores veniam eligendi fugiat, iure distinctio accusamus adipisci? Numquam minus quisquam veniam illo consectetur enim asperiores nesciunt consequatur!
 
-    .sheet(v-if="select.val == 'permohonan' || select.val == 'srt_antar' || select.val == 'ba_antar'" )
+    .sheet#mohon(v-if="select.val == 'permohonan' || select.val == 'srt_antar' || select.val == 'ba_antar'" )
         //- <v-btn color="info" @click.stop="print"><i class="fa fa-print"></i>&nbsp; Cetak</v-btn>
         
         div.lembar.print
@@ -167,20 +171,20 @@
                                     th(style="padding: 5px 10px;") No. HP / Telepon
                                     th(style="padding: 5px 10px;") Kempetensi Keahlian
                             tbody
-                                tr(v-for="(siswa, index) in siswas")
+                                tr(v-for="(siswa, index) in siswaterpilih")
                                     td(style="padding: 5px 10px; font-size: 10pt; text-align: left;") {{index+1}}
                                     td(style="padding: 5px 10px; font-size: 10pt; text-align: left;") {{siswa.nama}}
                                     td(style="padding: 5px 10px; font-size: 10pt; text-align: left;") {{siswa.nis}}
-                                    td(style="padding: 5px 10px; font-size: 10pt; text-align: left;") {{siswa.hp}}
+                                    td(style="padding: 5px 10px; font-size: 10pt; text-align: left;") {{siswa.hp}} 
                                     td(style="padding: 5px 10px; font-size: 10pt; text-align: left;") {{siswa.progli}}
                         br
                         table(style="margin-left: 50px")
                             tr
                                 td Nama Guru Pembimbing
-                                td : {{siswas[0]._guru.nama}}
+                                td : {{guru.nama}}
                             tr
                                 td No. Telepon / HP
-                                td : {{siswas[0]._guru.hp}}
+                                td : {{guru.hp}}
                         br
                         p Demikian berita acara ini dibuat dengan sebenarnya, atas kerja sama dan bimbingannya diucapkan banyak terima kasih.
                     v-flex.text-xs-justify(xs12 v-if="select.val == 'permohonan'")
@@ -189,7 +193,22 @@
                             li Waktu pelaksanaan Praktek Kerja Lapangan (Prakerlap) mulai 1 Juli 2018 s/d  30 Desember 2018.
                             li Jam kerja Prakerlap selama 6 sampai 8 jam setiap hari dan berakhir paling lambat pada jam 17.00 WIB / sesuai shift
 
-                        p Sehubungan dengan hal tersebut, kami mohon agar Bapak/Ibu berkenan memberikan ijin dan kesempatan pada siswa kami untuk melaksanakan Prakerlap di tempat kerja Bapak/Ibu.
+                        p Sehubungan dengan hal tersebut, kami mohon agar Bapak/Ibu berkenan memberikan ijin dan kesempatan pada siswa kami  di bawah ini untuk melaksanakan Prakerlap di tempat kerja Bapak/Ibu.
+                            table#tbl_permohonan(border="1" style="border-collapse: collapse;margin-left: 50px;")
+                                thead
+                                    tr
+                                        th(style="text-indent: 0!important; padding: 5px") NO
+                                        th(style="text-indent: 0!important; padding: 5px") Nama
+                                        th(style="text-indent: 0!important; padding: 5px") NIS
+                                        th(style="text-indent: 0!important; padding: 5px") No. HP
+                                        th(style="text-indent: 0!important; padding: 5px") Kempetensi Keahlian
+                                tbody
+                                    tr(v-for="(siswa, index) in siswaterpilih")
+                                        td(style="text-indent: 0!important; padding: 5px") {{index+1}}
+                                        td(style="text-indent: 0!important; padding: 5px") {{siswa.nama}}
+                                        td(style="text-indent: 0!important; padding: 5px") {{siswa.nis}}
+                                        td(style="text-indent: 0!important; padding: 5px") {{siswa.hp}} 
+                                        td(style="text-indent: 0!important; padding: 5px") {{siswa.progli}}
 
                         p Selanjutnya kami mohon agar Bapak/Ibu berkenan memberikan jawaban diterima atau tidak diterima atas permohonan kami, melalui lembar balasan (terlampir).
 
@@ -214,11 +233,11 @@
                                 td Dengan ini menugaskan kepada:
                             tr
                                 td  Nama 
-                                td : {{siswas[0]._guru.nama}}
+                                td : {{guru.nama}}
                             tr 
                                 td NIP
-                                td : <span v-if="siswas[0]._guru.nip == ''"> - </span>
-                                    span(v-else) {{siswas[0]._guru.nip}}
+                                td : <span v-if="guru.nip == ''"> - </span>
+                                    span(v-else) {{guru.nip}}
                             tr
                                 td  Jabatan
                                 td : Guru
@@ -232,9 +251,9 @@
                                     th Nama
                                     th Kelas
                             tbody
-                                tr(v-for="(siswa, index) in siswas")
+                                tr(v-for="(siswa, index) in siswaterpilih")
                                     td {{index+1}}
-                                    td {{siswa.uname.substring(1,5)}}
+                                    td {{siswa.nis}}
                                     td {{siswa.nama}}
                                     td {{siswa.kelas}}
                         br
@@ -281,8 +300,8 @@
                         br
                         br
                         br
-                        p <strong><u>{{siswas[0]._guru.nama}}</u></strong>
-                        p NIP. {{siswas[0]._guru.nip}}
+                        p <strong><u>{{guru.nama}}</u></strong>
+                        p NIP. {{guru.nip}}
                     v-flex.ttd-ba_antar(xs4 v-if="select.val == 'ba_antar'")
                         p Malang, ............................... 2018
                         p Pimpinan Du/Di
@@ -320,7 +339,7 @@
             //- br(v-if="select.val == 'permohonan'")
             //- br(v-if="select.val == 'permohonan'")
             
-    .sheet(v-if="select.val == 'lamp_permohonan'")
+    .sheet#lamp_mohon(v-if="select.val == 'lamp_permohonan'")
         .lembar.print#lamp_permohonan
             //- .v-layout(row)
             v-flex(xs12)
@@ -388,7 +407,7 @@
                 br
                 p.nb *) Coret yang tidak perlu
 
-    .sheet(v-if="select.val == 'monitoring'")
+    .sheet#monitoring(v-if="select.val == 'monitoring'")
         .lembar-monitoring
             v-layout.kop-m(row style="border-bottom: 5px double black;")
                 v-flex(xs12)
@@ -410,7 +429,7 @@
                     p NAMA PERUSAHAAN <span class="no-print">(DU/DI)</span>
                     p JUMLAH PRAKTIKAN
                 v-flex(xs6)
-                    p : {{siswas[0]._guru.nama}}
+                    p : {{guru.nama}}
                     p : {{selDudi.namaDudi}}
                     p : {{siswas.length}}
                 v-flex(xs2)
@@ -418,7 +437,7 @@
                     p HARI/TANGGAL <span class="no-print">MONITORING</span>
                     p MONITORING KE
                 v-flex(xs2)
-                    p : {{siswas[0].progli.toUpperCase()}}
+                    p : {{progli}}
                     p : {{tanggal}}
                     p : MONITORING KE
             v-layout.isi-m(row)
@@ -435,7 +454,7 @@
                                 th S
                                 th I
                                 th A
-                        tbody(v-for="(siswa, index) in siswas")
+                        tbody(v-for="(siswa, index) in siswaterpilih")
                             tr
                                 td(style="padding: 5px; text-align: center") {{index+1}}
                                 td(style="padding: 10px") {{siswa.nama}}
@@ -472,12 +491,16 @@
                     br
                     br
                     br
-                    p <strong><u>{{siswas[0]._guru.nama}}</u></strong>
+                    p <strong><u>{{guru.nama}}</u></strong>
                     p NIP. 
+    <iframe name="print_frame" width="0" height="0" frameborder="0" src="about:blank"></iframe>
 </template>
 <script>
 import axios from 'axios'
+import FormNilai from '@pages/comps/FormNilai'
+// import Api from './../../lib/conf.js'
 export default {
+  components: {FormNilai},
   data () {
       return {
         angkatan: 'XI',
@@ -490,6 +513,7 @@ export default {
             { text: 'Lamp. Surat Permohonan', val: 'lamp_permohonan' },
             { text: 'Surat Tugas Pengantaran', val: 'srt_antar' },
             { text: 'Berita Acara Pengantaran', val: 'ba_antar' },
+            { text: 'Blangko Nilai', val: 'form_nilai' },
         ],
         selDudi: { namaDudi: 'Pilih Dudi', _id: 'default'},
         dudiItems: [
@@ -499,13 +523,14 @@ export default {
         token: sessionStorage.getItem('token'),
         no: '',
         no_surat: '',
-        guru: {
-            nama: 'Fulan ibn Fulan ibn Fulan',
-            nip: '12345',
-            jabatan: 'Guru'
-        },
+        // guru: {
+        //     nama: 'Fulan ibn Fulan ibn Fulan',
+        //     nip: '12345',
+        //     jabatan: 'Guru'
+        // },
         siswas: [],
-        dudis: []
+        dudis: [],
+        server: this.$store.state.server
       }
   },
     created(){
@@ -521,7 +546,7 @@ export default {
             var data = {no : no};
             if (self.select.val == 'permohonan' || self.select.val == 'srt_antar') {
             
-            axios.post('http://localhost:4567/api/nosurat', data, {headers: {'X-Access-Token': self.token}})
+            axios.post(self.server+'/api/nosurat', data, {headers: {'X-Access-Token': self.token}})
                 .then(function(res){
                     console.log(res);
                 });
@@ -531,7 +556,7 @@ export default {
         },
         get_no(){
             var self = this;
-            axios.get('http://localhost:4567/api/nosurat', {headers: {'X-Access-Token': self.token}})
+            axios.get(self.server+'/api/nosurat', {headers: {'X-Access-Token': self.token}})
                 .then(function(res){
                     var nmr = Number(res.data.no);
                     self.no = nmr-1;
@@ -545,20 +570,46 @@ export default {
         getMyDudi() {
             var self = this;
             var id = sessionStorage.getItem("_id");
-            axios.get('http://localhost:4567/api/getmydudis?id='+id, {headers: {'X-Access-Token': self.token}})
+            var periode = sessionStorage.getItem("periode");
+            axios.get(self.server+'/api/getmypkl?id='+id+'&periode='+periode, {headers: {'X-Access-Token': self.token}})
                 .then(function(res){
-                    self.dudis = res.data;
+                    // console.log(res.data)
+                    var data = res.data;
+                    for (var i = 0 ; i < data.length; i++ ) {
+//                         {{index+1}}
+                        // {{siswa.nama}}
+                        // {{siswa.nis}}
+                        // {{siswa.hp}}
+                        // {{siswa.progli}}
+                        var itemDudi = {'_id': data[i]._dudi._id, 'namaDudi': data[i]._dudi.namaDudi, 'alamat': data[i]._dudi.alamat, 'telp': data[i]._dudi.telp};
+                        // var itemSiswa = {'_id': data[i]._siswa._id, 'nama': data[i]._siswa.nama, '_dudi': data[i]._dudi._id, 'progli': data[i]._siswa.progli, 'hp': data[i]._siswa.hp, 'nis': data[i]._siswa.nis}
+                        // console.log(item);
+                        self.dudis.push(itemDudi);
+                        // self.siswas.push(itemSiswa);
+                    }
                 });
         },
-        getSiswas(){
+        getSiswas(i){
             var self = this;
             var id = sessionStorage.getItem("_id");
-            var dudi = self.selDudi._id;
-            axios.get('http://localhost:4567/api/getmysiswas?id='+id+"&dudi="+dudi, {headers: {'X-Access-Token': self.token}})
+            var dudi = i._id;
+            var periode = sessionStorage.getItem('periode');
+            console.log(i);
+            axios.get(self.server+'/api/getmysiswas?id='+id+"&dudi="+dudi+"&periode="+periode, {headers: {'X-Access-Token': self.token}})
                 .then(function(res){
                     self.siswas = res.data;
+                    console.log(res.data);
                 });
             // console.log(obj);
+        },
+        cetak() {
+            var sheet = document.getElementsByClassName("sheet");
+            window.frames["print_frame"].document.head.innerHTML ="<style> </style>";
+            window.frames["print_frame"].document.body.innerHTML += "<h3 style='text-align:center'>DATA GURU PEMBIMBING</h3>";
+            window.frames["print_frame"].document.body.outerHTML += sheet[0].innerHTML;
+            window.frames["print_frame"].window.focus();
+            window.frames["print_frame"].window.print();
+            // console.log(sheet);
         }
     },
     computed: {
@@ -588,11 +639,60 @@ export default {
         },
         kaprog(){
             var self = this;
-            var jur = self.siswas[0].progli;
-            if(jur == 'mm' || jur == 'tkj'){
+            var jur = self.selDudi._id;
+            if ( jur.substr(1,1) == 'M' || jur.substr(1,1) == 'T') 
+            {
                 return 'Nanang Wahyudianto, S.Kom';
             } else {
                 return 'Sayit Anwar, S.Pd';
+            }
+        },
+        progli(){
+            var self = this;
+            var siswas = self.siswas;
+            if (siswas.length < 1) {
+                return '..........................';
+            } else {
+                return siswas[0].progli.toUpperCase()
+                // return siswas.length;
+            }
+        },
+        guru(){
+            var self = this;
+            var guru = this.$store.state.user;
+            return guru;
+            // var token = sessionStorage.getItem('token')
+            // var role = sessionStorage.getItem('role')
+            // var user = sessionStorage.getItem('user')
+            // return axios.get(self.server+ '/api/profile?id='+user+'&role='+role, {headers: {'X-Access-Token': token}})
+            //     .then( response => {
+            //         var guru = response.data[0]
+            //         return guru;
+            //         // console.log(response)
+            //     })
+            //     .then(data => {
+            //         return guru;
+            //     })
+            
+        },
+        siswaterpilih(){
+            var self = this;
+            var siswas = self.siswas;
+            if (siswas.length < 1 ) {
+                return [
+                    {_id: ' ', nis: '', nama: ' ', progli: ' ', kelas: '', hp: ''},
+                    {_id: ' ', nis: '', nama: ' ', progli: ' ', kelas: '', hp: ''},
+                    {_id: ' ', nis: '', nama: ' ', progli: ' ', kelas: '', hp: ''},
+                    {_id: ' ', nis: '', nama: ' ', progli: ' ', kelas: '', hp: ''},
+                    {_id: ' ', nis: '', nama: ' ', progli: ' ', kelas: '', hp: ''},
+                    {_id: ' ', nis: '', nama: ' ', progli: ' ', kelas: '', hp: ''}
+                ]
+            } else {
+            return siswas.filter((i) => {
+              if(i._dudi == self.selDudi._id) {
+                return i;
+              }
+            });
             }
         }
     }
@@ -677,7 +777,7 @@ export default {
         padding: 0;
     }
     .ttd{
-        margin-top: 30px;
+        margin-top: 5px;
         margin-bottom: 20px;
     }
     .ttd .note{
@@ -745,6 +845,7 @@ export default {
         position: relative;
         background: pink;
     }
+    
     @media print{
         .no-print{
             display: none;

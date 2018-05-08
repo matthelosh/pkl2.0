@@ -27,10 +27,10 @@
     </v-navigation-drawer>
     <v-toolbar fixed app :clipped-left="clipped">
       <v-btn @click.stop="drawer = !drawer" icon flat><v-icon>fa-bars</v-icon></v-btn>
-      <v-btn icon @click.stop="miniVariant = !miniVariant">
+      <v-btn icon @click.stop="miniVariant = !miniVariant" class="hidden-xs-only">
         <v-icon v-html="miniVariant ? 'fa-chevron-right' : 'fa-chevron-left'"></v-icon>
       </v-btn>
-      <v-btn icon @click.stop="clipped = !clipped">
+      <v-btn icon @click.stop="clipped = !clipped" class="hidden-xs-only">
         <v-icon>fa-globe</v-icon>
       </v-btn>
       <!-- <v-btn icon @click.stop="fixed = !fixed">
@@ -40,7 +40,7 @@
         <v-avatar tile>
           <img src="/public/favicon-32x32.svg" alt="" height="24px">
         </v-avatar>  
-        {{title}}
+        <span class="hidden-xs-only">{{title}}</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <strong v-html="username"/>
@@ -59,8 +59,9 @@
     <v-content>
       <v-container fluid>
         <v-layout column>
-          
-          <router-view></router-view>
+          <transition name="dashContent" mode="out-in">
+            <router-view></router-view>
+          </transition>
         </v-layout>
       </v-container>
     </v-content>
@@ -203,12 +204,16 @@
   }
 </script>
 
-<style scoped>
+<style>
+  /*.layout {
+    display: inline-block;
+    width: 100%;
+  }*/
   .dashContent-enter-active, .dashContent-leave-active {
-    transition: opacity 1s ;
+    transition: opacity .5s, transform .5s;
   }
   .dashContent-enter, .dashContent-leave-to {
     opacity: 0;
-    transform: translateX(-20%);
+    transform: translateY(-50%);
   }
 </style>

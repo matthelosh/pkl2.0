@@ -40,7 +40,8 @@
 				// praktikans: [],
 				token: sessionStorage.getItem('token'),
 				gurus: [],
-				guruId: ''
+				guruId: '',
+				server: this.$store.state.server
 			}
 		},
 		created() {
@@ -50,7 +51,7 @@
 		},
 		methods: {
 			getGurus() {
-				axios.get('http://localhost:4567/api/gurus', { headers: { 'X-Access-Token': this.token }})
+				axios.get(self.server+'/api/gurus', { headers: { 'X-Access-Token': this.token }})
 					.then(response => {
 						var gurus = response.data;
 						this.gurus = gurus;
@@ -60,14 +61,14 @@
 			getData(guruId) {
 				// alert(guruId);
 				this.guruId = guruId;
-				axios.get('http://localhost:4567/api/statistik?guru='+guruId, { headers: { 'X-Access-Token': this.token }})
+				axios.get(self.server+'/api/statistik?guru='+guruId, { headers: { 'X-Access-Token': this.token }})
 					.then(response => {
 						console.log(response.data);
 						// this.praktikans = response.data;
 					});
 			},
 			getAll(){
-				axios.get('http://localhost:4567/api/praktikans', { headers: { 'X-Access-Token': this.token }})
+				axios.get(self.server+'/api/praktikans', { headers: { 'X-Access-Token': this.token }})
 					.then(response => {
 						console.log(response.data[0]._guru._id);
 						// this.praktikans = response.data;
@@ -83,7 +84,7 @@
 				// 	{'_id': 'u4746', 'nama': 'Dona', '_dudi': {'namaDudi': 'Dudi dfffb-abal', 'alamat': 'Jalan Kaki'}, '_guru': {'_id': 'gt02', 'nama': 'Dodik'}}
 				// ]
 				// 
-				axios.get('http://localhost:4567/api/praktikans', { headers: { 'X-Access-Token': this.token }})
+				axios.get(self.server+'/api/praktikans', { headers: { 'X-Access-Token': this.token }})
 					.then(response => {
 						var data = response.data;
 						return data;

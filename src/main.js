@@ -14,6 +14,8 @@ import 'material-icons/css/material-icons.css'
 import 'mdi/css/materialdesignicons.css'
 import 'font-awesome/css/font-awesome.css'
 
+
+
 Vue.use(Vuetify)
 Vue.use(Vuex)
 Vue.use(vueXlsxTable, {rABS: false})

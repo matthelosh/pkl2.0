@@ -1,128 +1,24 @@
 <template lang="pug">
 	v-layout(column)
-		v-flex(xs12)
+		
+		v-flex(xs12 md-12)
 			v-toolbar(color="grey" dark dense flat scroll-off-screen)
 				v-toolbar-title Prakerlap
-				v-btn(fab @click.native="newPrakerlap" color="red" small flat)
-					v-icon mdi-plus
+				v-btn(fab @click.native="newPrakerlap" color="red" small depressed title="Daftarkan Praktikan")
+					v-icon mdi-worker
+				v-btn(fab @click.native="pklByGuru = true" color="green" small depressed)
+					v-icon mdi-teach
+				v-btn(fab @click.native="dudiguru = true" color="yellow" small depressed)
+					v-icon mdi-factory
 				v-spacer
 				v-btn(flat icon=true)
 					v-icon mdi-search
-			v-container(fluid grid-list-md)
-				v-layout(row wrap)
-					v-flex(xs4)
-						v-card(tile color="amber lighten-2")
-							v-card-title
-								h4.white--text 
-									v-icon(medium color="white") mdi-account-plus-outline
-									| Pendaftaran Peserta
-								v-btn(right fab absolute flat color="white" )
-									v-icon mdi-plus
-							v-card-text
-								v-container(fluid grid-list-md)
-									v-layout(row wrap)
-										v-flex(xs12)
-											v-card(to="/dashboard/praktikan")
-												v-card-title
-													h5 
-													v-icon mdi-all-inclusive
-													| Total Calon Praktikan
-													v-spacer
-													| {{ jmlAllCalons }} org
-										v-flex(xs12)
-											v-card(to="/dashboard/terdaftar")
-												v-card-title
-													h5 
-													v-icon mdi-account
-													| Calon Terdaftar
-													v-spacer
-													| {{ jmlterdaftar }} org
-										v-flex(xs12)
-											v-card(to="/dashboard/diterima")
-												v-card-title
-													h5 
-													v-icon mdi-account-check
-													| Praktikan diterima
-													v-spacer
-													| {{ jmlditerima }} org
-										v-flex(xs12)
-											v-card(to="/dashboard/ditolak")
-												v-card-title
-													h5 
-													v-icon mdi-account-off
-													| Praktikan ditolak
-													v-spacer
-													| 50 org
-					v-flex(xs4)
-						v-card(tile color="blue lighten-2")
-							v-card-title
-								h4.white--text 
-									v-icon(medium color="white") mdi-teach
-									| Pembimbing Prakerlap
-								v-btn(right fab absolute flat color="white")
-									v-icon mdi-plus
-							v-card-text
-								v-container(fluid grid-list-md)
-									v-layout(row wrap)
-										v-flex(xs12)
-											v-card(to="/dashboard/praktikan")
-												v-card-title
-													h5 
-													v-icon mdi-all-inclusive
-													| Total Pembimbing
-													v-spacer
-													| 38 org
-										v-flex(xs12)
-											v-card(to="/dashboard/membimbing")
-												v-card-title
-													h5 
-													v-icon mdi-account-check
-													| Yang membimbing
-													v-spacer
-													| 15 org
-										v-flex(xs12)
-											v-card(to="/dashboard/belum")
-												v-card-title
-													h5 
-													v-icon mdi-account-off
-													| Belum membimbing
-													v-spacer
-													| 35 org
-					v-flex(xs4)
-						v-card(tile color="green lighten-2")
-							v-card-title
-								h4.white--text 
-									v-icon(medium color="white") mdi-factory
-									| Data Dudi
-								v-btn(right fab absolute flat color="white")
-									v-icon mdi-plus
-							v-card-text
-								v-container(fluid grid-list-md)
-									v-layout(row wrap)
-										v-flex(xs12)
-											v-card(to="/dashboard/praktikan")
-												v-card-title
-													h5 
-													v-icon mdi-all-inclusive
-													| Total DU/DI
-													v-spacer
-													| 206 perusahaan
-										v-flex(xs12)
-											v-card(to="/dashboard/membimbing")
-												v-card-title
-													h5 
-													v-icon mdi-account-check
-													| Yang membimbing
-													v-spacer
-													| 15 org
-										v-flex(xs12)
-											v-card(to="/dashboard/belum")
-												v-card-title
-													h5 
-													v-icon mdi-account-off
-													| Belum membimbing
-													v-spacer
-													|	35 org
+			v-layout(row)
+				v-container
+					pembimbing(v-if="pklByGuru" :items-guru="gurus" :items-siswa="siswas")
+					dudi-guru(v-if="dudiguru" :items-guru="gurus" :items-dudi="dudis")
+
+
 		v-snackbar(:timeout="timeout" color="red lighten-3" multi-line=true v-model="pklSnackbar")
 			p {{ pklsnacktext }}
 			v-btn(dark flat @click.native="pklSnackbar = false") Close
@@ -135,12 +31,12 @@
 							| &nbsp;Daftarkan Calon Praktikan
 						v-spacer
 						v-toolbar-items
-							v-btn(dark @click.native="dialog = false" color="red" fab flat) 
+							v-btn(dark @click.native="dialog = false" color="red" small depressed title="Tutup") 
 								v-icon mdi-close
 					v-card-text
 						v-container(fluid grid-list-md)
 							v-layout(row wrap)
-								v-flex(xs6)
+								v-flex(xs12 md6)
 									v-card.blue--text(color="grey lighten-3")
 										v-card-title
 											h4 Calon Peserta Belum Terdaftar
@@ -168,7 +64,7 @@
 													//- td {{ props.item.hp }}
 												v-alert(slot="no-results" :value="true" color="error" icon="warning")
 													| Data "{{ searchCalon }}" tidak ditemukan.
-								v-flex(xs6)
+								v-flex(xs12 md6)
 									v-card(color="grey lighten-3")
 										v-card-title
 											h4 Pendaftaran Calon
@@ -198,13 +94,16 @@
 
 <script>
 import axios from 'axios'
+import Pembimbing from '@pages/comps/Pembimbing'
+import DudiGuru from '@pages/comps/DudiGuru'
 export default {
-
+	components: {Pembimbing, DudiGuru},
 	name: 'Prakerlap',
 
 	data () {
-
 		return {
+			pklByGuru: false,
+			dudiguru: false,
 			jmlterdaftar: '',
 			jmlditerima: '0',
 			dialog: false,
@@ -250,7 +149,8 @@ export default {
 	          // { text: 'Progli', value: 'progli' },
 	          // { text: 'No. Telp', value: 'hp' }
 	        ],
-	        progli: ''
+			progli: '',
+			server: this.$store.state.server
 		}
 	},
 	created(){
@@ -278,7 +178,7 @@ export default {
 		getSiswas(){
 			var self = this;
 			var periode = sessionStorage.getItem('periode');
-			axios.get('http://localhost:4567/api/getsiswas/'+periode, {headers: {'X-Access-Token': self.token}})
+			axios.get(self.server+'/api/getsiswas/'+periode, {headers: {'X-Access-Token': self.token}})
            .then((res) => {
             self.allSiswas = res.data;
            });
@@ -286,21 +186,21 @@ export default {
 		getCalons(){
 			var self = this;
 			var periode = sessionStorage.getItem('periode');
-			axios.get('http://localhost:4567/api/calon/'+periode, {headers: {'X-Access-Token': self.token}})
+			axios.get(self.server+'/api/calon/'+periode, {headers: {'X-Access-Token': self.token}})
            .then((res) => {
             self.siswas = res.data;
            });
 		},
 		getGurus(){
 			var self = this;
-			axios.get('http://localhost:4567/api/gurus', {headers: {'X-Access-Token': self.token}})
+			axios.get(self.server+'/api/gurus', {headers: {'X-Access-Token': self.token}})
 					 .then((res) => {
 					 	self.gurus = res.data;
 					 });
 		},
 		getDudis(){
 			var self = this;
-			axios.get('http://localhost:4567/api/dudis', {headers: {'X-Access-Token': self.token}})
+			axios.get(seslf.server+'/api/dudis', {headers: {'X-Access-Token': self.token}})
 					.then((res) => {
 						self.dudis = res.data;
 					});
@@ -332,7 +232,7 @@ export default {
 				var kodepkl = th+kodeperiode+nis+progli+dateNum; //th-angkatan-4dignis-progli-tglEntry
 				var data = {
 					kode_pkl: kodepkl,
-					_siswa: uname,
+					_siswa: nis,
 					_guru: _guru,
 					_dudi: _dudi,
 					periode: periode,
@@ -346,7 +246,7 @@ export default {
 				self.selGuru = {_id: '', nama: 'Pilih Guru'},
 				self.selDudi = {_id: '', namaDudi: 'Pilih Dudi'}
 				// alert(remSiswa);
-				console.log(newData);
+				// console.log(newData);
 			}
 
 			
@@ -358,7 +258,7 @@ export default {
 			
 			
 			// var data = self.selected;
-			axios.post('http://localhost:4567/api/newpkl', {data:newData}, {headers: {'X-Access-Token': self.token}})
+			axios.post(self.server+'/api/newpkl', {data:newData}, {headers: {'X-Access-Token': self.token}})
 				.then((res) => {
 					console.log(res);
 					self.getSiswas();
@@ -380,7 +280,7 @@ export default {
 		},
 		getLastPkl(){
 			var self = this;
-			axios.get('http://localhost:4567/api/lastpkl', {headers: {'X-Access-Token': self.token}})
+			axios.get(self.server+'/api/lastpkl', {headers: {'X-Access-Token': self.token}})
 				.then(function(res){
 					self.lastpkl = res.data;
 				})
@@ -397,7 +297,7 @@ export default {
 		jmlTerdaftar(){
 			var self = this;
 			var periode = sessionStorage.getItem('periode');
-			axios.get('http://localhost:4567/api/jmlterdaftar/'+periode, {headers: {'X-Access-Token': self.token}})
+			axios.get(self.server+'/api/jmlterdaftar/'+periode, {headers: {'X-Access-Token': self.token}})
 				.then((res)=>{
 					var jml = res.data.length;
 					self.jmlterdaftar = jml;

@@ -3,7 +3,7 @@
     v-layout(row)
       v-flex(xs10 offset-xs1)
         v-card
-          v-btn(color="primary" flat @click.native="dialog=true") 
+          v-btn(color="primary" flat @click.native="[dialog=true, add=true]") 
             i.fa.fa-calendar-plus-o
             | &nbsp; Tambah Jadwal
           v-btn(color="success" @click.native="cetak_data" flat)
@@ -63,7 +63,8 @@
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
-                  <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
+                  <v-btn color="blue darken-1" flat @click.native="save" v-if="add ==true">Simpan</v-btn>
+                  <v-btn color="blue darken-1" flat @click.native="update" v-if="add ==false">Perbarui</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -76,7 +77,7 @@
                     td.text-xs-left {{ props.item.kegiatan }}
                     td.text-xs-left {{ props.item.pelaksana }}
                     td {{ props.item.tempat }}
-                    td.justify-center.layout.px-0
+                    td.justify-center.layout.px-0(v-show="role ==='1'")
                       <v-btn icon class="mx-0" @click="editItem(props.item)">
                         <v-icon color="teal">fa-pencil</v-icon>
                       </v-btn>
@@ -95,6 +96,8 @@ import axios from 'axios'
 export default {
   data(){
       return {
+        add: false,
+        role: sessionStorage.getItem('role'),
         datestart: null,
         dateend: null,
         menustart: false,
@@ -127,7 +130,8 @@ export default {
           end: '',
           kegiatan: '',
           pelaksana: '',
-          tempat: ''
+          tempat: '',
+          periode: sessionStorage.getItem('periode')
         },
         defaultJadwal:{
           _id:'',
@@ -135,11 +139,14 @@ export default {
           end: '',
           kegiatan: '',
           pelaksana: '',
-          tempat: ''
+          tempat: '',
+          periode: ''
         },
         rules:{
           required: (value) => !!value || 'Harus diisi'
         },
+        server: this.$store.state.server,
+        periode: sessionStorage.getItem('periode')
       }
   },
   created() {
@@ -160,7 +167,7 @@ export default {
     },
     getJadwal() {
       var self = this;
-      axios.get('http://localhost:4567/api/jadwal', {headers:{'X-Access-Token': self.token}})
+      axios.get(self.server+'/api/jadwal/'+self.periode, {headers:{'X-Access-Token': self.token}})
            .then((res) => {
              self.jadwals = res.data;
            });
@@ -217,12 +224,24 @@ export default {
     save(){
       var self = this;
       var data = self.editedJadwal;
-      console.log(data);
+      // console.log(data);
+      axios.post(self.server+'/api/jadwal', data, {headers: {'X-Access-Token': self.token}})
+            .then(res => {
+              console.log(res)
+            });
+    },
+    update() {
+      var self = this
+      var data = self.editedJadwal
+      axios.put(self.server+'/api/jadwal', data, {headers: {'X-Access-Token': self.token}})
+            .then(res => {
+              console.log(res)
+            });
     }
   },
   computed: {
     formTitle () {
-        return this.editedIndex == -1 ? 'Tambah Dudi' : 'Edit Dudi'
+        return this.editedIndex == -1 ? 'Tambah Jadwal' : 'Edit Jadwal'
       }
   }
 }

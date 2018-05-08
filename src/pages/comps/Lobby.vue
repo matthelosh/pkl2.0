@@ -69,7 +69,8 @@ export default {
         {title: 'Info 1', kategori: 'info', to: '/info/001', text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus dignissimos magni, voluptas, aperiam vero, alias harum totam, asperiores quas reprehenderit molestiae quidem ex eum consectetur! Officia libero suscipit nobis accusamus.', img: '/public/img/partner-reporting.jpg'},
         {title: 'Artikel 1', kategori: 'artikel', to: '/artikel/art001', text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus dignissimos magni, voluptas, aperiam vero, alias harum totam, asperiores quas reprehenderit molestiae quidem ex eum consectetur! Officia libero suscipit nobis accusamus.'}
       ],
-      infos: []
+      infos: [],
+      server: this.$store.state.server
     }
   },
   created(){
@@ -78,7 +79,8 @@ export default {
   methods:{
     getInfos(){
       // var id = this.routeParams.id;
-      axios.get('http://localhost:4567/umum/getinfos')
+      var self = this;
+      axios.get(self.server+'/umum/getinfos')
       .then(res=>{
         console.log(res.data);
         this.infos = res.data;

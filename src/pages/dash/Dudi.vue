@@ -1,35 +1,36 @@
 //- <template lang="pug">
   div
     v-layout(row dark)
-      v-flex(xs6 offset-xs1)
+      v-flex(xs12)
         v-card(flat)
           v-spacer
-          v-btn(color="primary" flat dark @click.native="[dialog=true, add=true]" class="mb-2") <i class="fa fa-building"></i> &nbsp;Tambah Dudi
-          v-btn(color="success" flat @click.native="cetak_data")
+          v-btn(color="primary" depressed dark @click.native="[dialog=true, add=true]" class="mb-2") <i class="fa fa-building"></i> &nbsp;Tambah Dudi
+          v-btn(color="success" depressed @click.native="cetak_data")
             i.fa.fa-print
             | &nbsp; Cetak
-          v-btn(color="red" flat @click.native="export_xls")
+          v-btn(color="red" depressed dark @click.native="export_xls")
             i.fa.fa-table
             | &nbsp; Export
-      v-flex(xs3)
+      v-spacer
+      v-flex(xs12 md3)
         v-card(flat)
           input(type="file" ref="dudiFile" style="display:none" @change="onFilePicked")
-          v-text-field(append-icon="mdi-attachment" label="Ambil File xls/xlsx" @click.native="pickFile" v-model="filename")
-      v-flex(xs2)
+          v-text-field(append-icon="mdi-attachment" label="Ambil File" @click.native="pickFile" v-model="filename")
+      v-flex(xs12)
         v-card(flat)
-          v-btn(color="blue" flat @click.native="import_dudi")
-            v-icon mdi-import
+          v-btn(color="blue" dark depressed @click.native="import_dudi")
+            v-icon mdi-file-import
             | &nbsp; Import
     v-layout(row)
-      v-flex(xs10 offset-xs1)
+      v-flex(xs12)
         v-card.cetak_tabel
           v-card-title 
             h3 Data DU/DI
             v-spacer
             v-text-field.no-print(append-icon="fa fa-search" label="Pencarian" single-line hide-details v-model="search")
-          //- v-layout(row)
-          //-   v-flex(xs4 offset-xs8)
-          //-     v-switch(:label="`Dudi Aktif: ${dudiaktif.toString()}`" v-model="dudiaktif" label="Yang memiliki Pembimbing")  
+          v-layout(row)
+            v-flex(xs4 offset-xs8)
+              v-switch(:label="`Dudi Aktif: ${dudiaktif.toString()}`" v-model="dudiaktif" label="Yang memiliki Pembimbing")  
           div#printableTable
             <v-dialog v-model="dialog" max-width="500px" persistent>
               //- <v-btn color="primary" dark slot="activator" class="mb-2">New Item</v-btn>
@@ -55,12 +56,12 @@
                       <v-flex xs12 sm6 md6>
                         <v-text-field label="No. Telp" v-model="editedDudi.telp" required validate-on-blur :rules="[rules.required]" append-icon="mdi-phone" ></v-text-field>
                       </v-flex>
-                      <v-flex xs12 sm12 md8>
+                      <v-flex xs12 sm6 md6>
                         <v-text-field label="Pemilik" v-model="editedDudi.pemilik" required validate-on-blur :rules="[rules.required]" append-icon="mdi-account-circle" ></v-text-field>
                       </v-flex>
-                      //- <v-flex xs12 sm6 md8>
-                      //-   <v-select append-icon="fa fa-angle-down" v-bind:items="gurus" v-model="editedDudi._guru" label="Pilih Guru" item-text="nama" item-value="_id" return-object :hint="`${selGuru.nama}, ${selGuru._id}`" input="selGuru._id" persistent-hint autocomplete v-bind:value="editedDudi._guru"></v-select>
-                      //- </v-flex>
+                      <v-flex xs12 sm6 md6>
+                        <v-select append-icon="fa fa-angle-down" v-bind:items="gurus" v-model="editedDudi._guru" label="Pilih Guru" item-text="nama" item-value="_id" return-object :hint="`${selGuru.nama}, ${selGuru._id}`" input="selGuru._id" persistent-hint autocomplete v-bind:value="editedDudi._guru"></v-select>
+                      </v-flex>
                     </v-layout>
                   </v-container>
                 </v-card-text>
@@ -81,10 +82,10 @@
                 <td class="text-xs-center">{{ props.item.kota }}</td>
                 <td class="text-xs-center">{{ props.item.telp }}</td>
                 <td class="text-xs-center">{{ props.item.pemilik }}</td>
-                //- <td class="text-xs-center" >
-                //-     <span v-if="props.item._guru == undefined">Kosong</span>
-                //-     <span v-else>{{props.item._guru.nama}}</span>
-                //- </td>
+                <td class="text-xs-center" >
+                    <span v-if="props.item._guru == undefined">Kosong</span>
+                    <span v-else>{{props.item._guru.nama}}</span>
+                </td>
                 <td class="justify-center layout px-0">
                   <v-btn icon class="mx-0" @click.native="editItem(props.item)">
                     <v-icon color="teal">fa-pencil</v-icon>
@@ -137,7 +138,7 @@ export default {
           { text: 'Kota', value: 'kota' },
           { text: 'No. Telp', value: 'telp' },
           { text: 'Pemilik', value: 'pemilik' },
-          // { text: 'Pembimbing', value: '_guru' },
+          { text: 'Pembimbing', value: '_guru' },
           { text: 'Action', value: '_id' },
 
         ],
@@ -149,8 +150,8 @@ export default {
           'alamat': '',
           'kota': '',
           'telp': '',
-          'pemilik': ''
-          // '_guru': ''
+          'pemilik': '',
+          '_guru': ''
         },
         defaultDudi: {
           '_id': '',
@@ -158,8 +159,8 @@ export default {
           'alamat': '',
           'kota': '',
           'telp': '',
-          'pemilik': ''
-          // '_guru': ''
+          'pemilik': '',
+          '_guru': ''
         },
         rules:{
           required: (value) => !!value || 'Harus diisi'
@@ -169,7 +170,8 @@ export default {
         gantikode: true,
         filename: '',
         fileUrl: '',
-        newDudis: []
+        newDudis: [],
+        server: this.$store.state.server
       }
   },
   created(){
@@ -202,7 +204,7 @@ export default {
     },
     getDudis() {
       var self = this;
-      axios.get('http://localhost:4567/api/dudis', {headers: {'X-Access-Token': self.token}})
+      axios.get(self.server+'/api/dudis', {headers: {'X-Access-Token': self.token}})
         .then(function(res){
           self.dudis = res.data;
           // console.log(res.data);
@@ -270,10 +272,10 @@ export default {
         alamat: data.alamat,
         kota: data.kota,
         telp: data.telp,
-        pemilik: data.pemilik
-        // _guru: data._guru._id
+        pemilik: data.pemilik,
+        _guru: data._guru._id
       }
-      axios.post('http://localhost:4567/api/newdudi', dudi, {headers:{'X-Access-Token': self.token}})
+      axios.post(self.server+'/api/newdudi', dudi, {headers:{'X-Access-Token': self.token}})
            .then((res)=>{
             if(res.data == 'ok_add') 
               self.close();
@@ -289,10 +291,10 @@ export default {
         alamat: data.alamat,
         kota: data.kota,
         telp: data.telp,
-        pemilik: data.pemilik
-        // _guru: data._guru._ids
+        pemilik: data.pemilik,
+        _guru: data._guru._id
       }
-      axios.post('http://localhost:4567/api/upddudi', dudi, {headers:{'X-Access-Token': self.token}})
+      axios.post(self.server+'/api/upddudi', dudi, {headers:{'X-Access-Token': self.token}})
            .then((res)=>{
             if(res.data == 'ok_upd') 
               self.close();
@@ -313,7 +315,7 @@ export default {
         return false;
       } else {
       
-        axios.get('http://localhost:4567/api/getlastdudi?kode='+kode, {headers: {'X-Access-Token': self.token}})
+        axios.get(self.server+'/api/getlastdudi?kode='+kode, {headers: {'X-Access-Token': self.token}})
           .then((res) => {
             var lastdudi = res.data[0]._id;
             var nmr = lastdudi.substr(2,4);
@@ -333,7 +335,7 @@ export default {
     },
     getGurus(){
       var self = this;
-      axios.get('http://localhost:4567/api/getgurus', {headers: {'X-Access-Token': self.token}})
+      axios.get(self.server+'/api/getgurus', {headers: {'X-Access-Token': self.token}})
            .then((res) => {
               self.gurus = res.data;
 
@@ -354,10 +356,16 @@ export default {
       });
       filereader.readAsDataURL(files[0]);
       self.file = files[0];
-    },
+    }, 
     import_dudi(){
       var self = this;
       var url = self.fileUrl;
+      if (!url) {
+        alert('Ambil File Excel Dulu!');
+        return false;
+      }
+
+
       var req = new XMLHttpRequest();
       req.open("GET", url, true);
       req.responseType = "arraybuffer";
@@ -369,7 +377,7 @@ export default {
         var first_sheet_name = workbook.SheetNames[0];
         var ws = workbook.Sheets[first_sheet_name];
         var newDudis = XLSX.utils.sheet_to_json(ws);
-        axios.post('http://localhost:4567/api/importdudis', newDudis, {headers: {'X-Access-Token': self.token}}).then((res)=>{
+        axios.post(self.server+'/api/importdudis', newDudis, {headers: {'X-Access-Token': self.token}}).then((res)=>{
           self.getDudis();
           self.fileUrl = '';
         })
@@ -386,7 +394,7 @@ export default {
         if (isActive == false) {
           return i;
         } else {
-          return i._guru !== null;
+          return i._guru !== undefined;
         }
       })
     },
@@ -402,12 +410,12 @@ export default {
 #printableTable h4{
   display: none;
 }
-.datatable{
+/*.datatable{
   border: 1px solid #666;
 }
 .datatable th, td{
   border: 1px solid #666;
-}
+}*/
 @media print{
   *{
     display: none;
@@ -423,6 +431,12 @@ export default {
     z-index: 10000;
   } */
   /* .s */
+  .datatable{
+    border: 1px solid #666;
+  }
+  .datatable th, td{
+    border: 1px solid #666;
+  }
   #printableTable > table{
     display: block;
   }

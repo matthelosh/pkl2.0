@@ -6,7 +6,11 @@
 					v-card-title(primary-title dark)
 						h3.headline Tulis Info Baru
 					v-card-text
-						vue-editor(v-model="newInfo")
+						v-text-field(name="_id" v-model="newInfo._id" label="ID Info")
+						v-text-field(name="title" v-model="newInfo.title" label="Judul")
+						vue-editor(v-model="newInfo.content")
+						v-btn(color="secondary" @click="saveInfo")
+							v-icon mdi-send
 			v-flex(xs12 md7)
 				v-card(tile)
 					v-card-title(primary-title dark)
@@ -31,11 +35,19 @@ export default {
   components: { VueEditor },
   data () {
     return {
-    	newInfo: 'Tulis Info Baru',
+    	// newInfo: 'Tulis Info Baru',
     	role: sessionStorage.getItem('role'),
     	token: sessionStorage.getItem('token'),
     	periode: sessionStorage.getItem('periode'),
     	infos: [],
+    	newInfo:{
+    		_id: '',
+    		title: '',
+    		content: 'Tulis Info Baru',
+    		created_by: sessionStorage.getItem(''),
+    		created_at: new Date(),
+    		isActive: '1'
+    	},
     	infoHeaders: [
     		{
             text: 'No',
@@ -68,6 +80,11 @@ export default {
   					self.infos = res.data;
   				});
   	},
+  	saveInfo() {
+  		var self = this;
+  		var data = self.newInfo;
+  		console.log(data);
+  	}
   	// newInfo(){
   	// 	var self = this;
   	// 	var textpad = document.getElementById("textpad");

@@ -3,33 +3,67 @@
         .page#default
             <v-parallax src="/public/landing-bg/18-blurred.jpg">
                 <v-layout row>
-
-                    
+                    <v-container>
+                        <v-flex xs12>
+                        <v-card flat color="transparent">
+                            <v-card-title>
+                                <div class="text-xs-center">
+                                    <img src="/public/favicon-32x32.svg" type="image/svg" alt="" width="96px" height="96px" style="float:left;z-index:2;">
+                                    <h3 class="headline white--text">Sistem Informasi Prakerlap <br> SMKN 10 Malang</h3>
+                                </div>
+                            </v-card-title>
+                            <v-card-text>
+                                <blockquote cite="Narrated Hz Abu Hurairah (RA) that Prophet Muhammad (PBUH) said: [1]">" The perfect believer in respect of faith is he who is best of them in manners. </blockquote>
+                                <p> It is impossible to practice Islam if we neglect the importance of good manners. For instance, we cannot be true Muslims if we disregard cleanliness (which is said to be half of one’s faith). Imagine losing out on half of faith just because someone is too lazy to take a bath! By implementing good manners and Adab we are actually reinforcing our faith. Furthermore, it is not only Allah’s Love that you gain but also the love and respect of those around you. Even the disbelievers of Mecca who wanted to kill Muhammad (PBUH) acknowledged his truthfulness. None could deny his noble character and good manners.
+                                </p>
+                            </v-card-text>
+                        </v-card>
+                        </v-flex>
+                    </v-container>
                 </v-layout>
                 <v-layout row>
-                    v-flex(xs6 offset-xs1)
-                        v-card(color="purple" dark)
-                            <img src="/public/favicon-32x32.svg" type="image/svg" alt="" width="128px" height="128px" style="float:left;z-index:2;">
-                            v-card-title 
-                                h1 PKL <br>
-                            h4 &nbsp;&nbsp;&nbsp; SISTEM INFORMASI PRAKERLAP <br> &nbsp;&nbsp;&nbsp;&nbsp;SMKN 10 MALANG
-                            //- v-card-text 
-                        
-                    v-btn(fab small flat title="Masuk" color="teal accent-2" top right fixed @click.native.stop="openLoginForm")
+                    v-btn(fab small flat title="Masuk" color="teal accent-2" top right fixed @click.native.stop="openLoginForm" v-if="loggedIn == false")
                         v-icon(dark color="white" ripple) mdi-login-variant
-                    v-btn(fab small  flat title="Dashboard" color="blue accent-2" top right absolute @click.native.stop="$router.push('/dashboard')" v-show="isAuth" class="dashBtn")
+                    v-btn(fab small  flat title="Dashboard" color="blue accent-2" top right fixed @click.native.stop="$router.push('/dashboard')" v-show="isAuth" class="dashBtn")
                         v-icon(color="white") mdi-view-dashboard
                 </v-layout>
                 
-                <v-layout row>
-                    <v-flex xs10 offset-xs1>
+                
+            </v-parallax>
+          
+        .page#so
+            <v-layout row>
+                <v-container>
+                    <v-flex xs12 md10 offset-md1 class="text-align-center">
+                        <h1 style="text-align:center">Info Prakerlap {{sekolah}}</h1>
+                    </v-flex>
+                    <v-flex xs12 md10 offset-md1>
                         <lobby></lobby>
                     </v-flex>
-                </v-layout>
-            </v-parallax>
+                </v-container>
+                
+            </v-layout>
+            <v-layout>
+                <v-flex xs12>
+                <v-footer height="auto" class="grey darken-3">
+                    <v-layout row wrap justify-center>
+                        <v-btn v-for="link in footlinks" :key="link.text" color="white" flat>
+                            | {{ link.text }}
+                        </v-btn>
+                        <v-flex xs12 py-3 text-xs-center white--text>
+                            | &copy;2018 — <strong>Prakerlap SMKN 10 Malang</strong>
+                            <br>
+                            p Versi {{versi}}
+                        </v-flex>
+                    </v-layout>
+                </v-footer>
+                </v-flex>
+            </v-layout>
+        
+
         <v-dialog v-model="dialog" persistent max-width="500">
             <v-card>
-                <v-card-title class="headline">Masuk Sistem</v-card-title>
+                <v-card-title class="headline"><v-icon>mdi-lock</v-icon>Masuk Sistem</v-card-title>
                 <v-card-text>
                     <v-alert color="error" icon="fa-warning" :value="alert">
                     | {{alertMsg}}
@@ -37,27 +71,22 @@
                     <v-form v-model="valid" ref="form" lazy-validation>
                         <v-select label="Periode" v-model="selPeriode" :items="periodes" :rules="[v => !!v || 'Item is required']" required append-icon="mdi-arrow-down-drop-circle-outline" v-bind:value="login.periode" on:input="onSelectPeriod" item-value="_id" item-text="periode"></v-select>
                         <v-text-field label="Masukkan Username" v-model="login.uname" :rules="nameRules" append-icon="mdi-account-circle" :counter="10" required></v-text-field>
-                        <v-text-field name="input-10-2" label="Masukkan Kata Kunci" hint="At least 8 characters" min="8" :append-icon="e2 ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"      :append-icon-cb="() => (e2 = !e2)"  :type="e2 ? 'password' : 'text'" v-model="login.password" required></v-text-field>
+                        <v-text-field name="password" label="Masukkan Kata Kunci" hint="At least 8 characters" min="8" :append-icon="e2 ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"      :append-icon-cb="() => (e2 = !e2)"  :type="e2 ? 'password' : 'text'" v-model="login.password" required></v-text-field>
                         //- <v-select label="Peran User" v-model="login._role" :items="roleItems" :rules="[v => !!v || 'Item is required']" required append-icon="mdi-arrow-down-drop-circle-outline"></v-select>
-                        <v-btn @click="submit(login)" :disabled="!valid">submit</v-btn>
-                        <v-btn @click="clear">clear</v-btn>
+                        <v-layout row>
+                            <v-flex class="text-xs-center">
+                                <v-btn @click="submit(login)" depressed dark color="teal"><v-icon>mdi-login-variant</v-icon> masuk</v-btn>
+                                <v-btn @click="clear" depressed dark color="orange"><v-icon>mdi-lock-reset</v-icon> reset</v-btn>
+                            </v-flex>
+                        </v-layout>
                     </v-form>
                 </v-card-text>
                 <v-card-actions>
                 <v-spacer></v-spacer>
-                    <v-btn color="red darken-1" flat @click.native="close">Batal</v-btn>
+                    <v-btn color="red darken-1" small fab depressed dark @click.native="close">X</v-btn>
                 </v-card-actions>
             </v-card>
-        </v-dialog>    
-        .page#so
-            <v-parallax src="/public/landing-bg/parralax.jpg">
-                <v-layout>
-                    #so-content(sm12)
-                        <h1 class="white--text">Struktur Organisasi</h1>
-                        <h4 class="white--text">Eprakerlap SMKN 10 Malang!</h4>
-                        .so-box
-                </v-layout> 
-            </v-parallax>
+        </v-dialog>  
             
 </template>
 <script>
@@ -81,6 +110,15 @@ export default {
             login: {},
             alert: false,
             alertMsg: '',
+            loggedIn: this.$store.state.isLoggedIn,
+            sekolah: 'SMKN 10 Malang',
+            footlinks:[
+                {text: 'Home'},
+                {text: 'About'},
+                {text: 'Contact'}
+            ],
+            versi: this.$store.state.versi,
+            server: this.$store.state.server
         }
     },
     created () {
@@ -95,7 +133,7 @@ export default {
         },
         getPeriode(){
             var self = this;
-            axios.get('http://localhost:4567/umum/periode')
+            axios.get(self.server+'/umum/periode')
                  .then((res) => {
                     self.periodes = res.data;
                  });
@@ -124,7 +162,8 @@ export default {
       submit (dataLogin) {
         if (this.$refs.form.validate()) {
             // console.log(dataLogin)
-            axios.post('http://localhost:4567/user/authenticate', dataLogin)
+            var self = this;
+            axios.post(self.server+'/user/authenticate', dataLogin)
                 .then(response => {
                     // console.log(response.data)
                     var res = response.data
@@ -137,10 +176,10 @@ export default {
                         sessionStorage.setItem('periode', this.selPeriode)
                         sessionStorage.setItem('role', res.role)
                         sessionStorage.setItem('user', dataLogin.uname)
-                        sessionStorage.setItem('_id', dataLogin.uname)
+                        // sessionStorage.setItem('_id', dataLogin._id)
                         this.$store.dispatch('setUser', dataLogin.uname)
                         this.$router.push('/dashboard')
-                        // console.log(res);
+                        console.log(res);
                         
                     }
                 })
@@ -199,10 +238,11 @@ export default {
     .landing-page
         color: #fefefe
         margin: 0!important
-        position: absolute
-        height: 100vh
+        position: relative
+        height: auto
         width: 100vw
         min-height: 100vh
+        overflow-y: scroll
         .page
             box-sizing: border-box
             position: relative
@@ -213,11 +253,21 @@ export default {
             .dashBtn.btn--right.btn--absolute.btn--small
                 right: 60px
         #default
-        #so
-            background:
-                color: orange
-            #so-content
-                //padding: 20px
-                width: 100%
+            blockquote
+                text-indent: 50px
+                font-size: 1.5em
+                color: #fff
+                font-family: 'Sans-serif'
+            p
+                color: #efefef
+                line-height: 1.5em
+                text-shadow: 0 0 1px rgba(0,0,0,0.5)
+    #so
+        background:
+            color: #99adda
+        #so-content
+            //padding: 20px
+            width: 100%
+            height: auto
                 
 </style>

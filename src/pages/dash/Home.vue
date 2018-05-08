@@ -1,26 +1,30 @@
-<template>
-  <div class="dash-home">
-      <h1>Home</h1>
-      <v-icon>mi-android</v-icon>
-      <h4>{{text}}</h4>
-  </div>
+<template lang="pug">
+	v-container
+		v-layout(row wrap)
+			v-flex(xs12)
+				v-card(flat)
+					v-card-title
+						h3 Selamat Datang {{user}}
+					v-card-text
+						p lorem	
 </template>
 
 <script>
 export default {
     data () {
         return {
-            text: 'Selamat Datang!'
+            
         }
     },
     computed: {
+			user() {
+				var self = this;
+				return self.$store.state.user.nama;
+			}
     }
 }
 </script>
 
-<style>
-.dash-home {
-    background: #689546
-}
-</style>
+<style lang="stylus" scoped>
 
+</style>

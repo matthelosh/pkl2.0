@@ -6,8 +6,14 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
     state: {
         isLoggedIn: !!sessionStorage.getItem('token'),
-        user: {},
-        versi: 'v0.0.1a'
+        user: {
+            _id: sessionStorage.getItem('_id'),
+            nama: sessionStorage.getItem('nama'),
+            nip: sessionStorage.getItem('nip'),
+            hp: sessionStorage.getItem('hp')
+        },
+        versi: 'v0.0.1a',
+        server: 'http://5.5.1.2:4567'
     },
     mutations: {
         setUser(state, user) {
@@ -25,10 +31,13 @@ const store = new Vuex.Store({
         setUser(context, user) {
             var token = sessionStorage.getItem('token')
             var role = sessionStorage.getItem('role')
-            axios.get('http://localhost:4567/api/profile?id='+user+'&role='+role, {headers: {'X-Access-Token': token}})
+            axios.get(this.state.server+'/api/profile?id='+user+'&role='+role, {headers: {'X-Access-Token': token}})
                 .then( response => {
                     var userData = response.data
+                    sessionStorage.setItem('nama', userData[0].nama)
                     sessionStorage.setItem('_id', userData[0]._id)
+                    sessionStorage.setItem('nip', userData[0].nip)
+                    sessionStorage.setItem('hp', userData[0].hp)
                     return userData[0];
                 })
                 .then(function(userData) {

@@ -31,7 +31,8 @@ export default {
     return {
       routeParams: this.$route.params,
       info: {},
-      info_bg: '/public/img/info/info_bg.jpg'
+      info_bg: '/public/img/info/info_bg.jpg',
+      server: this.$store.state.server
     }
   },
   created (){
@@ -40,7 +41,8 @@ export default {
   methods: {
     getInfo(){
       var id = this.routeParams.id;
-      axios.get('http://localhost:4567/umum/getinfo/'+id)
+      var self = this
+      axios.get(self.server+'/umum/getinfo/'+id)
       .then(res=>{
         console.log(res.data);
         this.info = res.data;

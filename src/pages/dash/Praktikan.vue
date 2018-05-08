@@ -1,24 +1,24 @@
 <template lang="pug">
   div
     v-layout(row)
-      v-flex(xs6)
-        v-btn(color="primary" flat @click.native="[dialog=true, add=true]") 
+      v-flex(xs12)
+        v-btn(color="primary" @click.native="[dialog=true, add=true]" depressed dark) 
           i.fa.fa-child
-          | &nbsp; Tambah Praktikan
-        v-btn(color="teal" @click.native="cetak_data" flat)
+          | &nbsp; Baru
+        v-btn(color="teal" @click.native="cetak_data" depressed dark)
           i.fa.fa-print
           | &nbsp; Cetak
-        v-btn(color="warning" @click.native="export_xls" flat)
+        v-btn(color="warning" @click.native="export_xls" depressed dark)
           v-icon mdi-file-excel-box
           | &nbsp; Export
-      v-flex(xs2)
+      v-flex(xs12)
         input(type="file" ref="fileUpload" @change="onFilePicked" style="display:none")
   
-        v-text-field(@click.native="pickFile" color="green" flat append-icon="mdi-attachment" label="Pilih file Excel" v-model="filename")
+        v-text-field(@click.native="pickFile" color="green" depressed append-icon="mdi-attachment" label="Pilih file Excel" v-model="filename")
           v-icon mdi-file-excel-box
           | &nbsp; Import XLS
-      v-flex(xs2)
-        v-btn(color="blue" flat @click.native="import_xls")
+      v-flex(xs12)
+        v-btn(color="blue" depressed @click.native="import_xls" dark)
           v-icon mdi-file-import
           | &nbsp; Import
       //- <vue-xlsx-table @on-select-file="handleSelectedFile"></vue-xlsx-table>
@@ -41,7 +41,7 @@
                   <v-container grid-list-md>
                     <v-layout wrap>
                       <v-flex xs12 sm6 md4>
-                        <v-text-field label="NIS" v-model="editedSiswa._id"></v-text-field>
+                        <v-text-field label="NIS" v-model="editedSiswa.nis"></v-text-field>
                       </v-flex>
                       <v-flex xs12 sm6 md4>
                         <v-text-field label="Username" v-model="editedSiswa.uname"></v-text-field>
@@ -79,9 +79,9 @@
               </v-card>
             </v-dialog>
           #printableTable
-            v-data-table#tbl_praktikan(:headers="headers" :items="siswas" :search="search" sort-icon="fa fa-sort" next-icon="fa fa-angle-double-right" prev-icon="fa fa-angle-double-left" loading="true")
+            v-data-table#tbl_praktikan(:headers="headers" :items="siswas" :search="search" sort-icon="fa fa-sort" next-icon="fa fa-angle-double-right" prev-icon="fa fa-angle-double-left" loading="true" class="")
                   template(slot="items" slot-scope="props")
-                    td {{ props.index+1 }}
+                    td.hidden-xs-only {{ props.index+1 }}
                     td.text-xs-left {{ props.item.nis}}
                     td.text-xs-left {{ props.item.nama }}
                     td.text-xs-left {{ props.item.kelas }}
@@ -168,15 +168,16 @@ export default {
           },
           { text: 'NIS', value: 'nis' },
           { text: 'Nama', value: 'nama' },
-          { text: 'Kelas', value: 'kelas' },
-          { text: 'Progli', value: 'progli' },
-          { text: 'Periode', value: 'periode' },
+          { text: 'Kelas', value: 'kelas', class:"hidden-xs-only" },
+          { text: 'Progli', value: 'progli', class:"hidden-xs-only" },
+          { text: 'Periode', value: 'periode', class:"hidden-xs-only" },
           { text: 'No. HP', sortable: false, value: 'hp' },
           // { text: 'Dudi', sortable: false, value: '_dudi.namaDudi' },
           // { text: 'Pembimbing', sortable: true, value: '_guru.nama' },
           { text: 'Aksi', sortable: false, value: '_id' }
       ],
-      newSiswas: []
+      newSiswas: [],
+      server: this.$store.state.server
     }
     
   },
@@ -193,7 +194,7 @@ export default {
   methods: {
     getDudis(){
       var self = this;
-      axios.get('http://localhost:4567/api/dudis', {headers: {'X-Access-Token': self.token}})
+      axios.get(self.server+'/api/dudis', {headers: {'X-Access-Token': self.token}})
            .then((res) => {
               self.dudis = res.data;
 
@@ -201,7 +202,7 @@ export default {
     },
     getGurus(){
       var self = this;
-      axios.get('http://localhost:4567/api/getgurus', {headers: {'X-Access-Token': self.token}})
+      axios.get(self.server+'/api/getgurus', {headers: {'X-Access-Token': self.token}})
            .then((res) => {
               self.gurus = res.data;
 
@@ -211,6 +212,7 @@ export default {
     editItem (item) {
         this.editedIndex = this.siswas.indexOf(item)
         this.editedSiswa = Object.assign({}, item)
+        this.editedSiswa.periode = sessionStorage.getItem('periode');
         // this.selDudi._id = this.editedSiswa._dudi._id;
         if (item._dudi == null){
           this.editedSiswa._dudi = '0'
@@ -237,7 +239,7 @@ export default {
       // && this.siswas.splice(index, 1)
       var self = this;
       var data = {_id: item._id};
-      axios.post('http://localhost:4567/api/delsiswa', data, {headers: {'X-Access-Token': self.token}}). then((res) => {
+      axios.post(self.server+'/api/delsiswa', data, {headers: {'X-Access-Token': self.token}}). then((res) => {
         if(res.data == 'ok_del'){
           self.close();
         }
@@ -247,7 +249,7 @@ export default {
       var self = this;
       var periode = sessionStorage.getItem('periode');
       // console.log('halo');
-      axios.get('http://localhost:4567/api/getsiswas/'+periode, {headers: {'X-Access-Token': self.token}})
+      axios.get(self.server+'/api/getsiswas/'+periode, {headers: {'X-Access-Token': self.token}})
            .then((res) => {
             self.siswas = res.data;
             var data = res.data;
@@ -311,7 +313,7 @@ export default {
     save () {
       var self = this;
       var data = self.editedSiswa;
-      axios.post('http://localhost:4567/api/newsiswa', data, {headers: {'X-Access-Token': self.token}})
+      axios.post(self.server+'/api/newsiswa', data, {headers: {'X-Access-Token': self.token}})
           .then((res) => {
             if (res.data == 'ok_save'){
               self.close();
@@ -321,7 +323,7 @@ export default {
     update () {
       var self = this;
       var data = self.editedSiswa;
-      axios.put('http://localhost:4567/api/siswa', data, {headers: {'X-Access-Token': self.token}})
+      axios.put(self.server+'/api/siswa', data, {headers: {'X-Access-Token': self.token}})
           .then((res) => {
             if ( res.data == 'ok_upd') {
               self.close();
@@ -339,41 +341,47 @@ export default {
     pickFile(){
       this.$refs.fileUpload.click();
     },
-    onFilePicked(event){
-      var files = event.target.files;
-      let filename = files[0].name;
-      this.filename = filename;
-      const fileReader = new FileReader();
-      fileReader.addEventListener('load', () => {
-        this.fileUrl = fileReader.result;
+    onFilePicked(e){
+      var self = this;
+      var files = e.target.files,
+          fileUri = '',
+          filename = files[0].name;
+      self.filename = filename;
+      const filereader = new FileReader();
+      filereader.addEventListener('load', () => {
+        self.fileUrl = filereader.result;
       });
-      fileReader.readAsDataURL(files[0]);
-      this.file = files[0];
+      filereader.readAsDataURL(files[0]);
+      self.file = files[0];
+      
     },
     import_xls(){
       var self = this;
       var url = self.fileUrl;
-
-// /* set up async GET request */
+      if (!url) {
+        alert('Ambil File Excel Dulu!');
+        return false;
+      }
       var req = new XMLHttpRequest();
       req.open("GET", url, true);
       req.responseType = "arraybuffer";
 
-      req.onload = function(e) {
+      req.onload = function(e){
         var data = new Uint8Array(req.response);
-        var workbook = XLSX.read(data, {type:"array"});
+        var workbook = XLSX.read(data, {type: "array"});
 
-        /* DO SOMETHING WITH workbook HERE */
         var first_sheet_name = workbook.SheetNames[0];
-        var worksheet = workbook.Sheets[first_sheet_name];
-        var newSiswas = XLSX.utils.sheet_to_json(worksheet);
-        self.newSiswas = newSiswas;
-        axios.post('http://localhost:4567/api/importsiswas', newSiswas, {headers: {'X-Access-Token': self.token}}).then((res)=>{
+        var ws = workbook.Sheets[first_sheet_name];
+        var newSiswas = XLSX.utils.sheet_to_json(ws);
+        axios.post(self.server+'/api/importsiswas', newSiswas, {headers: {'X-Access-Token': self.token}}).then((res)=>{
           self.getSiswas();
           self.fileUrl = '';
         })
-      }
+        // self
+      };
       req.send();
+// /* set up async GET request */
+      
     }
   },
   computed: {
@@ -389,6 +397,10 @@ export default {
 <style scoped>
   dialog{
     height: auto!important;
+  }
+  #printableTable{
+    display: inline-block;
+    width: 100%;
   }
 </style>
 

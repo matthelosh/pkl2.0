@@ -67,6 +67,10 @@ var router = new Router({
           component: load('dash/Info')
         },
         {
+          path: '/dashboard/pembekalan',
+          component: load('dash/Pembekalan')
+        },
+        {
           path: '/guru/profil',
           component: load('guru/Profile')
         },
