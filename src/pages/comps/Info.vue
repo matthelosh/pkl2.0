@@ -25,6 +25,7 @@ import axios from 'axios'
 export default {
 
   name: 'Info',
+  mode: 'Default',
   // components: {Info},
   props: ['infodialog'],
   data () {
@@ -44,7 +45,7 @@ export default {
       var self = this
       axios.get(self.server+'/umum/getinfo/'+id)
       .then(res=>{
-        console.log(res.data);
+        // console.log(res.data);
         this.info = res.data;
       });
     }

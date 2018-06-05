@@ -18,7 +18,7 @@
           v-card-title(primary-title)
             div
               h3.headline.mb-0 <i class="fa fa-building"></i> Daftar Du/Di
-          v-list(two-line subheader v-for="(dudi, index) in dudist" :key="index")
+          v-list(two-line subheader v-for="(dudi, index) in dudis" :key="index")
             v-list-tile
               v-list-tile-content
                 v-list-tile-title {{dudi.namaDudi}}
@@ -64,10 +64,14 @@ export default {
     },
     getMyDudi() {
         var self = this;
+        var periode = sessionStorage.getItem('periode')
         var id = sessionStorage.getItem("_id");
-        axios.get(Api.server+'/api/getmydudis?id='+id, {headers: {'X-Access-Token': self.token}})
+        axios.get(Api.server+'/api/getmydudis?id='+id+'&periode='+periode, {headers: {'X-Access-Token': self.token}})
             .then(function(res){
-                self.dudis = res.data;
+                var results = res.data;
+                for (var i = 0 ; i < results.length; i++) {
+                  self.dudis.push(results[i]._dudi)
+                }
             });
     },
     showEdit(){
@@ -75,37 +79,37 @@ export default {
     }
   },
   computed: {
-    dudist() {
-      var self = this;
-      var data = self.dudis;
-      var dudis = [];
-      var dudist = [];
-      // console.log(dudis);
-      for ( var i = 0 ;i < data.length; i++ ) {
-        dudis.push(data[i]._dudi);
-      }
-      // return dudis;
+    // dudist() {
+    //   var self = this;
+    //   var data = self.dudis;
+    //   var dudis = [];
+    //   var dudist = [];
+    //   // console.log(dudis);
+    //   for ( var i = 0 ;i < data.length; i++ ) {
+    //     dudis.push(data[i]._dudi);
+    //   }
+    //   // return dudis;
 
-      // var unique = dudis.reduce(function(accum, current) {
-      //   if (accum.indexOf(current._id) < 0) {
-      //       accum.push(current);
-      //   }
-      //   return accum;
-      //   }, []);
-      //   // if (dudist) {
-      //   //     dudist.length = 0;
-      //   //     for (let i = 0; i < unique.length; ++i) {
-      //   //         dudist.push(unique[i]);
-      //   //     }
-      //   //     return dudist;
-      //   // }
-      //   return unique;
-      return dudis.filter(function(item, index){
-        // return item._id !== item._id;
-        return index;
-      })
-      // return dudis;
-    }
+    //   // var unique = dudis.reduce(function(accum, current) {
+    //   //   if (accum.indexOf(current._id) < 0) {
+    //   //       accum.push(current);
+    //   //   }
+    //   //   return accum;
+    //   //   }, []);
+    //   //   // if (dudist) {
+    //   //   //     dudist.length = 0;
+    //   //   //     for (let i = 0; i < unique.length; ++i) {
+    //   //   //         dudist.push(unique[i]);
+    //   //   //     }
+    //   //   //     return dudist;
+    //   //   // }
+    //   //   return unique;
+    //   return dudis.filter(function(item, index){
+    //     return item._id !== item._id;
+    //     // return index;
+    //   })
+    //   // return dudis;
+    // }
   }
 }
 // var toString = Object.prototype.toString;  

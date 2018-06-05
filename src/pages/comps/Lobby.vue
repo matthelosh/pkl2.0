@@ -82,7 +82,7 @@ export default {
       var self = this;
       axios.get(self.server+'/umum/getinfos')
       .then(res=>{
-        console.log(res.data);
+        // console.log(res.data);
         this.infos = res.data;
       });
     }

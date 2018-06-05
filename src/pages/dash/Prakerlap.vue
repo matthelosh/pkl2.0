@@ -4,20 +4,20 @@
 		v-flex(xs12 md-12)
 			v-toolbar(color="grey" dark dense flat scroll-off-screen)
 				v-toolbar-title Prakerlap
-				v-btn(fab @click.native="newPrakerlap" color="red" small depressed title="Daftarkan Praktikan")
-					v-icon mdi-worker
-				v-btn(fab @click.native="pklByGuru = true" color="green" small depressed)
-					v-icon mdi-teach
-				v-btn(fab @click.native="dudiguru = true" color="yellow" small depressed)
-					v-icon mdi-factory
+				v-btn(@click.native="newPrakerlap" color="grey darken-2" depressed title="Daftarkan Praktikan")
+					v-icon(small) mdi-worker
+				v-btn(@click.native="mode = 'pklByGuru'" color="grey darken-1" depressed)
+					v-icon(small) mdi-teach
+				v-btn(@click.native="mode = 'dudiguru'" color="blue-grey" depressed)
+					v-icon(small) mdi-factory
 				v-spacer
 				v-btn(flat icon=true)
 					v-icon mdi-search
 			v-layout(row)
 				v-container
-					pembimbing(v-if="pklByGuru" :items-guru="gurus" :items-siswa="siswas")
-					dudi-guru(v-if="dudiguru" :items-guru="gurus" :items-dudi="dudis")
-
+					pembimbing(v-if="mode == 'pklByGuru'" :items-guru="gurus" :items-siswa="siswas")
+					dudi-guru(v-if="mode == 'dudiguru'" :items-guru="gurus" :items-dudi="dudis")
+					penempatan(v-if="mode='default'")
 
 		v-snackbar(:timeout="timeout" color="red lighten-3" multi-line=true v-model="pklSnackbar")
 			p {{ pklsnacktext }}
@@ -96,14 +96,16 @@
 import axios from 'axios'
 import Pembimbing from '@pages/comps/Pembimbing'
 import DudiGuru from '@pages/comps/DudiGuru'
+import Penempatan from '@pages/comps/Penempatan'
 export default {
-	components: {Pembimbing, DudiGuru},
+	components: {Pembimbing, DudiGuru, Penempatan},
 	name: 'Prakerlap',
 
 	data () {
 		return {
-			pklByGuru: false,
-			dudiguru: false,
+			// mode: 'default',
+			// pklByGuru: false,
+			// dudiguru: false,
 			jmlterdaftar: '',
 			jmlditerima: '0',
 			dialog: false,
@@ -200,7 +202,7 @@ export default {
 		},
 		getDudis(){
 			var self = this;
-			axios.get(seslf.server+'/api/dudis', {headers: {'X-Access-Token': self.token}})
+			axios.get(self.server+'/api/dudis', {headers: {'X-Access-Token': self.token}})
 					.then((res) => {
 						self.dudis = res.data;
 					});

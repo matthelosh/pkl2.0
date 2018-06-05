@@ -63,6 +63,10 @@ var router = new Router({
           component: load('dash/Prakerlap')
         },
         {
+          path: '/dashboard/pasca',
+          component: load('dash/Pasca')
+        },
+        {
           path: '/dashboard/info',
           component: load('dash/Info')
         },
@@ -79,8 +83,8 @@ var router = new Router({
           component: load('guru/Jadwal')
         },
         {
-          path: '/guru/monitoring',
-          component: load('guru/Monitoring')
+          path: '/guru/pasca',
+          component: load('guru/Pasca')
         },
         {
           path: '/guru/file',

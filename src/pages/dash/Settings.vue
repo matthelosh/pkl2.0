@@ -1,5 +1,5 @@
 <template lang="pug">
-	v-template
+	div
 		h1 Pengaturan
 		v-layout(column)
 			v-container(fluid grid-list-md)

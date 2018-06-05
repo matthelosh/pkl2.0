@@ -13,7 +13,8 @@ const store = new Vuex.Store({
             hp: sessionStorage.getItem('hp')
         },
         versi: 'v0.0.1a',
-        server: 'http://5.5.1.2:4567'
+        server: appConfig.apiServer
+        // server: 'http://5.5.1.2:4567'
     },
     mutations: {
         setUser(state, user) {

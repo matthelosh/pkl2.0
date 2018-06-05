@@ -2,13 +2,13 @@
   div
     v-layout(row)
       v-flex(xs12)
-        v-btn(color="primary" @click.native="[dialog=true, add=true]" depressed dark) 
-          i.fa.fa-child
+        v-btn(color="teal darken-1" @click.native="[dialog=true, add=true]" depressed dark) 
+          v-icon mdi-asterisk
           | &nbsp; Baru
-        v-btn(color="teal" @click.native="cetak_data" depressed dark)
-          i.fa.fa-print
+        v-btn(color="teal lighten-1" @click.native="cetak_data" depressed dark)
+          v-icon mdi-printer
           | &nbsp; Cetak
-        v-btn(color="warning" @click.native="export_xls" depressed dark)
+        v-btn(color="teal lighten-2" @click.native="export_xls" depressed dark)
           v-icon mdi-file-excel-box
           | &nbsp; Export
       v-flex(xs12)
@@ -18,7 +18,7 @@
           v-icon mdi-file-excel-box
           | &nbsp; Import XLS
       v-flex(xs12)
-        v-btn(color="blue" depressed @click.native="import_xls" dark)
+        v-btn(color="teal lighten-1" depressed @click.native="import_xls" dark)
           v-icon mdi-file-import
           | &nbsp; Import
       //- <vue-xlsx-table @on-select-file="handleSelectedFile"></vue-xlsx-table>

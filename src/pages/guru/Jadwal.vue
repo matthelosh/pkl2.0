@@ -3,7 +3,7 @@
     v-layout(row)
       v-flex(xs10 offset-xs1)
         v-card
-          v-btn(color="primary" flat @click.native="[dialog=true, add=true]") 
+          v-btn(v-if="role == '1'" color="primary" flat @click.native="[dialog=true, add=true]") 
             i.fa.fa-calendar-plus-o
             | &nbsp; Tambah Jadwal
           v-btn(color="success" @click.native="cetak_data" flat)

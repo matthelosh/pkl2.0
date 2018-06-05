@@ -64,7 +64,8 @@ export default {
           // { text: 'Dudi', sortable: false, value: '_dudi.namaDudi' },
           // { text: 'Pembimbing', sortable: true, value: '_guru.nama' },
           { text: 'Aksi', sortable: false, value: '_id' }
-    	],
+		],
+		server: this.$store.state.server
 
     }
   },
@@ -74,7 +75,7 @@ export default {
   methods: {
   	getInfos(){
   		var self = this;
-  		axios.get('http://localhost:4567/api/getinfos', {headers: {'X-Access-Token': self.token}})
+  		axios.get(self.server+'/api/getinfos', {headers: {'X-Access-Token': self.token}})
   				.then(res=>{
   					console.log(res);
   					self.infos = res.data;

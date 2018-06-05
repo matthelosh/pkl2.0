@@ -57,7 +57,7 @@
                         <v-text-field id="nip" label="NIP" v-model="editedGuru.nip" required  append-icon="mdi mdi-barcode"></v-text-field>
                       </v-flex>
                       <v-flex xs12 md12>
-                        <v-text-field id="alamat" label="Alamat" v-model="editedGuru.alamat" required  append-icon="mdi mdi-home" multi-line="2"></v-text-field>
+                        <v-text-field id="alamat" label="Alamat" v-model="editedGuru.alamat" required  append-icon="mdi mdi-home" multi-line></v-text-field>
                       </v-flex>
                       <v-flex xs12 md6>
                         <v-text-field id="hp" label="HP" v-model="editedGuru.hp" required  append-icon="mdi mdi-cellphone-android"></v-text-field>

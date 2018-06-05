@@ -21,7 +21,7 @@
   }
 </script>
 
-<style lang="css" scoped>
+<style scoped>
   .page-enter-active, .page-leave-active {
     transition: opacity .5s, transform .5s;
   }
@@ -30,7 +30,6 @@
     transform: translateX(-50%);
   }
   footer{
-
   }
 
 </style>

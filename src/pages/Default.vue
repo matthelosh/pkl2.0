@@ -1,7 +1,7 @@
 <template lang="pug">
     div.landing-page
         .page#default
-            <v-parallax src="/public/landing-bg/18-blurred.jpg">
+            <v-parallax :src="parabg.satu" width="100%" height="500" top>
                 <v-layout row>
                     <v-container>
                         <v-flex xs12>
@@ -13,8 +13,8 @@
                                 </div>
                             </v-card-title>
                             <v-card-text>
-                                <blockquote cite="Narrated Hz Abu Hurairah (RA) that Prophet Muhammad (PBUH) said: [1]">" The perfect believer in respect of faith is he who is best of them in manners. </blockquote>
-                                <p> It is impossible to practice Islam if we neglect the importance of good manners. For instance, we cannot be true Muslims if we disregard cleanliness (which is said to be half of one’s faith). Imagine losing out on half of faith just because someone is too lazy to take a bath! By implementing good manners and Adab we are actually reinforcing our faith. Furthermore, it is not only Allah’s Love that you gain but also the love and respect of those around you. Even the disbelievers of Mecca who wanted to kill Muhammad (PBUH) acknowledged his truthfulness. None could deny his noble character and good manners.
+                                <blockquote cite="Narrated Hz Abu Hurairah (RA) that Prophet Muhammad (PBUH) said: [1]">{{quote.title}}</blockquote>
+                                <p> {{quote.text}}
                                 </p>
                             </v-card-text>
                         </v-card>
@@ -22,7 +22,7 @@
                     </v-container>
                 </v-layout>
                 <v-layout row>
-                    v-btn(fab small flat title="Masuk" color="teal accent-2" top right fixed @click.native.stop="openLoginForm" v-if="loggedIn == false")
+                    v-btn.top-front(fab small flat title="Masuk" color="teal accent-2" top right fixed @click.native.stop="openLoginForm" v-if="loggedIn == false")
                         v-icon(dark color="white" ripple) mdi-login-variant
                     v-btn(fab small  flat title="Dashboard" color="blue accent-2" top right fixed @click.native.stop="$router.push('/dashboard')" v-show="isAuth" class="dashBtn")
                         v-icon(color="white") mdi-view-dashboard
@@ -32,17 +32,19 @@
             </v-parallax>
           
         .page#so
+            //- <v-parallax :src="parabg.dua">
             <v-layout row>
                 <v-container>
                     <v-flex xs12 md10 offset-md1 class="text-align-center">
                         <h1 style="text-align:center">Info Prakerlap {{sekolah}}</h1>
+                        <v-btn @click="infopkl = true" class="rl" flat><v-icon color="white">mdi-subdirectory-arrow-right</v-icon> Lihat Semua</v-btn>
                     </v-flex>
                     <v-flex xs12 md10 offset-md1>
                         <lobby></lobby>
                     </v-flex>
                 </v-container>
-                
             </v-layout>
+            //- </v-parallax>
             <v-layout>
                 <v-flex xs12>
                 <v-footer height="auto" class="grey darken-3">
@@ -60,10 +62,32 @@
                 </v-flex>
             </v-layout>
         
+        <v-dialog v-model="infopkl" fullscreen origin="center right" lazy transition="dialog-bottom-transition">
+            <v-card flat>
+                <v-card-title>
+                    <h3>Informasi Prakerlap {{periode}}</h3>
+                    <v-spacer></v-spacer>
+                    <v-btn flat @click="infopkl = false" fab color="red" small title="tutup">
+                        <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                </v-card-title>
+                <v-card-text>
+                    <lobby></lobby>
+                    <img src="/public/landing-bg/smk.jpg" />
+                </v-card-text>
+            </v-card>
+        </v-dialog>
 
-        <v-dialog v-model="dialog" persistent max-width="500">
+        <v-dialog v-model="dialog" max-width="500">
             <v-card>
-                <v-card-title class="headline"><v-icon>mdi-lock</v-icon>Masuk Sistem</v-card-title>
+                <v-card-title class="headline">
+                    <v-icon>mdi-lock</v-icon>
+                    | Masuk Sistem
+                    <v-spacer></v-spacer>
+                    <v-btn color="red darken-1" small fab depressed dark @click.native="close" flat>
+                        <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                </v-card-title>
                 <v-card-text>
                     <v-alert color="error" icon="fa-warning" :value="alert">
                     | {{alertMsg}}
@@ -71,7 +95,7 @@
                     <v-form v-model="valid" ref="form" lazy-validation>
                         <v-select label="Periode" v-model="selPeriode" :items="periodes" :rules="[v => !!v || 'Item is required']" required append-icon="mdi-arrow-down-drop-circle-outline" v-bind:value="login.periode" on:input="onSelectPeriod" item-value="_id" item-text="periode"></v-select>
                         <v-text-field label="Masukkan Username" v-model="login.uname" :rules="nameRules" append-icon="mdi-account-circle" :counter="10" required></v-text-field>
-                        <v-text-field name="password" label="Masukkan Kata Kunci" hint="At least 8 characters" min="8" :append-icon="e2 ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"      :append-icon-cb="() => (e2 = !e2)"  :type="e2 ? 'password' : 'text'" v-model="login.password" required></v-text-field>
+                        <v-text-field name="password" label="Masukkan Kata Kunci" hint="Klik tanda mata untuk melihat kata kunci" min="8" :append-icon="e2 ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"      :append-icon-cb="() => (e2 = !e2)"  :type="e2 ? 'password' : 'text'" v-model="login.password" required></v-text-field>
                         //- <v-select label="Peran User" v-model="login._role" :items="roleItems" :rules="[v => !!v || 'Item is required']" required append-icon="mdi-arrow-down-drop-circle-outline"></v-select>
                         <v-layout row>
                             <v-flex class="text-xs-center">
@@ -82,11 +106,28 @@
                     </v-form>
                 </v-card-text>
                 <v-card-actions>
-                <v-spacer></v-spacer>
-                    <v-btn color="red darken-1" small fab depressed dark @click.native="close">X</v-btn>
+                //- <v-spacer></v-spacer>
+                //-     <v-btn color="red darken-1" small fab depressed dark @click.native="close" flat>
+                //-         <v-icon>mdi-close</v-icon>
+                //-     </v-btn>
                 </v-card-actions>
             </v-card>
-        </v-dialog>  
+        </v-dialog>
+        <v-dialog danger dark v-model="errDlg" max-width="50%">
+            //- <v-container>
+            <v-card color="red" dark>
+                <v-card-title class="xs-text-center">
+
+                    <h1 > {{errTitle}}</h1>
+                    <v-spacer></v-spacer>
+                    <v-icon>mdi mdi-lan-disconnect</v-icon>
+                </v-card-title>
+                <v-card-text>
+                    <p> {{errMsg }} </p>
+                </v-card-text>
+            </v-card>
+            //- </v-container>
+        </v-dialog>
             
 </template>
 <script>
@@ -97,6 +138,18 @@ export default {
     components: {Lobby, Info},
     data () {
         return {
+            quote: {
+                title: '\"Selamat Menyambut Bulan Suci Ramadhan 1439H!',
+                text: 'Semoga kita diberikan kekuatan, kesabaran dan keihklasan dalam melakukan ibadah dalam bulan yang penuh berkah (Panitia Prakerlap).'
+            },
+            parabg: {
+                satu: '/public/landing-bg/sawah.jpg',
+                dua: '/public/landing-bg/1ramadan.svg'
+            },
+            infopkl: false,
+            errDlg: false,
+            errTitle: '',
+            errMsg: '',
             dialog: false,
             valid: true,
             name: '',
@@ -118,7 +171,8 @@ export default {
                 {text: 'Contact'}
             ],
             versi: this.$store.state.versi,
-            server: this.$store.state.server
+            server: this.$store.state.server,
+            periode: sessionStorage.getItem('periode')
         }
     },
     created () {
@@ -133,10 +187,18 @@ export default {
         },
         getPeriode(){
             var self = this;
+            // console.log(appConfig.apiServer)
             axios.get(self.server+'/umum/periode')
                  .then((res) => {
                     self.periodes = res.data;
-                 });
+                 })
+                 .catch(err => {
+                     if (err = 'Error: Network Error') {
+                        self.errTitle = '!!! Tidak tersambung dengan server API.';
+                        self.errMsg = 'Hubungi Admin segera!';
+                        self.errDlg = true
+                     }
+                 })
         },
         seldPeriode(){
             var self = this;
@@ -179,7 +241,7 @@ export default {
                         // sessionStorage.setItem('_id', dataLogin._id)
                         this.$store.dispatch('setUser', dataLogin.uname)
                         this.$router.push('/dashboard')
-                        console.log(res);
+                        // console.log(res);
                         
                     }
                 })
@@ -187,7 +249,7 @@ export default {
                     if ( !error.response ) {
                         this.alert = true
                         this.alertMsg = 'Maaf. Sedang tidak terhubung ke Server.'
-                        console.log(error);
+                        // console.log(error);
                     } else {
 
                     }
@@ -252,6 +314,8 @@ export default {
                 right: 20px
             .dashBtn.btn--right.btn--absolute.btn--small
                 right: 60px
+            .btn.top-front
+                z-index: 9999999
         #default
             blockquote
                 text-indent: 50px
@@ -265,9 +329,12 @@ export default {
     #so
         background:
             color: #99adda
+        .rl
+            color: white
+            text-decoration: none
         #so-content
             //padding: 20px
             width: 100%
-            height: auto
+            height: 150vh
                 
 </style>

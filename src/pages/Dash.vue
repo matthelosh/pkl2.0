@@ -84,7 +84,8 @@
         right: false,
         rightDrawer: false,
         title: 'Prakerlap SMKN 10 Malang',
-        role: sessionStorage.getItem('role')
+        role: sessionStorage.getItem('role'),
+        server: this.$store.state.server
       }
     },
     beforeCreate() {
@@ -155,7 +156,7 @@
         var self = this;
         var role = sessionStorage.getItem('role');
         var token = sessionStorage.getItem("token");
-        axios.get('http://localhost:4567/api/menu/'+role, {headers: {'X-Access-Token' : token}})
+        axios.get(self.server+'/api/menu/'+role, {headers: {'X-Access-Token' : token}})
               .then(function(res){
                 self.menus = res.data;
               });
