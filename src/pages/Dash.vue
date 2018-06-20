@@ -147,7 +147,7 @@
             sessionStorage.removeItem("isLoggedIn");
             sessionStorage.removeItem("token");
             this.$router.push('/');
-
+            this.$store.dispatch('Unsetuser')
 
           }
         }

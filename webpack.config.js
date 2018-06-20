@@ -9,7 +9,7 @@ module.exports = {
     filename: 'build.js'
   },
 	
-
+  
   resolve: {
     extensions: ['.js', '.vue'],
     alias: {
@@ -63,7 +63,10 @@ module.exports = {
   },
   devServer: {
     historyApiFallback: true,
-    noInfo: true
+    // noInfo: true,
+    // hot: true,
+    // publicPath: "/",
+    // contentBase: "./dist"
   },
   performance: {
     hints: false

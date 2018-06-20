@@ -6,18 +6,20 @@
 				v-toolbar-title Prakerlap
 				v-btn(@click.native="newPrakerlap" color="grey darken-2" depressed title="Daftarkan Praktikan")
 					v-icon(small) mdi-worker
-				v-btn(@click.native="mode = 'pklByGuru'" color="grey darken-1" depressed)
+				v-btn(@click="toggleMode('asli')" color="grey darken-3" depressed)
+					v-icon(small) mdi-refresh
+				v-btn(@click="toggleMode('pklByGuru')" color="grey darken-1" depressed)
 					v-icon(small) mdi-teach
-				v-btn(@click.native="mode = 'dudiguru'" color="blue-grey" depressed)
+				v-btn(@click="toggleMode('dudiguru')" color="blue-grey" depressed)
 					v-icon(small) mdi-factory
 				v-spacer
 				v-btn(flat icon=true)
 					v-icon mdi-search
 			v-layout(row)
 				v-container
-					pembimbing(v-if="mode == 'pklByGuru'" :items-guru="gurus" :items-siswa="siswas")
-					dudi-guru(v-if="mode == 'dudiguru'" :items-guru="gurus" :items-dudi="dudis")
-					penempatan(v-if="mode='default'")
+					pembimbing(v-if="mod == 'pklByGuru'" :items-guru="gurus" :items-siswa="siswas")
+					dudi-guru(v-if="mod == 'dudiguru'" :items-guru="gurus" :items-dudi="dudis")
+					penempatan(v-if="mod == 'asli'" :gurus="gurus" :dudis="dudis")
 
 		v-snackbar(:timeout="timeout" color="red lighten-3" multi-line=true v-model="pklSnackbar")
 			p {{ pklsnacktext }}
@@ -103,14 +105,10 @@ export default {
 
 	data () {
 		return {
-			// mode: 'default',
-			// pklByGuru: false,
-			// dudiguru: false,
 			jmlterdaftar: '',
 			jmlditerima: '0',
 			dialog: false,
 			selected:[],
-			mode: 'default',
 			gurus: [],
 			token: sessionStorage.getItem('token'),
 			selGuru: {_id: '', nama: 'Pilih Guru'},
@@ -152,7 +150,8 @@ export default {
 	          // { text: 'No. Telp', value: 'hp' }
 	        ],
 			progli: '',
-			server: this.$store.state.server
+			server: this.$store.state.server,
+			mod: 'asli'
 		}
 	},
 	created(){
@@ -163,14 +162,9 @@ export default {
 		this.jmlTerdaftar();
 	},
 	methods: {
-		// setSelNis(v){
-		// 	var self = this;
-		// 	console.log(v.nama);
-		// 	// self.selDudi._id = 'halo';
-
-		// },
-		onSelect(){
-			
+		toggleMode(m) {
+			var self = this
+			self.mod = m
 		},
 		newPrakerlap(){
 			var self = this;
