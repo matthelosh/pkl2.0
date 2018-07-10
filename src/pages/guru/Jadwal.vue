@@ -71,7 +71,7 @@
           #printableTable
             v-data-table#tbl_jadwal(:headers="headers" :items="jadwals" :search="search" sort-icon="fa fa-sort" next-icon="fa fa-angle-double-right" prev-icon="fa fa-angle-double-left")
                   template(slot="items" slot-scope="props")
-                    td {{ props.item._id }}
+                    td {{ props.index+1 }}
                     td.text-xs-center {{ props.item.start}}
                     td.text-xs-left {{ props.item.end }}
                     td.text-xs-left {{ props.item.kegiatan }}
@@ -86,7 +86,9 @@
                       </v-btn>
                   v-alert(slot="no-results" :value="true" color="error" icon="warning")
                     | Pencarian Anda akan "{{ search }}" tidak ditemukan.
-  
+
+    v-snackbar(v-model="snackinfo" :timeout="snacktime") {{snacktext}}
+
     <iframe name="print_frame" width="0" height="0" frameborder="0" src="about:blank"></iframe>
 
 </template>
@@ -96,6 +98,9 @@ import axios from 'axios'
 export default {
   data(){
       return {
+        snacktime: 1500,
+        snacktext:'',
+        snackinfo: false,
         add: false,
         role: sessionStorage.getItem('role'),
         datestart: null,
@@ -140,7 +145,7 @@ export default {
           kegiatan: '',
           pelaksana: '',
           tempat: '',
-          periode: ''
+          periode: sessionStorage.getItem('periode')
         },
         rules:{
           required: (value) => !!value || 'Harus diisi'
@@ -220,6 +225,7 @@ export default {
           this.editedJadwal = Object.assign({}, this.defaultJadwal)
           this.editedIndex = -1
         }, 300)
+        this.getJadwal()
     },
     save(){
       var self = this;
@@ -227,7 +233,12 @@ export default {
       // console.log(data);
       axios.post(self.server+'/api/jadwal', data, {headers: {'X-Access-Token': self.token}})
             .then(res => {
-              console.log(res)
+              if (res.data.msg == 'ok') {
+                self.add = false
+                self.snackinfo = true
+                self.snacktext = "Data Jadwal Tersimpan. :)"
+                self.close()
+              }
             });
     },
     update() {

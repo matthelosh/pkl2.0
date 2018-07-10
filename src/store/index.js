@@ -49,6 +49,9 @@ const store = new Vuex.Store({
         },
         Unsetuser(context){
             sessionStorage.removeItem('token');
+            sessionStorage.removeItem('nama');
+            sessionStorage.removeItem('nip');
+            sessionStorage.removeItem('hp');
             sessionStorage.removeItem('_id');
             sessionStorage.removeItem('user');
             sessionStorage.removeItem('role');

@@ -55,6 +55,7 @@
       <!-- <v-btn icon @click.stop="rightDrawer = !rightDrawer">
         <v-icon>fa-bars</v-icon>
       </v-btn> -->
+      <v-progress-linear height="3" slot="progress" :color="barColor" :value="progress" determinate style="position:absolute; bottom:0;"></v-progress-linear>
     </v-toolbar>
     <v-content>
       <v-container fluid>
@@ -85,16 +86,19 @@
         rightDrawer: false,
         title: 'Prakerlap SMKN 10 Malang',
         role: sessionStorage.getItem('role'),
-        server: this.$store.state.server
+        server: this.$store.state.server,
+        progress: 0,
+        barColor: 'red',
+        userFoto: ''
       }
     },
     beforeCreate() {
       // var token = sessionStorage.getItem('token')
-      var isAuth = this.$store.state.isLoggedIn;
-      if ( !isAuth ) {
-        alert('Anda tidak berhak masuk. Silahkan login dulu!')
-        this.$router.push('/')
-      }
+      // var isAuth = this.$store.state.isLoggedIn;
+      // if ( !isAuth ) {
+      //   alert('Anda tidak berhak masuk. Silahkan login dulu!')
+      //   this.$router.push('/')
+      // }
     },
     mounted () {
       if(this.$router.path == '/'){
@@ -107,7 +111,16 @@
       }
     },
     created(){
+      var self = this
+      var isAuth = sessionStorage.getItem('token');
+      if ( !isAuth ) {
+        alert('Anda tidak berhak masuk. Silahkan login dulu!')
+        this.$router.push('/')
+      }
       this.menuitems();
+      setTimeout(function () {
+        self.getuserFoto ()
+      }, 500)
     },
     methods: {
       logout() {
@@ -156,19 +169,33 @@
         var self = this;
         var role = sessionStorage.getItem('role');
         var token = sessionStorage.getItem("token");
-        axios.get(self.server+'/api/menu/'+role, {headers: {'X-Access-Token' : token}})
+        axios.get(self.server+'/api/menu/'+role, {headers: {'X-Access-Token' : token},
+          onDownloadProgress: function (progressEvent) {
+                        let currentProgress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                        self.progress = currentProgress;
+                        self.barColor = (currentProgress > 25) ? "orange" : (currentProgress > 50) ? "yellow" : (currentProgress > 75) ? "green" : "red"
+                    }
+        })
               .then(function(res){
                 self.menus = res.data;
               });
-      }
-    },
-    computed: {
-      userFoto() {
+      },
+      getuserFoto() {
+        var self = this
         var file = sessionStorage.getItem('_id'),
-            foto = '/public/user-profiles/'+file+'.jpg'
-        return foto
+        foto = '/public/user-profiles/'+file+'.jpg'
+        self.userFoto = '/public/user-profiles/'+file+'.jpg'
+        // console.log(foto)
 
       },
+    },
+    computed: {
+      // userFoto() {
+      //   var file = sessionStorage.getItem('_id'),
+      //       foto = '/public/user-profiles/'+file+'.jpg'
+      //   return foto
+
+      // },
       username(){
         return this.$store.state.user.nama;
       },

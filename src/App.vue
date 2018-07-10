@@ -29,8 +29,7 @@
     opacity: 0;
     transform: translateX(-50%);
   }
-  footer{
-  }
+  
 
 </style>
 

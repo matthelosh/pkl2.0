@@ -277,7 +277,7 @@ export default {
       }
       axios.post(self.server+'/api/newdudi', dudi, {headers:{'X-Access-Token': self.token}})
            .then((res)=>{
-            if(res.data == 'ok_add') 
+            if(res.data.msg == 'ok') 
               self.close();
            });
 
@@ -319,6 +319,7 @@ export default {
           .then((res) => {
             var lastdudi = res.data[0]._id;
             var nmr = lastdudi.substr(2,4);
+            console.log(nmr)
             var Num = (Number(nmr)+1);
             var str = Num.toString();
             var newkode = str.length == 1 ? kode+'000'+str: str.length == 2 ? kode+'00'+str: str.length == 3 ? kode+'0'+str:kode+str;

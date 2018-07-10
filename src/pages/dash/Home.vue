@@ -7,6 +7,10 @@
 						h3 Selamat Datang {{user}}
 					v-card-text
 						p Kalau Anda ingin berganti periode. Silahkan ubah periode di  bawah ini.
+						v-layout(row)
+						v-flex(xs12 md4)
+							<v-select label="Periode" v-model="selPeriode" :items="periodes" append-icon="mdi-arrow-down-drop-circle-outline" v-bind:value="periode" on:input="onSelectPeriod" item-value="value" item-text="text" @change="ubah"></v-select>
+						h3 {{periodeNow}}
 							
 </template>
 
@@ -14,15 +18,26 @@
 export default {
     data () {
         return {
-            periode: [
+            periodes: [
 				{text: '10.1', value: '10-1'},
 				{text: '10.2', value: '10-2'},
 				{text: '11.1', value: '11-1'},
 				{text: '11.2', value: '11-2'}
-			]
+			],
+			selPeriode: '',
+			periode: ''
         }
     },
+    methods: {
+    	ubah(p){
+    		var self = this
+    		sessionStorage.setItem('periode', p)
+    	}
+    },
     computed: {
+    		periodeNow(){
+    			return this.selPeriode
+    		},
 			user() {
 				var self = this;
 				return self.$store.state.user.nama;

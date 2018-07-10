@@ -96,11 +96,11 @@ var router = new Router({
         },
         {
           path: '/praktikan/profil',
-          component: load('praktikan/Profil')
+          component: load('comps/SiswaProfile')
         },
         {
           path: '/praktikan/jurnal',
-          component: load('praktikan/Jurnal')
+          component: load('comps/SiswaJurnal')
         },
         {
           path: '/praktikan/pengaduan',

@@ -108,7 +108,7 @@
 
                 v-layout.isi(row)
                     v-flex.text-xs-justify(v-if="select.val == 'ba_antar'")
-                        p Sehubungan dengan dimulainya Praktek Kerja Lapangan (Prakerlap) SMK Negeri 10 Malang ke- X tahap II yang dilaksanakan mulai tanggal 2 Januari 2018 sampai dengan tanggal 30 Juni 2018, maka pada hari ini, ........................,  tanggal ........................ bulan ........................   tahun ........................dilakukan pengantaran siswa Prakerlap oleh guru pembimbing SMK Negeri 10 Malang ke:
+                        p Sehubungan dengan dimulainya Praktek Kerja Lapangan (Prakerlap) SMK Negeri 10 Malang ke {{tahap[0]}} tahap {{tahap[1]}} yang dilaksanakan mulai {{pelaksanaan}}, maka pada hari ini, ........................,  tanggal ........................ bulan ........................   tahun ........................dilakukan pengantaran siswa Prakerlap oleh guru pembimbing SMK Negeri 10 Malang ke:
                         table(style="margin-left: 50px; width: 75%")
                             tr
                                 td Nama Du/Di
@@ -205,7 +205,7 @@
                                 td  Jabatan
                                 td : Guru
                         br
-                        p(style="text-indent:0!important") untuk melakukan pengantaran siswa peserta Praktek Kerja Lapangan (Prakerlap) angkatan 10 tahap 2 berikut ini:
+                        p(style="text-indent:0!important") untuk melakukan pengantaran siswa peserta Praktek Kerja Lapangan (Prakerlap) angkatan {{tahap[0]}} tahap {{tahap[1]}} berikut ini:
                         table#tbl_antar_siswa(border="1" style="border-collapse:collapse")
                             thead
                                 tr
@@ -625,6 +625,11 @@ export default {
             var periode = sessionStorage.getItem('periode')
             var angkatan = periode.split('-')
             return angkatan
+        },
+        pelaksanaan() {
+            var periode = sessionStorage.getItem("Periode")
+            var l;
+            return l = (periode == '10-2') ? "1 Januari 2018 sampai dengan tanggal 30 Juni 2018" : (periode == '11-1') ? "1 Juli 2018 sampai dengan 31 Desember 2018" : ": ..................................... sampai dengan ....................................." 
         },
         tanggal() {
             var haris = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];

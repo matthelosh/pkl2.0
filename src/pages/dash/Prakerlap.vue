@@ -245,13 +245,7 @@ export default {
 				// console.log(newData);
 			}
 
-			
-			
-			
-			
-			
 			// self.getLastPkl();
-			
 			
 			// var data = self.selected;
 			axios.post(self.server+'/api/newpkl', {data:newData}, {headers: {'X-Access-Token': self.token}})
@@ -260,12 +254,11 @@ export default {
 					self.getSiswas();
 					self.pklSnackbar = true;
 					self.pklsnacktext = res.data.msg;
-					
-					
-					
 				})
 				.catch((err) => {
 					console.log(err.response);
+					self.pklSnackbar = true;
+					self.pklsnacktext = err.response;
 				});
 			// console.log(newData);
 			}
