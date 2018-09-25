@@ -1,85 +1,101 @@
 <template lang="pug">
   div
-    v-layout(row)
-      v-flex(xs12)
-        v-btn(color="teal darken-1" @click.native="[dialog=true, add=true]" depressed dark) 
-          v-icon mdi-asterisk
-          | &nbsp; Baru
-        v-btn(color="teal lighten-1" @click.native="cetak_data" depressed dark)
-          v-icon mdi-printer
-          | &nbsp; Cetak
-        v-btn(color="teal lighten-2" @click.native="export_xls" depressed dark)
-          v-icon mdi-file-excel-box
-          | &nbsp; Export
-      v-flex(xs12)
-        input(type="file" ref="fileUpload" @change="onFilePicked" style="display:none")
-  
-        v-text-field(@click.native="pickFile" color="green" depressed append-icon="mdi-attachment" label="Pilih file Excel" v-model="filename")
-          v-icon mdi-file-excel-box
-          | &nbsp; Import XLS
-      v-flex(xs12)
-        v-btn(color="teal lighten-1" depressed @click.native="import_xls" dark)
-          v-icon mdi-file-import
-          | &nbsp; Import
-      //- <vue-xlsx-table @on-select-file="handleSelectedFile"></vue-xlsx-table>
-    v-layout(row)
-      #tes
-    v-layout(row)
-      v-flex(xs-12)
-        v-card
-          v-card-title
-            h4 Data Praktikan
-            v-spacer
-            v-text-field.no-print(append-icon="fa fa-search" label="Pencarian" single-line hide-details v-model="search")
-            <v-dialog v-model="dialog" max-width="500px">
-              //- <!-- <v-btn color="primary" dark slot="activator" class="mb-2">New Item</v-btn> -->
-              <v-card>
-                <v-card-title>
-                  <span class="headline">{{ formTitle }}</span>
-                </v-card-title>
-                <v-card-text>
-                  <v-container grid-list-md>
-                    <v-layout wrap>
-                      <v-flex xs12 sm6 md4>
-                        <v-text-field label="NIS" v-model="editedSiswa.nis"></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 sm6 md4>
-                        <v-text-field label="Username" v-model="editedSiswa.uname"></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 sm6 md4>
-                        <v-text-field label="Password" v-model="editedSiswa.password"></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 sm8 md8>
-                        <v-text-field label="Nama" v-model="editedSiswa.nama"></v-text-field>
-                      </v-flex>
-                      
-                      <v-flex xs12 sm6 md4>
-                        <v-text-field label="Kelas" v-model="editedSiswa.kelas"></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 sm6 md4>
-                        <v-text-field label="No. HP" v-model="editedSiswa.hp"></v-text-field>
-                      </v-flex>
-                      //- <v-flex xs12 sm8 md8>
-                      //-   <v-select append-icon="fa fa-angle-down" v-bind:items="gurus" v-model="editedSiswa._guru" label="Pilih Guru" item-text="nama" item-value="_id" return-object :hint="`${selGuru.nama}, ${selGuru._id}`" input="selGuru._id" persistent-hint autocomplete v-bind:value="editedSiswa._guru"></v-select>
-                      //- </v-flex>
-                      //- <v-flex xs12 sm12 md12>
-                      //-   <v-select append-icon="fa fa-angle-down" v-bind:items="dudis" v-model="editedSiswa._dudi" label="Pilih Dudi" item-text="namaDudi" item-value="_id" return-object :hint="`${selDudi.namaDudi}, ${selDudi._id}`" input="selDudi._id" persistent-hint autocomplete v-bind:value="editedSiswa._dudi"></v-select>
-                      //- </v-flex>
-                      
+    v-card
+      //- v-layout
+      v-toolbar(color="orange darken-2" dark dense flat scroll-off-screen)
+        v-toolbar-title Praktikan
+        v-spacer
+      
+      v-layout(row)
+        v-flex(xs12)
+          v-btn(color="teal darken-1" @click.native="[dialog=true, add=true]" depressed dark) 
+            v-icon mdi-asterisk
+            | &nbsp; Baru
+          v-btn.hidden-xs-only(color="teal lighten-1" @click.native="cetak_data" depressed dark)
+            v-icon mdi-printer
+            | &nbsp; Cetak
+          v-btn(color="teal lighten-2" @click.native="export_xls" depressed dark)
+            v-icon mdi-file-excel-box
+            | &nbsp; Export
+        v-flex(xs12)
+          input(type="file" ref="fileUpload" @change="onFilePicked" style="display:none")
+    
+          v-text-field(@click.native="pickFile" color="green" depressed append-icon="mdi-attachment" label="Pilih file Excel" v-model="filename")
+            v-icon mdi-file-excel-box
+            | &nbsp; Import XLS
+        v-flex(xs12)
+          v-btn(color="teal lighten-1" depressed @click.native="import_xls" dark)
+            v-icon mdi-file-import
+            | &nbsp; Import
+        //- <vue-xlsx-table @on-select-file="handleSelectedFile"></vue-xlsx-table>
+      v-layout(row)
+        #tes
+      v-layout(row)
+        v-flex(xs12)
+          v-card
+            v-card-title
+              h4 Data Praktikan
+              v-spacer
+              v-text-field.no-print(append-icon="fa fa-search" label="Pencarian" single-line hide-details v-model="search")
+              <v-dialog v-model="dialog" max-width="500px">
+                //- <!-- <v-btn color="primary" dark slot="activator" class="mb-2">New Item</v-btn> -->
+                <v-card>
+                  <v-card-title>
+                    v-progress-linear(
+                      height="3" slot="progress" 
+                      :color="barColor" 
+                      :value="progress" determinate)
+                      span(class="headline") {{ formTitle }}
+                  </v-card-title>
+                  <v-card-text>
+                    <v-container grid-list-md fluid>
+                      <v-layout wrap>
+                        <v-flex xs12 sm6 md4>
+                          <v-text-field label="NIS" v-model="editedSiswa.nis"></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 sm6 md4>
+                          <v-text-field label="Username" v-model="editedSiswa.uname"></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 sm6 md4>
+                          <v-text-field label="Password" v-model="editedSiswa.password"></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 sm8 md8>
+                          <v-text-field label="Nama" v-model="editedSiswa.nama"></v-text-field>
+                        </v-flex>
+                        
+                        <v-flex xs12 sm6 md4>
+                          <v-text-field label="Kelas" v-model="editedSiswa.kelas"></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 sm6 md4>
+                          <v-text-field label="No. HP" v-model="editedSiswa.hp"></v-text-field>
+                        </v-flex>
+                        //- <v-flex xs12 sm8 md8>
+                        //-   <v-select append-icon="fa fa-angle-down" v-bind:items="gurus" v-model="editedSiswa._guru" label="Pilih Guru" item-text="nama" item-value="_id" return-object :hint="`${selGuru.nama}, ${selGuru._id}`" input="selGuru._id" persistent-hint autocomplete v-bind:value="editedSiswa._guru"></v-select>
+                        //- </v-flex>
+                        //- <v-flex xs12 sm12 md12>
+                        //-   <v-select append-icon="fa fa-angle-down" v-bind:items="dudis" v-model="editedSiswa._dudi" label="Pilih Dudi" item-text="namaDudi" item-value="_id" return-object :hint="`${selDudi.namaDudi}, ${selDudi._id}`" input="selDudi._id" persistent-hint autocomplete v-bind:value="editedSiswa._dudi"></v-select>
+                        //- </v-flex>
+                        
 
-                    </v-layout>
-                  </v-container>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" flat @click.native="close">Batal</v-btn>
-                  <v-btn color="blue darken-1" flat @click.native="save" v-if="add">Simpan</v-btn>
-                  <v-btn color="blue darken-1" flat @click.native="update" v-if="!add">Perbarui</v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
+                      </v-layout>
+                    </v-container>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" flat @click.native="close">Batal</v-btn>
+                    <v-btn color="blue darken-1" flat @click.native="save" v-if="add">Simpan</v-btn>
+                    <v-btn color="blue darken-1" flat @click.native="update" v-if="!add">Perbarui</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
           #printableTable
-            v-data-table#tbl_praktikan(:headers="headers" :items="siswas" :search="search" sort-icon="fa fa-sort" next-icon="fa fa-angle-double-right" prev-icon="fa fa-angle-double-left" loading="true" class="")
+            v-data-table#tbl_praktikan(:headers="headers" 
+              :items="siswas" 
+              :search="search" 
+              sort-icon="fa fa-sort" 
+              next-icon="fa fa-angle-double-right" 
+              prev-icon="fa fa-angle-double-left" 
+              loading="true" class="")
                   template(slot="items" slot-scope="props")
                     td.hidden-xs-only {{ props.index+1 }}
                     td.text-xs-left {{ props.item.nis}}
@@ -102,7 +118,8 @@
                       v-btn(icon class="mx-0" @click.native="deleteItem(props.item)")
                         v-icon(color="pink") fa-trash
                           
-                  v-alert(slot="no-results" :value="true" color="error" icon="warning")
+                  v-alert(slot="no-results" 
+                    :value="true" color="error" icon="warning")
                     | Pencarian Anda akan "{{ search }}" tidak ditemukan.
   
     <iframe name="print_frame" width="0" height="0" frameborder="0" src="about:blank"></iframe>
@@ -115,6 +132,8 @@ export default {
   // components:{fileInput},
   data() {
     return {
+      barColor: 'grey',
+      progress: 0,
       formData:'',
       file: '',
       fileUrl: '',
@@ -323,10 +342,18 @@ export default {
     update () {
       var self = this;
       var data = self.editedSiswa;
-      axios.put(self.server+'/api/siswa', data, {headers: {'X-Access-Token': self.token}})
+      axios.put(self.server+'/api/siswa', data, {headers: {'X-Access-Token': self.token},
+            onUploadProgress: function (progressEvent) {
+                        let currentProgress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                        self.progress = currentProgress;
+                        self.barColor = (currentProgress > 25) ? "black" : (currentProgress > 50) ? "black" : (currentProgress > 75) ? "black" : "red"
+                    }
+          })
           .then((res) => {
             if ( res.data == 'ok_upd') {
               self.close();
+              self.barColor='grey'
+              self.progress=0
             }
           });
     },

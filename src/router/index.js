@@ -24,6 +24,16 @@ var router = new Router({
       component: load('Login')
     },
     {
+      path: '/tentang',
+      name: 'Tentang',
+      component: load('comps/About')
+    },
+    {
+      path: '/kontak',
+      name: 'Kontak',
+      component: load('comps/Contact')
+    },
+    {
       path: '/info',
       component: load('comps/Info'),
       children: [
@@ -69,6 +79,10 @@ var router = new Router({
         {
           path: '/dashboard/info',
           component: load('dash/Info')
+        },
+        {
+          path: '/dashboard/jurnals',
+          component: load('dash/Jurnal')
         },
         {
           path: '/dashboard/pembekalan',

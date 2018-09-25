@@ -1,99 +1,121 @@
 <template lang="pug">
   div
-    v-layout(row)
-      v-flex(xs12)
-        v-card(flat)
-          v-btn(color="primary" @click.native="dialog=true" depressed) 
-            i.fa.fa-user-plus
-            | Tambah Guru
-          v-btn(color="success" @click.native="cetak_data" depressed)
-            i.fa.fa-print
-            | &nbsp; Cetak
-          v-btn(color="warning" @click.native="export_xls" depressed)
-            i.fa.fa-table
-            | &nbsp; Export
-      v-flex(xs12)
-        v-card(flat)
-          v-container(grid-list-md)
-              v-layout(no-wrap)
-                v-flex(xs12 md-6)
-                  input(type="file" id="fileGuru" ref="fileGuru" style="display:none" @change="onFilePicked")
-                  v-text-field(label="Upload File" append-icon="mdi-file-excel-box" flat @click.native="pickFile" v-model="filename")
-                v-flex(xs12 md-4)
-                  v-btn(color="green" dark @click.native="importGuru" flat)
-                    v-icon mdi-file-import
-                    | Import
-    br
-    v-layout(row)
-      v-flex(xs-12)
-        v-card
-          v-card-title
-            h4 Data Guru Pembimbing
-            v-spacer
-            v-text-field.no-print(append-icon="fa fa-search" label="Pencarian" single-line hide-details v-model="search")
-          #printableTable
-            <v-dialog v-model="dialog" max-width="500px">
-              //- <v-btn color="primary" dark slot="activator" class="mb-2">New Item</v-btn>
-              <v-card>
-                <v-card-title>
-                  <span class="headline">{{ formTitle }}</span>
-                </v-card-title>
-                <v-card-text>
-                  <v-container grid-list-md>
-                    <v-layout wrap>
-                      <v-flex xs12 md3>
-                        <v-text-field id="_id" label="ID Guru" v-model="editedGuru._id" required  append-icon="fa code"></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 md3>
-                        <v-text-field id="uname" label="Username" v-model="editedGuru.uname" required  append-icon="fa fa-user"></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 md6>
-                        <v-text-field id="password" label="Password" v-model="editedGuru.pasword" required  append-icon="fa fa-lock"></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 md6>
-                        <v-text-field id="nama" label="Nama" v-model="editedGuru.nama" required  append-icon="mdi mdi-label"></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 md6>
-                        <v-text-field id="nip" label="NIP" v-model="editedGuru.nip" required  append-icon="mdi mdi-barcode"></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 md12>
-                        <v-text-field id="alamat" label="Alamat" v-model="editedGuru.alamat" required  append-icon="mdi mdi-home" multi-line></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 md6>
-                        <v-text-field id="hp" label="HP" v-model="editedGuru.hp" required  append-icon="mdi mdi-cellphone-android"></v-text-field>
-                      </v-flex>
-                    </v-layout>
-                  </v-container>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
-                  <v-btn color="blue darken-1" flat @click.native="save" v-if="add">Simpan</v-btn>
-                  <v-btn color="blue darken-1" flat @click.native="update" v-if="!add">Perbarui</v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-            v-data-table#tbl_guru(:headers="headers" :items="gurus" :search="search" sort-icon="fa fa-sort" next-icon="fa fa-angle-double-right" prev-icon="fa fa-angle-double-left" )
-                  template(slot="items" slot-scope="props")
-                    td {{ props.index+1 }}
-                    td.text-xs-center 
-                      v-avatar(
-                        size="38px"
-                        class="grey lighten-4"
-                      )
-                        img(:src="'/public/user-profiles/'+props.item._id+'.jpg'" alt="avatar")
-                      </v-avatar>
-                    td.text-xs-center {{ props.item._id }}
-                    td.text-xs-center {{ props.item.uname }}
-                    td.text-xs-center {{ props.item.nip }}
-                    td.text-xs-left {{ props.item.nama }}
-                    td.text-xs-left {{ props.item.hp }}
-                    <td>{{ props.item.alamat }}</td>
+    v-card
+      v-toolbar(color="amber darken-2" dark dense flat scroll-off-screen)
+        v-toolbar-title Pembimbing
+        v-spacer
+      v-layout(row)
+        v-flex(xs12 md12)
+          v-card(flat)
+            v-btn(color="primary" @click.native="dialog=true" depressed) 
+              i.fa.fa-user-plus
+              | Tambah Guru
+            v-btn.hidden-xs-only(color="success" @click.native="cetak_data" depressed)
+              i.fa.fa-print
+              | &nbsp; Cetak
+            v-btn(color="warning" @click.native="export_xls" depressed)
+              i.fa.fa-table
+              | &nbsp; Export
+            //- v-layout(row)
+            //-   v-flex(xs12)
+            //-     v-card(flat)
+            //-       //- v-container(grid-list-md)
+            //-       v-layout(no-wrap)
+        //- v-flex(xs12 md3)
+        input(type="file" id="fileGuru" ref="fileGuru" style="display:none" @change="onFilePicked")
+        v-spacer
+        v-text-field(label="Upload File" append-icon="mdi-file-excel-box" flat @click.native="pickFile" v-model="filename")
+        v-btn(color="green" dark @click.native="importGuru" flat)
+          v-icon mdi-file-import
+          | Import
+      br
+      v-layout(row)
+        v-flex(xs12)
+          v-card
+            v-card-title
+              h4 Data Guru Pembimbing
+              v-spacer
+              v-text-field.no-print(append-icon="fa fa-search" label="Pencarian" single-line hide-details v-model="search")
+            #printableTable
+              <v-dialog v-model="dialog" max-width="500px">
+                //- <v-btn color="primary" dark slot="activator" class="mb-2">New Item</v-btn>
+                <v-card>
+                  <v-card-title>
+                    <span class="headline">{{ formTitle }}</span>
+                  </v-card-title>
+                  <v-card-text>
+                    <v-container grid-list-md>
+                      <v-layout wrap>
+                        <v-flex xs12 md3>
+                          <v-text-field id="_id" label="ID Guru" v-model="editedGuru._id" required  append-icon="fa code"></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 md3>
+                          <v-text-field id="uname" label="Username" v-model="editedGuru.uname" required  append-icon="fa fa-user"></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 md6>
+                          <v-text-field id="password" label="Password" v-model="editedGuru.pasword" required  append-icon="fa fa-lock"></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 md6>
+                          <v-text-field id="nama" label="Nama" v-model="editedGuru.nama" required  append-icon="mdi mdi-label"></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 md6>
+                          <v-text-field id="nip" label="NIP" v-model="editedGuru.nip" required  append-icon="mdi mdi-barcode"></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 md12>
+                          <v-text-field id="alamat" label="Alamat" v-model="editedGuru.alamat" required  append-icon="mdi mdi-home" multi-line></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 md6>
+                          <v-text-field id="hp" label="HP" v-model="editedGuru.hp" required  append-icon="mdi mdi-cellphone-android"></v-text-field>
+                        </v-flex>
+                      </v-layout>
+                    </v-container>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
+                    <v-btn color="blue darken-1" flat @click.native="save" v-if="add">Simpan</v-btn>
+                    <v-btn color="blue darken-1" flat @click.native="update" v-if="!add">Perbarui</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+              v-layout(row)
+                v-flex(xs12)
+                  v-data-table#tbl_guru(
+                    :headers="headers" 
+                    :items="gurus" 
+                    :search="search" 
+                    sort-icon="fa fa-sort" 
+                    next-icon="fa fa-angle-double-right" 
+                    prev-icon="fa fa-angle-double-left" )
+                        template(slot="items" 
+                          slot-scope="props")
+                          td {{ props.index+1 }}
+                          td.text-xs-center 
+                            v-avatar(
+                              size="38px"
+                              class="grey lighten-4"
+                            )
+                              img(:src="'/public/user-profiles/'+props.item.kode_guru+'.jpg'" alt="avatar")
+                            
+                          td.text-xs-center {{ props.item._id }}
+                          td.text-xs-center {{ props.item.uname }}
+                          td.text-xs-center {{ props.item.nip }}
+                          td.text-xs-left {{ props.item.nama }}
+                          td.text-xs-left {{ props.item.hp }}
+                          td {{ props.item.alamat }}
 
-                  v-alert(slot="no-results" :value="true" color="error" icon="warning")
-                    | Pencarian Anda akan "{{ search }}" tidak ditemukan.
+                        v-alert(slot="no-results" 
+                          :value="true" 
+                          color="error" 
+                          icon="warning")
+                          | Pencarian Anda akan "{{ search }}" tidak ditemukan.
   
-    <iframe name="print_frame" width="0" height="0" frameborder="0" src="about:blank"></iframe>
+    iframe(
+      name="print_frame" 
+      width="0" 
+      height="0" 
+      frameborder="0" 
+      src="about:blank")
 </template>
 
 <script>
@@ -191,12 +213,13 @@ export default {
         var first_sheet_name = workbook.SheetNames[0];
         var ws = workbook.Sheets[first_sheet_name];
         var newGurus = XLSX.utils.sheet_to_json(ws);
-        axios.post(self.server+'/api/importgurus', newGurus, {headers: {'X-Access-Token': self.token}}).then((res)=>{
-          self.getGurus();
+        axios.post(self.server+'/api/importgurus', newGurus, {headers: {'Authorization': 'bearer '+self.token}}).then((res)=>{
+          // self.getGurus();
+          console.log(res);
           self.fileUrl = '';
           self.filename = '';
         })
-        // console.log(newGurus);
+        console.log(newGurus);
         // self
       };
       req.send();
@@ -215,9 +238,9 @@ export default {
     },
     getGurus(){
       var self = this;
-      axios.get(self.server+'/api/getgurus', {headers: {'X-Access-Token': self.token}})
+      axios.get(self.server+'/api/allGurus', {headers: {'Authorization': 'bearer '+self.token}})
            .then((res) => {
-             self.gurus = res.data;
+             self.gurus = res.data.data;
              var i = 0;
              for (i; i < res.data.length; i++) {
               self.foto.push('/public/user-profiles/'+res.data[i]._id+'.jpg');

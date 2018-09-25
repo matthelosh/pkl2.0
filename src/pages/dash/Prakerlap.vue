@@ -2,21 +2,20 @@
 	v-layout(column)
 		
 		v-flex(xs12 md-12)
-			v-toolbar(color="grey" dark dense flat scroll-off-screen)
+			v-toolbar(color="green" dark dense flat scroll-off-screen)
 				v-toolbar-title Prakerlap
-				v-btn(@click.native="newPrakerlap" color="grey darken-2" depressed title="Daftarkan Praktikan")
-					v-icon(small) mdi-worker
-				v-btn(@click="toggleMode('asli')" color="grey darken-3" depressed)
-					v-icon(small) mdi-refresh
-				v-btn(@click="toggleMode('pklByGuru')" color="grey darken-1" depressed)
-					v-icon(small) mdi-teach
-				v-btn(@click="toggleMode('dudiguru')" color="blue-grey" depressed)
-					v-icon(small) mdi-factory
 				v-spacer
-				v-btn(flat icon=true)
-					v-icon mdi-search
+				v-btn(fab small @click.native="newPrakerlap" color="green darken-2" depressed title="Daftarkan Praktikan")
+					v-icon(small) mdi-worker
+				//- v-btn(@click="toggleMode('asli')" color="grey darken-3" depressed)
+				//- 	v-icon(small) mdi-refresh
+				//- v-btn(@click="toggleMode('pklByGuru')" color="grey darken-1" depressed)
+				//- 	v-icon(small) mdi-teach
+				//- v-btn(@click="toggleMode('dudiguru')" color="blue-grey" depressed)
+				//- 	v-icon(small) mdi-factory
+				
 			v-layout(row)
-				v-container
+				v-flex(xs12)
 					pembimbing(v-if="mod == 'pklByGuru'" :items-guru="gurus" :items-siswa="siswas")
 					dudi-guru(v-if="mod == 'dudiguru'" :items-guru="gurus" :items-dudi="dudis")
 					penempatan(v-if="mod == 'asli'" :gurus="gurus" :dudis="dudis")

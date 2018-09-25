@@ -1,9 +1,11 @@
 <template lang="pug">
   div
-    v-layout(row dark)
-      v-flex(xs12)
-        v-card(flat)
-          v-spacer
+    v-card
+      v-toolbar(color="green lighten-2" dark dense flat scroll-off-screen)
+        v-toolbar-title
+          h3 Du/Di Rekanan
+        v-spacer
+        v-toolbar-items
           v-btn(color="primary" depressed dark @click.native="[dialog=true, add=true]" class="mb-2") <i class="fa fa-building"></i> &nbsp;Tambah Dudi
           v-btn(color="success" depressed @click.native="cetak_data")
             i.fa.fa-print
@@ -11,91 +13,86 @@
           v-btn(color="red" depressed dark @click.native="export_xls")
             i.fa.fa-table
             | &nbsp; Export
-      v-spacer
-      v-flex(xs12 md3)
-        v-card(flat)
           input(type="file" ref="dudiFile" style="display:none" @change="onFilePicked")
-          v-text-field(append-icon="mdi-attachment" label="Ambil File" @click.native="pickFile" v-model="filename")
-      v-flex(xs12)
-        v-card(flat)
-          v-btn(color="blue" dark depressed @click.native="import_dudi")
+          v-text-field(append-icon="mdi-attachment" label="Ambil File" @click.native="pickFile" v-model="filename" box color="pink")
+          v-btn(color="white" dark flat @click.native="import_dudi" )
             v-icon mdi-file-import
             | &nbsp; Import
-    v-layout(row)
-      v-flex(xs12)
-        v-card.cetak_tabel
-          v-card-title 
-            h3 Data DU/DI
-            v-spacer
-            v-text-field.no-print(append-icon="fa fa-search" label="Pencarian" single-line hide-details v-model="search")
-          v-layout(row)
-            v-flex(xs4 offset-xs8)
-              v-switch(:label="`Dudi Aktif: ${dudiaktif.toString()}`" v-model="dudiaktif" label="Yang memiliki Pembimbing")  
-          div#printableTable
-            <v-dialog v-model="dialog" max-width="500px" persistent>
-              //- <v-btn color="primary" dark slot="activator" class="mb-2">New Item</v-btn>
-              <v-card>
-                <v-card-title>
-                  <span class="headline">{{ formTitle }}</span>
-                </v-card-title>
-                <v-card-text>
-                  <v-container grid-list-md>
-                    <v-layout wrap>
-                      <v-flex xs12 sm6 md4>
-                        <v-text-field id="_id" label="Kode Dudi" v-model="editedDudi._id" required :rules="[rules.required]" @blur="lastDudi" append-icon="fa fa-qrcode"></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 sm8 md8>
-                        <v-text-field label="Nama Dudi" v-model="editedDudi.namaDudi" required validate-on-blur :rules="[rules.required]" append-icon="fa fa-building"></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 sm12 md12>
-                        <v-text-field label="Alamat" v-model="editedDudi.alamat" multi-line rows="3" required validate-on-blur :rules="[rules.required]" append-icon="fa fa-map-signs"></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 sm6 md6>
-                        <v-text-field label="Kota" v-model="editedDudi.kota" required validate-on-blur :rules="[rules.required]" append-icon="fa fa-map-marker" ></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 sm6 md6>
-                        <v-text-field label="No. Telp" v-model="editedDudi.telp" required validate-on-blur :rules="[rules.required]" append-icon="mdi-phone" ></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 sm6 md6>
-                        <v-text-field label="Pemilik" v-model="editedDudi.pemilik" required validate-on-blur :rules="[rules.required]" append-icon="mdi-account-circle" ></v-text-field>
-                      </v-flex>
-                      <v-flex xs12 sm6 md6>
-                        <v-select append-icon="fa fa-angle-down" v-bind:items="gurus" v-model="editedDudi._guru" label="Pilih Guru" item-text="nama" item-value="_id" return-object :hint="`${selGuru.nama}, ${selGuru._id}`" input="selGuru._id" persistent-hint autocomplete v-bind:value="editedDudi._guru"></v-select>
-                      </v-flex>
-                    </v-layout>
-                  </v-container>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
-                  <v-btn color="blue darken-1" flat @click.native="save" v-if="add">Simpan</v-btn>
-                  <v-btn color="blue darken-1" flat @click.native="update" v-if="!add">Perbarui</v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-            v-data-table#tbl_dudi(:headers="headers" :items="dudist" :search="search" sort-icon="fa fa-sort" next-icon="fa fa-angle-double-right" prev-icon="fa fa-angle-double-left")
-              template(slot="items" slot-scope="props")
-                td {{ props.index+1 }}
-                td {{ props.item._id }}
-                td.text-xs-right {{ props.item.namaDudi }}
-                <td class="text-xs-left">{{ props.item.alamat }}</td>
-                <td class="text-xs-center">{{ props.item.kota }}</td>
-                <td class="text-xs-center">{{ props.item.telp }}</td>
-                <td class="text-xs-center">{{ props.item.pemilik }}</td>
-                <td class="text-xs-center" >
-                    <span v-if="props.item._guru == undefined">Kosong</span>
-                    <span v-else>{{props.item._guru.nama}}</span>
-                </td>
-                <td class="justify-center layout px-0">
-                  <v-btn icon class="mx-0" @click.native="editItem(props.item)">
-                    <v-icon color="teal">fa-pencil</v-icon>
-                  </v-btn>
-                  <v-btn icon class="mx-0" @click.native="deleteItem(props.item)">
-                    <v-icon color="pink">fa-trash</v-icon>
-                  </v-btn>
-                </td>
-              v-alert(slot="no-results" :value="true" color="error" icon="warning")
-                | Pencarian Anda akan "{{ search }}" tidak ditemukan.
+      v-layout(row)
+        v-flex(xs12)
+          v-card.cetak_tabel
+            v-card-title 
+              h3 Data DU/DI
+              v-spacer
+              v-text-field.no-print(append-icon="fa fa-search" label="Pencarian" single-line hide-details v-model="search")
+            v-layout(row)
+              v-flex(xs4 offset-xs8)
+                v-switch(:label="`Dudi Aktif: ${dudiaktif.toString()}`" v-model="dudiaktif" label="Yang memiliki Pembimbing")  
+            div#printableTable
+              <v-dialog v-model="dialog" max-width="500px" persistent>
+                //- <v-btn color="primary" dark slot="activator" class="mb-2">New Item</v-btn>
+                <v-card>
+                  <v-card-title>
+                    <span class="headline">{{ formTitle }}</span>
+                  </v-card-title>
+                  <v-card-text>
+                    <v-container grid-list-md>
+                      <v-layout wrap>
+                        <v-flex xs12 sm6 md4>
+                          <v-text-field id="_id" label="Kode Dudi" v-model="editedDudi._id" required :rules="[rules.required]" @blur="lastDudi" append-icon="fa fa-qrcode"></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 sm8 md8>
+                          <v-text-field label="Nama Dudi" v-model="editedDudi.namaDudi" required validate-on-blur :rules="[rules.required]" append-icon="fa fa-building"></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 sm12 md12>
+                          <v-text-field label="Alamat" v-model="editedDudi.alamat" multi-line rows="3" required validate-on-blur :rules="[rules.required]" append-icon="fa fa-map-signs"></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 sm6 md6>
+                          <v-text-field label="Kota" v-model="editedDudi.kota" required validate-on-blur :rules="[rules.required]" append-icon="fa fa-map-marker" ></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 sm6 md6>
+                          <v-text-field label="No. Telp" v-model="editedDudi.telp" required validate-on-blur :rules="[rules.required]" append-icon="mdi-phone" ></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 sm6 md6>
+                          <v-text-field label="Pemilik" v-model="editedDudi.pemilik" required validate-on-blur :rules="[rules.required]" append-icon="mdi-account-circle" ></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 sm6 md6>
+                          <v-select append-icon="fa fa-angle-down" v-bind:items="gurus" v-model="editedDudi._guru" label="Pilih Guru" item-text="nama" item-value="_id" return-object :hint="`${selGuru.nama}, ${selGuru._id}`" input="selGuru._id" persistent-hint autocomplete v-bind:value="editedDudi._guru"></v-select>
+                        </v-flex>
+                      </v-layout>
+                    </v-container>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
+                    <v-btn color="blue darken-1" flat @click.native="save" v-if="add">Simpan</v-btn>
+                    <v-btn color="blue darken-1" flat @click.native="update" v-if="!add">Perbarui</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+              v-data-table#tbl_dudi(:headers="headers" :items="dudist" :search="search" sort-icon="fa fa-sort" next-icon="fa fa-angle-double-right" prev-icon="fa fa-angle-double-left")
+                template(slot="items" slot-scope="props")
+                  td {{ props.index+1 }}
+                  td {{ props.item._id }}
+                  td.text-xs-right {{ props.item.namaDudi }}
+                  <td class="text-xs-left">{{ props.item.alamat }}</td>
+                  <td class="text-xs-center">{{ props.item.kota }}</td>
+                  <td class="text-xs-center">{{ props.item.telp }}</td>
+                  <td class="text-xs-center">{{ props.item.pemilik }}</td>
+                  <td class="text-xs-center" >
+                      <span v-if="props.item._guru == undefined">Kosong</span>
+                      <span v-else>{{props.item._guru.nama}}</span>
+                  </td>
+                  <td class="justify-center layout px-0">
+                    <v-btn icon class="mx-0" @click.native="editItem(props.item)">
+                      <v-icon color="teal">fa-pencil</v-icon>
+                    </v-btn>
+                    <v-btn icon class="mx-0" @click.native="deleteItem(props.item)">
+                      <v-icon color="pink">fa-trash</v-icon>
+                    </v-btn>
+                  </td>
+                v-alert(slot="no-results" :value="true" color="error" icon="warning")
+                  | Pencarian Anda akan "{{ search }}" tidak ditemukan.
     <iframe name="print_frame" width="0" height="0" frameborder="0" src="about:blank"></iframe>
     <v-snackbar :timeout="snackbar.timeout" :color="snackbar.color" v-model="snackbar.model" top>
       <h4>{{snackbar.text}}</h4>

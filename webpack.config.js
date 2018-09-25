@@ -19,7 +19,12 @@ module.exports = {
       '@pages': path.resolve(__dirname, './src/pages')
     }
   },
-  
+  plugins: [
+    new webpack.ProvidePlugin({
+      'window.Quill': 'quill/dist/quill.js',
+      'Quill': 'quill/dist/quill.js',
+    }),
+  ],
   module: {
     rules: [
       {
@@ -42,7 +47,8 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        exclude: /node_modules/
+        // exclude: /node_modules/
+        exclude: /node_modules(?!\/quill-image-drop-module|quill-image-resize-module)/,
       },
       {
         test: /\.(png|jpg|gif|svg)$/,

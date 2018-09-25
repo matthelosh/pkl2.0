@@ -8,12 +8,13 @@ const store = new Vuex.Store({
         isLoggedIn: !!sessionStorage.getItem('token'),
         user: {
             _id: sessionStorage.getItem('_id'),
-            nama: sessionStorage.getItem('nama'),
+            name: sessionStorage.getItem('nama'),
             nip: sessionStorage.getItem('nip'),
             hp: sessionStorage.getItem('hp')
         },
         versi: 'v0.0.1a',
-        server: appConfig.apiServer
+        server: appConfig.apiServer,
+        info: []
         // server: 'http://5.5.1.2:4567'
     },
     mutations: {
@@ -23,23 +24,30 @@ const store = new Vuex.Store({
         },
     	setAuth(state) {
     	    state.isLoggedIn = !!sessionStorage.getItem('token');
-    	}
+    	},
+        loadInfo(state, info) {
+            state.info = info 
+        }
     },
     getters: {
 
     },
     actions: {
+        loadInfo (context, info) {
+            context.commit('loadInfo', info)
+        },
         setUser(context, user) {
             var token = sessionStorage.getItem('token')
             var role = sessionStorage.getItem('role')
-            axios.get(this.state.server+'/api/profile?id='+user+'&role='+role, {headers: {'X-Access-Token': token}})
+            axios.get(this.state.server+'/api/profile/'+user+'/'+role, {headers: {'Authorization': 'bearer '+token}})
                 .then( response => {
-                    var userData = response.data
-                    sessionStorage.setItem('nama', userData[0].nama)
-                    sessionStorage.setItem('_id', userData[0]._id)
-                    sessionStorage.setItem('nip', userData[0].nip)
-                    sessionStorage.setItem('hp', userData[0].hp)
-                    return userData[0];
+                    var userData = response.data.data
+                    console.log(userData)
+                    sessionStorage.setItem('nama', userData.name)
+                    sessionStorage.setItem('_id', userData.id)
+                    // sessionStorage.setItem('nip', userData[0].nip)
+                    sessionStorage.setItem('hp', userData.hp)
+                    return userData;
                 })
                 .then(function(userData) {
                     context.commit('setUser', userData);

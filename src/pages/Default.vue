@@ -1,159 +1,29 @@
 <template lang="pug">
-    div.landing-page
-        
-        .page#default
-            <v-parallax :src="parabg.satu" width="100%" height="500" top >
-                <v-carousel style="height: 100%; box-shadow: none!important" reverse-trasition="fade" transition="fade" hide-delimiters>
-                    <v-carousel-item v-for="(slide, index) in carouselItems" :key="index" depressed>
-                        <v-jumbotron dark >
-                            <v-container fill-height>
-                                <v-layout align-center fluid>
-                                    <v-flex>
-                                    <h3 class="display-3">{{slide.title}}</h3>
-                                    <span class="subheading">{{slide.subtitle}}</span>
-                                    <p>{{slide.desc}}</p>
-                                    <v-btn v-if="slide.btnText1" color="primary" @click.native="lihat('dudi')">{{slide.btnText1}}</v-btn>
-                                    <v-btn v-if="slide.btnText2" color="secondary"  @click.native="lihat('praktikan')">{{slide.btnText2}}</v-btn>
-                                    </v-flex>
-                                    <v-flex v-if="slide.img" hidden-xs-only>
-                                        <img :src="slide.img" alt="Ilustrasi" width="300">
-                                    </v-flex>
-                                </v-layout>
-                            </v-container>
-                        </v-jumbotron>
-                    </v-carousel-item>
-                </v-carousel>
-                
-            </v-parallax>
-            <v-layout row>
-                v-btn.top-front(fab small flat title="Masuk" color="teal accent-2" top right absolute @click.native.stop="openLoginForm" v-if="loggedIn == false" style="z-index:0")
-                    v-icon(dark color="white" ripple) mdi-login-variant
-                v-btn(fab small  flat title="Dashboard" color="blue accent-2" top right absolute @click.native.stop="$router.push('/dashboard')" v-show="isAuth" class="dashBtn" style="z-index:0")
-                    v-icon(color="white") mdi-view-dashboard
-            </v-layout>
-        .page#so(style="height: 500px!important")
-            <v-parallax :src="parabg.dua" width="100" height="auto">
-                <v-layout row>
-                    <v-container grid-list-md>
-                        <br />
-                        <h3>Informasi Pakerlap SMKN 10 Malang</h3>
-                        
-                        <v-container grid-list-md>
-                            <v-layout row wrap>
-                                <v-flex v-for="info in rinfos" :key="info._id" md3>
-                                    <v-card dark img="/public/img/card-bg.png" @click.native="showInfo(info._id)" style="cursor:pointer" height="350" hover>
-                                        <v-card-media :src="info.img" height="180px">
-                                            <v-container fill-height fluid>
-                                                <v-layout fill-height>
-                                                <v-flex xs12 align-end flexbox>
-                                                    <span class="headline" style="text-shadow: 0 0 5px rgba(0,0,0,1)">{{info.title}}</span>
-                                                </v-flex>
-                                                </v-layout>
-                                            </v-container>
-                                        </v-card-media> 
-                                        <v-card-text>
-                                            <small><i>{{info.created_at}}</i></small>
-                                            <p v-html="info.content.substr(0, 200)">[...]</p>
-                                        </v-card-text>
-                                    </v-card>
-                                </v-flex>
-                            </v-layout>
-                        </v-container>
-                        <v-layout row>
-                            <v-flex xs12 center-align class="text-xs-center">
-                                <v-btn light color="grey lighten-3" to="/info">Lihat Semua Info</v-btn>
-                            </v-flex>
-                        </v-layout>
-                    </v-container>
-                </v-layout>
-                // <v-layout row>
-                //     <v-flex xs12 center-align class="text-xs-center">
-                //         <v-btn light color="grey lighten-3" to="/info">Lihat Semua Info</v-btn>
-                //     </v-flex>
-                // </v-layout>
-            </v-parallax>
-            // #footer
-            <v-layout color="blue lighten-3">
-                <v-flex xs12>
-                    <v-footer height="auto" class="grey darken-3">
-                        <v-layout row wrap justify-center>
-                            <v-btn v-for="link in footlinks" :key="link.text" color="white" flat>
-                                | {{ link.text }}
-                            </v-btn>
-                            <v-flex xs12 py-3 text-xs-center white--text>
-                                | &copy;2018 — <strong>Prakerlap SMKN 10 Malang</strong>
-                                <br>
-                                p Versi {{versi}}
-                            </v-flex>
-                        </v-layout>
-                    </v-footer>
-                </v-flex>
-            </v-layout>
-        
-        <v-dialog v-model="infopkl" fullscreen origin="center right" lazy transition="dialog-bottom-transition" fixed>
-            <v-layout>
-                <v-flex xs12>
-                    <v-toolbar dark color="teal darken-1">
-                        <v-toolbar-items>
-                            <v-btn depressed dark @click="infopkl = false" color="red" small title="tutup">
-                                <v-icon>mdi-close</v-icon>
-                            </v-btn>
-                        </v-toolbar-items>
-                        <v-toolbar-title>Info <span class="hidden-xs-only">Prakerlap SMK Negeri 10 Malang</span></v-toolbar-title>
-                        <v-spacer></v-spacer>
-                        // <v-toolbar-items class="hidden-sm-and-down">
-                        //     <v-btn depressed dark @click="infopkl = false" color="red" small title="tutup">
-                        //         <v-icon>mdi-close</v-icon>
-                        //     </v-btn>
-                        // </v-toolbar-items>
-                    </v-toolbar>
-                    <v-card flat height="100vh" img="/public/img/info/info_bg.png">
-                        <v-card-media :src="info.img" height="300"></v-card-media>
-                        <v-card-text>
-                            <v-layout>
-                                <v-flex xs12 md8 offset-md2>
-                                    <h1>{{info.title}}</h1>
-                                    <p>{{info.content}}</p>
-                                </v-flex>
-                            </v-layout>
-                        </v-card-text>
-                    </v-card>
-                </v-flex>
-            </v-layout>
-        </v-dialog>
-        <v-dialog v-model="show.visible" fullscreen origin="center right" lazy transition="dialog-bottom-transition">
-            <v-layout>
-                <v-flex xs12>
-                    <v-toolbar dark color="primary darken-1" fixed >
-                        <v-toolbar-items>
-                            <v-btn depressed dark @click="show.visible = false" color="red" small title="tutup">
-                                <v-icon>mdi-close</v-icon>
-                            </v-btn>
-                        </v-toolbar-items>
-                        <v-toolbar-title>DATA {{show.mode}}</v-toolbar-title>
-                        <v-spacer></v-spacer>
-                        <v-toolbar-items class="hidden-sm-and-down">
-                            // <v-btn depressed dark @click="show.visible = false" color="red" small title="tutup">
-                            //     <v-icon>mdi-close</v-icon>
-                            // </v-btn>
-                        </v-toolbar-items>
-                    </v-toolbar>
-                    <v-card style="min-height:100vh">
-                        <v-card-title>
-                            <h3><v-icon>mdi mdi-info</v-icon></h3>
-                        </v-card-title>
-                        <v-card-text>
-                            <v-layout>
-                                <v-flex xs12 md10 offset-md1>
-                                   <div v-if="show.mode == 'dudi'"><show-dudi :periode="selPeriode"></show-dudi></div> 
-                                   <div v-if="show.mode == 'praktikan'"><show-siswa :periode="selPeriode"></show-siswa></div> 
-                                </v-flex>
-                            </v-layout>
-                        </v-card-text>
-                    </v-card>
-                </v-flex>
-            </v-layout>
-        </v-dialog>
+    //- div.landing-page.body
+        //- v-layout(row)
+        //-     v-btn.top-front(fab small flat title="Masuk" color="teal accent-2" top right absolute @click.native.stop="openLoginForm" v-if="loggedIn == false" div#body
+    div#body
+        header#showcase.grid
+            v-btn.top-front(fab small flat title="Masuk" color="white" right absolute @click.native.stop="openLoginForm" v-if="loggedIn == false" )
+                v-icon mdi-login
+            .bg-image
+            .content-wrap
+                h1 Selamat Datang
+                p Prakerlap merupakan salah satu program kerja sama antara pihak SMKN 10 Malang dengan Dunia Industri guna memperkaya kompetensi peserta didik dengan pendidikan sistem ganda. Peserta didik yang lulus program Prakerlap, diharapkan mampu menjadi pribadi yang profesional di dunia kerja.
+                v-btn(color="teal" dark) Show More
+                v-btn(color="orange" dark @click.native.stop="openLoginForm" )
+                    v-icon mdi-login
+                    | Login
+        main#main
+            section#section-a.grid
+                .content-wrap
+            section#section-b.grid
+            section#section-c.grid
+            section#section-d.grid
+        footer#main-footer.grid
+
+
+        <!-- Dialogs -->
         <v-dialog v-model="dialog" max-width="500">
             <v-card>
                 <v-card-title class="headline">
@@ -169,7 +39,7 @@
                     | {{alertMsg}}
                     </v-alert>
                     <v-form v-model="valid" ref="form" lazy-validation>
-                        <v-select label="Periode" v-model="selPeriode" :items="periodes" :rules="[v => !!v || 'Item is required']" required append-icon="mdi-arrow-down-drop-circle-outline" v-bind:value="login.periode" on:input="onSelectPeriod" item-value="_id" item-text="periode"></v-select>
+                        <v-select label="Periode" v-model="selPeriode" :items="periodes" :rules="[v => !!v || 'Item is required']" required append-icon="mdi-arrow-down-drop-circle-outline" v-bind:value="login.periode" on:input="onSelectPeriod" item-value="kode" item-text="periode"></v-select>
                         <v-text-field label="Masukkan Username" v-model="login.uname" :rules="nameRules" append-icon="mdi-account-circle" :counter="10" required></v-text-field>
                         <v-text-field name="password" label="Masukkan Kata Kunci" hint="Klik tanda mata untuk melihat kata kunci" min="8" :append-icon="e2 ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"      :append-icon-cb="() => (e2 = !e2)"  :type="e2 ? 'password' : 'text'" v-model="login.password" required></v-text-field>
                         //- <v-select label="Peran User" v-model="login._role" :items="roleItems" :rules="[v => !!v || 'Item is required']" required append-icon="mdi-arrow-down-drop-circle-outline"></v-select>
@@ -246,21 +116,23 @@ export default {
             loggedIn: this.$store.state.isLoggedIn,
             sekolah: 'SMKN 10 Malang',
             footlinks:[
-                {text: 'Home'},
-                {text: 'About'},
-                {text: 'Contact'}
+                {text: 'Home', link: '/'},
+                {text: 'About', link:'/tentang'},
+                {text: 'Contact', link: '/kontak'}
             ],
             versi: this.$store.state.versi,
             server: this.$store.state.server,
             periode: sessionStorage.getItem('periode'),
-            info: {}
+            info: {},
+            progress: 0,
+            barColor: "red"
         }
     },
     created () {
         this.getPeriode()
         this.cekAuth()
-        this.getInfo()
-        // this.seldPeriode()
+        // this.getInfo()
+        this.seldPeriode()
     },
     methods: {
         viewAllInfos () {
@@ -282,11 +154,23 @@ export default {
         },
         getInfo(){
             var self = this;
-            axios.get(self.server+'/umum/getinfos')
-            .then(res=>{
-                // console.log(res.data);
-                this.infos = res.data;
-            })
+            if (self.$store.state.info.length < 1 ) {
+                axios.get(self.server+'/umum/getinfos',{
+                    onDownloadProgress: function (progressEvent) {
+                            let currentProgress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                            self.progress = currentProgress;
+                            self.barColor = (currentProgress > 25) ? "orange" : (currentProgress > 50) ? "blue" : (currentProgress > 75) ? "green" : "green"
+                        }
+                })
+                .then(res=>{
+                    // console.log(res.data);
+                    this.$store.dispatch('loadInfo', res.data)
+                    this.infos = res.data;
+                    self.barColor = "green"
+                })
+            }
+            self.infos = self.$store.state.info
+            self.progress = 100
         },
         openLoginForm(){
             this.dialog = true,
@@ -297,7 +181,8 @@ export default {
             // console.log(appConfig.apiServer)
             axios.get(self.server+'/umum/periode')
                  .then((res) => {
-                    self.periodes = res.data;
+                    // console.log(res);
+                    self.periodes = res.data.data;
                     var items = res.data
                     var now = new Date();
                     // console.log('halo bos');Date(Date.parse(dateString1));
@@ -308,7 +193,7 @@ export default {
                         var r = mulai < now && now < selesai;
                         // console.log(r);
                         if ( mulai.setHours(0,0,0,0) < now && now < selesai.setHours(0,0,0,0)) {
-                            self.selPeriode = items[i]._id;
+                            self.selPeriode = items[i].kode;
                             // console.log(items[0]._id);
                             // console.log('true');
                         } else {
@@ -336,7 +221,7 @@ export default {
                 var r = mulai < now && now < selesai;
                 // console.log(r);
                 if ( mulai.setHours(0,0,0,0) < now && now < selesai.setHours(0,0,0,0)) {
-                    self.selPeriode = items[i]._id;
+                    self.selPeriode = items[i].kode;
                     // console.log(items[0]._id);
                     // console.log('true');
                 } else {
@@ -347,21 +232,22 @@ export default {
         },
       submit (dataLogin) {
         if (this.$refs.form.validate()) {
-            // console.log(dataLogin)
+            console.log(dataLogin)
             var self = this;
-            axios.post(self.server+'/user/authenticate', dataLogin)
+            // axios.post(self.server+'/user/authenticate', dataLogin) APke API Express
+            axios.post(self.server+'/login', dataLogin) // API Lumen
                 .then(response => {
-                    // console.log(response.data)
+                    console.log(response.data)
                     var res = response.data
                     if (res.success === false) {
                         this.alert = true
                         this.alertMsg = res.message
                     } else if(res.success === true ) {
                         this.alert = false
-                        sessionStorage.setItem('token', res.token)
+                        sessionStorage.setItem('token', res.data.api_token)
                         // sessionStorage.setItem('token', res.token)
                         sessionStorage.setItem('periode', this.selPeriode)
-                        sessionStorage.setItem('role', res.role)
+                        sessionStorage.setItem('role', res.data.user._role)
                         sessionStorage.setItem('user', dataLogin.uname)
                         // sessionStorage.setItem('_id', dataLogin._id)
                         this.$store.dispatch('setUser', dataLogin.uname)
@@ -402,6 +288,7 @@ export default {
     },
    
     computed: {
+
       nameErrors () {
         const errors = []
         if (!this.$v.name.$dirty) return errors
@@ -421,65 +308,107 @@ export default {
       },
       rinfos () {
           var self = this
-          var ar = self.infos
+          var ar = this.$store.state.info
           var ln = ar.length
           var mx = 4
           var sel = ln - mx
+          let newInfo = []
           if (ln > mx) {
-              return ar.slice(sel,mx+1).reverse()
+              newInfo =  ar.slice(sel,mx+1).reverse()
           } else {
-              return ar.reverse()
+              newInfo =  ar.reverse()
           }
+
+          newInfo.filter(function(item) {
+            if (item.img == null) {
+                item.img = '/public/img/kopi.jpg'
+            }
+          })
+          return newInfo
       }
     }
 }
 </script>
-<style lang="sass" scoped>
-    .landing-page
-        color: #fefefe
-        margin: 0!important
-        position: relative
-        // height: auto
-        width: 100vw
-        min-height: 100vh
-        overflow-y: scroll
-        .page
-            box-sizing: border-box
-            position: relative
-            .btn--top.btn--absolute.btn--small
-                top: 10px!important
-            .btn--right.btn--absolute.btn--small
-                right: 20px
-            .dashBtn.btn--right.btn--absolute.btn--small
-                right: 60px
-            .btn.top-front
-                z-index: 9999999
-            .parallax__content
-                padding: 0!important
-                -webkit-padding: none!important
-        #default
-            blockquote
-                text-indent: 50px
-                font-size: 1.5em
-                color: #fff
-                font-family: 'Sans-serif'
-            p
-                color: #efefef
-                line-height: 1.5em
-                text-shadow: 0 0 1px rgba(0,0,0,0.5)
-            .carousel
-                box-shadow: none!important
-    #so
-        padding-bottom: 50px!important
-        background:
-            color: #ff9033
-        .rl
-            color: white
-            text-decoration: none
-        #so-content
-            //padding: 20px
-            width: 100%
-            height: auto
-        
-                
+<style lang="css" scoped>
+    #body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #2a6343;
+  color: #fff;
+  font-size: 1.1em;
+  line-height: 1.5;
+  text-align: center;
+  z-index: 0 ;
+}
+img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+h1, h2, h3 {
+  margin: 0;
+  padding: 1em 0;
+}
+
+p {
+  margin: 0;
+  padding: 1em 0;
+}
+
+.btn {
+  display: inline-block;
+  background: #2a6343;
+  color: #fff;
+  text-decoration: none;
+  /*padding: 1em 2em;*/
+  border: 1px solid #aaa;
+}
+.btn:hover {
+  background: #eaeaea;
+  color: #2a6343;
+}
+
+
+/* Header Showcase */
+#showcase {
+  min-height: 450px;
+  color: #fff;
+  text-align: center;
+  /* border-bottom: 1px solid #efefef; */
+  /*z-index: 1;*/
+}
+
+#showcase .bg-image {
+   position: absolute;
+   background: url('/public/img/vokasi.jpg');
+   background-position: center;
+   background-repeat: no-repeat;
+   background-size: cover;
+   width: 100%;
+   height: 450px;
+   z-index: -1;
+   opacity: 0.5;
+   top: 0;
+   filter:blur(2px);
+ }
+ #showcase h1 {
+   padding-top: 100px;
+   padding-bottom: 0;
+ }
+ #showcase .content-wrap,
+ #section-a .content-wrap {
+   padding: 0 .5em;
+   /*z-index: 10;*/
+   /*color: #fff;*/
+ }
+
+@media (min-width: 700px) {
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr repeat(2, minmax(auto, 25em)) 1fr;
+  }
+  .content-wrap {
+    grid-column: 2/4;
+  }
+} 
 </style>

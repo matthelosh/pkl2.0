@@ -46,7 +46,7 @@
       <strong v-html="username"/>
       <v-btn icon>
         <v-avatar size="32px">
-          <img :src="userFoto" alt="Profil">
+          <img :src="userFoto" alt="Profil" onerror="if (this.src != '/public/user-profiles/default-avatar.png') this.src = '/public/user-profiles/default-avatar.png';">
         </v-avatar>
       </v-btn> 
       <v-btn icon @click.stop="logout" color="red" flat title="Keluar">
@@ -76,7 +76,7 @@
   export default {
     data () {
       return {
-        clipped: false,
+        clipped: true,
         drawer: true,
         fixed: true,
         menus: [],
@@ -169,7 +169,7 @@
         var self = this;
         var role = sessionStorage.getItem('role');
         var token = sessionStorage.getItem("token");
-        axios.get(self.server+'/api/menu/'+role, {headers: {'X-Access-Token' : token},
+        axios.get(self.server+'/api/menu/'+role, {headers: {'Authorization' : 'bearer '+token},
           onDownloadProgress: function (progressEvent) {
                         let currentProgress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
                         self.progress = currentProgress;
@@ -177,12 +177,12 @@
                     }
         })
               .then(function(res){
-                self.menus = res.data;
+                self.menus = res.data.data;
               });
       },
       getuserFoto() {
         var self = this
-        var file = sessionStorage.getItem('_id'),
+        var file = sessionStorage.getItem('user'),
         foto = '/public/user-profiles/'+file+'.jpg'
         self.userFoto = '/public/user-profiles/'+file+'.jpg'
         // console.log(foto)
@@ -197,37 +197,9 @@
 
       // },
       username(){
-        return this.$store.state.user.nama;
+        return this.$store.state.user.name;
       },
-      // menuitems() {
-        // var self = this;
-        // var role = sessionStorage.getItem('role');
-        // axios.get('http://localhost:4567', {headers: {'X-Access-Token' : self.token}})
-        //       .then(function(res){
-        //         console.log(res);
-        //       });
-        // var items =  [
-        //   { icon: 'mdi-home', title: 'Beranda', role: '1', linkTo: '/dashboard' },
-        //   { icon: 'mdi-settings', title: 'Pengaturan', role: '1', linkTo: '/dashboard/settings' },
-        //   { icon: 'mdi-factory', title: 'DU/DI', role: '1', linkTo: '/dashboard/dudi' },
-        //   { icon: 'mdi-teach', title: 'Pembimbing', role: '1', linkTo: '/dashboard/guru' },
-        //   { icon: 'mdi-worker', title: 'Praktikan', role: '1', linkTo: '/dashboard/praktikan' },
-        //   { icon: 'mdi-folder-outline', title: 'Prakerlap', role: '1', linkTo: '/dashboard/prakerlap' },
-        //   { icon: 'mdi-file-document', title: 'Dokumen Penting', role: '1', linkTo: '/dashboard/dokumen' },
-        //   { icon: 'mdi-calendar-text', title: 'Jurnal Praktikam', role: '1', linkTo: '/dashboard/jurnals' },
-        //   { icon: 'mdi-lead-pencil', title: 'Tulis Info', role: '1', linkTo: '/dashboard/info' },
-        //   { icon: 'fa-id-card-o', title: 'Profil', role: '2', linkTo: '/guru/profil' },
-        //   { icon: 'fa-calendar', title: 'Jadwal', role: '2', linkTo: '/guru/jadwal' },
-        //   { icon: 'fa-tv', title: 'Monitoring', role: '2', linkTo: '/guru/monitoring' },
-        //   { icon: 'fa-file', title: 'Berkas Penting', role: '2', linkTo: '/guru/file' },
-        //   { icon: 'mdi-lead-pencil', title: 'Tulis Info', role: '2', linkTo: '/guru/info' },
-        //   { icon: 'mdi-account-card-details', title: 'Profil', role: '3', linkTo: '/praktikan/profil' },
-        //   { icon: 'mdi-developer-board', title: 'Jurnal Praktikan', role: '3', linkTo: '/praktikan/jurnal' },
-        //   { icon: 'mdi-message', title: 'Pengaduan', role: '3', linkTo: '/praktikan/jurnal' },
-          
-        // ];
-        // return items;
-      // }
+      
     }
   }
 </script>

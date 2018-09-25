@@ -69,7 +69,12 @@
               </v-card>
             </v-dialog>
           #printableTable
-            v-data-table#tbl_jadwal(:headers="headers" :items="jadwals" :search="search" sort-icon="fa fa-sort" next-icon="fa fa-angle-double-right" prev-icon="fa fa-angle-double-left")
+            v-data-table#tbl_jadwal(:headers="headers" 
+              :items="jadwals" 
+              :search="search" 
+              sort-icon="fa fa-sort" 
+              next-icon="fa fa-angle-double-right" 
+              prev-icon="fa fa-angle-double-left")
                   template(slot="items" slot-scope="props")
                     td {{ props.index+1 }}
                     td.text-xs-center {{ props.item.start}}
@@ -84,10 +89,12 @@
                       <v-btn icon class="mx-0" @click="deleteItem(props.item)">
                         <v-icon color="pink">fa-trash</v-icon>
                       </v-btn>
-                  v-alert(slot="no-results" :value="true" color="error" icon="warning")
+                  v-alert(slot="no-results" 
+                    :value="true" color="error" icon="warning")
                     | Pencarian Anda akan "{{ search }}" tidak ditemukan.
 
-    v-snackbar(v-model="snackinfo" :timeout="snacktime") {{snacktext}}
+    v-snackbar(v-model="snackinfo" 
+      :timeout="snacktime") {{snacktext}}
 
     <iframe name="print_frame" width="0" height="0" frameborder="0" src="about:blank"></iframe>
 
@@ -172,9 +179,9 @@ export default {
     },
     getJadwal() {
       var self = this;
-      axios.get(self.server+'/api/jadwal/'+self.periode, {headers:{'X-Access-Token': self.token}})
+      axios.get(self.server+'/api/jadwals?periode='+self.periode, {headers:{'Authorization': 'bearer '+self.token}})
            .then((res) => {
-             self.jadwals = res.data;
+             self.jadwals = res.data.data;
            });
     },
     cetak_data(){
@@ -230,8 +237,8 @@ export default {
     save(){
       var self = this;
       var data = self.editedJadwal;
-      // console.log(data);
-      axios.post(self.server+'/api/jadwal', data, {headers: {'X-Access-Token': self.token}})
+      console.log(data);
+      axios.post(self.server+'/api/jadwal', data, {headers: {'Authorization': 'bearer '+self.token}})
             .then(res => {
               if (res.data.msg == 'ok') {
                 self.add = false
