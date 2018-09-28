@@ -42,7 +42,7 @@ const store = new Vuex.Store({
             axios.get(this.state.server+'/api/profile/'+user+'/'+role, {headers: {'Authorization': 'bearer '+token}})
                 .then( response => {
                     var userData = response.data.data
-                    console.log(userData)
+                    // console.log(userData)
                     sessionStorage.setItem('nama', userData.name)
                     sessionStorage.setItem('_id', userData.id)
                     // sessionStorage.setItem('nip', userData[0].nip)

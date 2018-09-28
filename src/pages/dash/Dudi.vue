@@ -24,7 +24,7 @@
             v-card-title 
               h3 Data DU/DI
               v-spacer
-              v-text-field.no-print(append-icon="fa fa-search" label="Pencarian" single-line hide-details v-model="search")
+              v-text-field.no-print(append-icon="fa fa-search" label="Pencarian" single-line hide-details v-model="search" clearable)
             v-layout(row)
               v-flex(xs4 offset-xs8)
                 v-switch(:label="`Dudi Aktif: ${dudiaktif.toString()}`" v-model="dudiaktif" label="Yang memiliki Pembimbing")  
@@ -36,31 +36,36 @@
                     <span class="headline">{{ formTitle }}</span>
                   </v-card-title>
                   <v-card-text>
-                    <v-container grid-list-md>
-                      <v-layout wrap>
-                        <v-flex xs12 sm6 md4>
-                          <v-text-field id="_id" label="Kode Dudi" v-model="editedDudi._id" required :rules="[rules.required]" @blur="lastDudi" append-icon="fa fa-qrcode"></v-text-field>
-                        </v-flex>
-                        <v-flex xs12 sm8 md8>
-                          <v-text-field label="Nama Dudi" v-model="editedDudi.namaDudi" required validate-on-blur :rules="[rules.required]" append-icon="fa fa-building"></v-text-field>
-                        </v-flex>
-                        <v-flex xs12 sm12 md12>
-                          <v-text-field label="Alamat" v-model="editedDudi.alamat" multi-line rows="3" required validate-on-blur :rules="[rules.required]" append-icon="fa fa-map-signs"></v-text-field>
-                        </v-flex>
-                        <v-flex xs12 sm6 md6>
-                          <v-text-field label="Kota" v-model="editedDudi.kota" required validate-on-blur :rules="[rules.required]" append-icon="fa fa-map-marker" ></v-text-field>
-                        </v-flex>
-                        <v-flex xs12 sm6 md6>
-                          <v-text-field label="No. Telp" v-model="editedDudi.telp" required validate-on-blur :rules="[rules.required]" append-icon="mdi-phone" ></v-text-field>
-                        </v-flex>
-                        <v-flex xs12 sm6 md6>
-                          <v-text-field label="Pemilik" v-model="editedDudi.pemilik" required validate-on-blur :rules="[rules.required]" append-icon="mdi-account-circle" ></v-text-field>
-                        </v-flex>
-                        <v-flex xs12 sm6 md6>
-                          <v-select append-icon="fa fa-angle-down" v-bind:items="gurus" v-model="editedDudi._guru" label="Pilih Guru" item-text="nama" item-value="_id" return-object :hint="`${selGuru.nama}, ${selGuru._id}`" input="selGuru._id" persistent-hint autocomplete v-bind:value="editedDudi._guru"></v-select>
-                        </v-flex>
-                      </v-layout>
-                    </v-container>
+                    <v-form ref="form" v-model="valid" lazy-validation>
+                      <v-container grid-list-md>
+                        <v-layout wrap>
+                            <v-flex xs12 sm6 md4>
+                              <v-text-field id="kode_dudi" label="Kode Dudi" v-model="editedDudi.kode_dudi" validate required :rules="[rules.required]" @blur="lastDudi" append-icon="fa fa-qrcode" required></v-text-field>
+                            </v-flex>
+                            <v-flex xs12 sm8 md8>
+                              <v-text-field label="Nama Dudi" v-model="editedDudi.nama_dudi" required validate-on-blur :rules="[rules.required]" append-icon="fa fa-building"></v-text-field>
+                            </v-flex>
+                            <v-flex xs12 sm8 md8>
+                              <v-text-field label="Alamat" v-model="editedDudi.alamat" required validate-on-blur :rules="[rules.required]" append-icon="fa fa-map-signs"></v-text-field>
+                            </v-flex>
+                            <v-flex xs12 sm4 md4>
+                              <v-text-field label="Kota" v-model="editedDudi.kota" required validate-on-blur :rules="[rules.required]" append-icon="fa fa-map-marker" ></v-text-field>
+                            </v-flex>
+                            <v-flex xs12 sm6 md6>
+                              <v-text-field label="No. Telp" v-model="editedDudi.telp" required validate-on-blur :rules="[rules.required]" append-icon="mdi-phone" ></v-text-field>
+                            </v-flex>
+                            <v-flex xs12 sm6 md6>
+                              <v-text-field label="Pemilik" v-model="editedDudi.pemilik" required validate-on-blur :rules="[rules.required]" append-icon="mdi-account-circle" ></v-text-field>
+                            </v-flex>
+                            <v-flex xs12 sm8 md8>
+                              <v-text-field label="Email" v-model="editedDudi.email" required validate-on-blur :rules="[rules.required]" append-icon="mdi-email" ></v-text-field>
+                            </v-flex>
+                            <v-flex xs12 sm4 md4>
+                              <v-text-field label="Kuota" v-model="editedDudi.kuota" required validate-on-blur :rules="[rules.required]" append-icon="mdi-table" ></v-text-field>
+                            </v-flex>
+                        </v-layout>
+                      </v-container>
+                    </v-form>
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
@@ -70,19 +75,23 @@
                   </v-card-actions>
                 </v-card>
               </v-dialog>
-              v-data-table#tbl_dudi(:headers="headers" :items="dudist" :search="search" sort-icon="fa fa-sort" next-icon="fa fa-angle-double-right" prev-icon="fa fa-angle-double-left")
+              v-data-table#tbl_dudi(
+                :headers="headers" 
+                :items="dudist" 
+                :search="search" 
+                sort-icon="fa fa-sort" 
+                next-icon="fa fa-angle-double-right" 
+                prev-icon="fa fa-angle-double-left")
+
                 template(slot="items" slot-scope="props")
                   td {{ props.index+1 }}
-                  td {{ props.item._id }}
-                  td.text-xs-right {{ props.item.namaDudi }}
+                  td {{ props.item.kode_dudi }}
+                  td.text-xs-right {{ props.item.nama_dudi }}
                   <td class="text-xs-left">{{ props.item.alamat }}</td>
                   <td class="text-xs-center">{{ props.item.kota }}</td>
                   <td class="text-xs-center">{{ props.item.telp }}</td>
                   <td class="text-xs-center">{{ props.item.pemilik }}</td>
-                  <td class="text-xs-center" >
-                      <span v-if="props.item._guru == undefined">Kosong</span>
-                      <span v-else>{{props.item._guru.nama}}</span>
-                  </td>
+                  <td class="text-xs-center" >{{ props.item.kuota }}</td>
                   <td class="justify-center layout px-0">
                     <v-btn icon class="mx-0" @click.native="editItem(props.item)">
                       <v-icon color="teal">fa-pencil</v-icon>
@@ -91,14 +100,20 @@
                       <v-icon color="pink">fa-trash</v-icon>
                     </v-btn>
                   </td>
-                v-alert(slot="no-results" :value="true" color="error" icon="warning")
+                v-alert(
+                  slot="no-results" 
+                  :value="true" 
+                  color="error" 
+                  icon="warning")
                   | Pencarian Anda akan "{{ search }}" tidak ditemukan.
     <iframe name="print_frame" width="0" height="0" frameborder="0" src="about:blank"></iframe>
     <v-snackbar :timeout="snackbar.timeout" :color="snackbar.color" v-model="snackbar.model" top>
       <h4>{{snackbar.text}}</h4>
       <v-btn dark flat @click.native="gantikode">Tidak</v-btn>
       <v-btn dark flat @click.native="snackbar.model = false">&times;</v-btn>
-    </v-snackbar>      
+    </v-snackbar> 
+    v-snackbar(:color="importBarColor" v-model="importBar")
+      h4 {{importText}}
 </template>
 
 
@@ -107,6 +122,10 @@ import axios from 'axios'
 export default {
   data() {
       return {
+        valid:true,
+        importBar: false,
+        importBarColor: 'teal lighten-1',
+        importText: 'Mohon Tunggu.. Data Dudi sedang diimport ..',
         add: true,
         snackbar: {
           model: false,
@@ -129,41 +148,43 @@ export default {
             sortable: false,
             value: 'index'
           },
-          { text: 'Kode Dudi', value: '_id' },
-          { text: 'Nama Dudi', value: 'namaDudi' },
+          { text: 'Kode Dudi', value: 'kode_dudi' },
+          { text: 'Nama Dudi', value: 'nama_dudi' },
           { text: 'Alamat', value: 'alamat' },
           { text: 'Kota', value: 'kota' },
           { text: 'No. Telp', value: 'telp' },
           { text: 'Pemilik', value: 'pemilik' },
-          { text: 'Pembimbing', value: '_guru' },
-          { text: 'Action', value: '_id' },
+          { text: 'Kuota', value: 'kuota' },
+          { text: 'Action', value: 'id' },
 
         ],
         dudi: '',
         dudis: [],
         editedDudi: {
-          '_id': '',
-          'namaDudi': '',
+          'id':'',
+          'kode_dudi': '',
+          'nama_dudi': '',
           'alamat': '',
           'kota': '',
           'telp': '',
           'pemilik': '',
-          '_guru': ''
+          'email' :'',
+          'kuota': ''
         },
         defaultDudi: {
-          '_id': '',
-          'namaDudi': '',
+          'id': '',
+          'kode_dudi': '',
+          'nama_dudi': '',
           'alamat': '',
           'kota': '',
           'telp': '',
           'pemilik': '',
-          '_guru': ''
+          'email' :'',
+          'kuota': ''
         },
         rules:{
           required: (value) => !!value || 'Harus diisi'
         },
-        gurus:[],
-        selGuru: { nama: 'Pilih Guru', _id: 'default'},
         gantikode: true,
         filename: '',
         fileUrl: '',
@@ -173,7 +194,7 @@ export default {
   },
   created(){
     this.getDudis();
-    this.getGurus();
+    // this.getGurus();
   },
   watch: {
     dialog (val) {
@@ -184,26 +205,32 @@ export default {
     editItem (item) {
       this.editedIndex = this.dudis.indexOf(item)
       this.editedDudi = Object.assign({}, item)
-      if (item._guru == null) {
-        this.editedDudi._guru = '0'
-        this.selGuru._id = 'default';
-        this.selGuru.nama = 'Pilih Guru';
-      } 
-      this.selGuru._id = this.editedDudi._guru._id;
-      this.selGuru.nama = this.editedDudi._guru.nama;
       this.add = false;
       this.dialog = true
     },
 
     deleteItem (item) {
+      var self = this;
       const index = this.dudis.indexOf(item)
-      confirm('Yakin Menghapus Du/Di ini?') && this.dudis.splice(index, 1)
+      var hapus = confirm('Yakin Menghapus Du/Di : '+item.nama_dudi+'?') && this.dudis.splice(index, 1)
+      if (hapus){
+        axios.delete(self.server+'/api/dudi/'+item.id, {headers: {'Authorization': 'bearer '+self.token}})
+              .then((res) => {
+                if( res.data.success === true ) {
+                  alert(res.data.msg);
+                  // self.getDudis();
+                } else {
+                  alert(res.data.msg);
+                }
+              });
+      }
+
     },
     getDudis() {
       var self = this;
-      axios.get(self.server+'/api/dudis', {headers: {'X-Access-Token': self.token}})
+      axios.get(self.server+'/api/dudis', {headers: {'Authorization': 'bearer '+self.token}})
         .then(function(res){
-          self.dudis = res.data;
+          self.dudis = res.data.data;
           // console.log(res.data);
         });
     },
@@ -264,57 +291,62 @@ export default {
       var self = this;
       var data = self.editedDudi;
       var dudi = {
-        _id : data._id,
-        namaDudi: data.namaDudi,
+        kode_dudi : data.kode_dudi,
+        nama_dudi: data.nama_dudi,
         alamat: data.alamat,
         kota: data.kota,
         telp: data.telp,
         pemilik: data.pemilik,
-        _guru: data._guru._id
+        email: data.email,
+        kuota: data.kuota
       }
-      axios.post(self.server+'/api/newdudi', dudi, {headers:{'X-Access-Token': self.token}})
-           .then((res)=>{
-            if(res.data.msg == 'ok') 
-              self.close();
-           });
+      if (self.$refs.form.validate()) {
+        axios.post(self.server+'/api/dudi', dudi, {headers:{'Authorization': 'bearer '+self.token}})
+             .then((res)=>{
+              if(res.data.success == true) 
+                self.close();
+                self.getDudis();
+             });
+      }
 
     },
     update(){
       var self = this;
       var data = self.editedDudi;
-      var dudi = {
-        _id : data._id,
-        namaDudi: data.namaDudi,
-        alamat: data.alamat,
-        kota: data.kota,
-        telp: data.telp,
-        pemilik: data.pemilik,
-        _guru: data._guru._id
-      }
-      axios.post(self.server+'/api/upddudi', dudi, {headers:{'X-Access-Token': self.token}})
+      // var dudi = {
+      //   _id : data._id,
+      //   namaDudi: data.namaDudi,
+      //   alamat: data.alamat,
+      //   kota: data.kota,
+      //   telp: data.telp,
+      //   pemilik: data.pemilik,
+      //   _guru: data._guru._id
+      // }
+      axios.put(self.server+'/api/dudi', data, {headers:{'Authorization': 'bearer '+self.token}})
            .then((res)=>{
-            if(res.data == 'ok_upd') 
-              self.close();
-           });
+              if(res.data.success == true) 
+                self.close();
+                self.getDudis();
+            });
     },
     lastDudi(){
       var self = this;
-      var id = self.editedDudi._id;
+      var id = self.editedDudi.kode_dudi;
       var kode = id.substring(0,2);
-      const pattern = /D+(M|T|O)+[0-9]/g
+      const pattern = /D+(M|J|O|S)+[0-9]/g
             // return pattern.test(value) || 'Diawali DM | DT | DO'
       if (!pattern.test(id)){
         self.snackbar = {
-              text: 'Kode DU/Di diawali dengan huruf DM | DT | DO',
+              text: 'Kode DU/Di diawali dengan huruf DM | DJ |DS | DO',
               model: true,
               color: 'error'
             }
         return false;
       } else {
       
-        axios.get(self.server+'/api/getlastdudi?kode='+kode, {headers: {'X-Access-Token': self.token}})
+        axios.get(self.server+'/api/getlastdudi?kode='+kode, {headers: {'Authorization': 'bearer '+self.token}})
           .then((res) => {
-            var lastdudi = res.data[0]._id;
+            var lastdudi = res.data.data.kode_dudi;
             var nmr = lastdudi.substr(2,4);
             console.log(nmr)
             var Num = (Number(nmr)+1);
@@ -326,19 +358,19 @@ export default {
               color: 'info',
               timeout: 5000
             }
-            self.editedDudi._id = newkode;
+            self.editedDudi.kode_dudi = newkode;
             
           });
       }
     },
-    getGurus(){
-      var self = this;
-      axios.get(self.server+'/api/getgurus', {headers: {'X-Access-Token': self.token}})
-           .then((res) => {
-              self.gurus = res.data;
+    // getGurus(){
+    //   var self = this;
+    //   axios.get(self.server+'/api/getgurus', {headers: {'Authorization': 'bearer '+self.token}})
+    //        .then((res) => {
+    //           self.gurus = res.data;
 
-           });
-    },
+    //        });
+    // },
     pickFile(){
       this.$refs.dudiFile.click();
     },
@@ -375,9 +407,17 @@ export default {
         var first_sheet_name = workbook.SheetNames[0];
         var ws = workbook.Sheets[first_sheet_name];
         var newDudis = XLSX.utils.sheet_to_json(ws);
-        axios.post(self.server+'/api/importdudis', newDudis, {headers: {'X-Access-Token': self.token}}).then((res)=>{
-          self.getDudis();
-          self.fileUrl = '';
+        self.importBar = true;
+        axios.post(self.server+'/api/importdudis', newDudis, {headers: {'Authorization': 'bearer '+self.token}}).then((res)=>{
+          if ( res.data.success === true ) {
+            self.importBar = false;
+            self.getDudis();
+            self.fileUrl = '';
+          } else {
+            self.importBarColor = 'red';
+            self.importText = res.data.msg;
+          }
+          
         })
         // self
       };

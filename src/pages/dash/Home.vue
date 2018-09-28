@@ -21,10 +21,10 @@ export default {
     data () {
         return {
             periodes: [
-				{text: '10.1', value: '10-1'},
-				{text: '10.2', value: '10-2'},
-				{text: '11.1', value: '11-1'},
-				{text: '11.2', value: '11-2'}
+				{text: '10.1', value: '10.1'},
+				{text: '10.2', value: '10.2'},
+				{text: '11.1', value: '11.1'},
+				{text: '11.2', value: '11.2'}
 			],
 			selPeriode: '',
 			periode: '',

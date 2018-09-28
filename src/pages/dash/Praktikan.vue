@@ -101,7 +101,7 @@
                     td.text-xs-left {{ props.item.nis}}
                     td.text-xs-left {{ props.item.nama }}
                     td.text-xs-left {{ props.item.kelas }}
-                    td.text-xs-left {{ props.item.progli }}
+                    td.text-xs-left {{ props.item.kelas.substr(2, 4) }}
                     td.text-xs-left {{ props.item.periode }}
                     td {{ props.item.hp }}
                     //- td 
@@ -122,7 +122,12 @@
                     :value="true" color="error" icon="warning")
                     | Pencarian Anda akan "{{ search }}" tidak ditemukan.
   
+    v-dialog(v-model="importDlg" persistent)
+      v-card
+        v-card-text
+          h2#info-text Mohon Bersabar, Import Data Praktikan Sedang Dalam Proses ..
     <iframe name="print_frame" width="0" height="0" frameborder="0" src="about:blank"></iframe>
+
 </template>
 
 <script>
@@ -140,8 +145,6 @@ export default {
       filename: '',
       selSiswa: [],
       add: '',
-      selDudi: { namaDudi: 'Pilih Dudi', _id: 'default'},
-      selGuru: { nama: 'Pilih Guru', _id: 'default'},
       dialog: false,
       editedIndex: -1,
       editable: false,
@@ -157,8 +160,6 @@ export default {
         nama: '',
         progli: '',
         hp: '',
-        // _dudi: {},
-        // _guru: {},
         _role: '3'
       },
       defaultSiswa: {
@@ -170,12 +171,10 @@ export default {
         nama: '',
         progli: '',
         hp: '',
-        // _dudi: {},
-        // _guru: {},
         _role: '3'
       },
-      dudis:[],
-      gurus:[],
+      importProgress: 0,
+      importDlg: false,
 
       // _id":"u4474","uname":"u4474","password":"p4474","kelas":"XI MM 3","periode":"10-2","nama":"RATU ATHAYA HANA M A","progli":"mm","hp":"6288888888888","_dudi":"DM0026","_guru":"gm08","_role":"3"}
       headers: [
@@ -191,8 +190,6 @@ export default {
           { text: 'Progli', value: 'progli', class:"hidden-xs-only" },
           { text: 'Periode', value: 'periode', class:"hidden-xs-only" },
           { text: 'No. HP', sortable: false, value: 'hp' },
-          // { text: 'Dudi', sortable: false, value: '_dudi.namaDudi' },
-          // { text: 'Pembimbing', sortable: true, value: '_guru.nama' },
           { text: 'Aksi', sortable: false, value: '_id' }
       ],
       newSiswas: [],
@@ -202,65 +199,29 @@ export default {
   },
   created(){
     this.getSiswas();
-    this.getDudis();
-    this.getGurus();
   },
-  // watch() {
-  //   dialog(val) {
-  //     val || this.close();
-  //   }
-  // },
   methods: {
-    getDudis(){
-      var self = this;
-      axios.get(self.server+'/api/dudis', {headers: {'X-Access-Token': self.token}})
-           .then((res) => {
-              self.dudis = res.data;
-
-           });
-    },
-    getGurus(){
-      var self = this;
-      axios.get(self.server+'/api/getgurus', {headers: {'X-Access-Token': self.token}})
-           .then((res) => {
-              self.gurus = res.data;
-
-           });
-    },
+    
 
     editItem (item) {
         this.editedIndex = this.siswas.indexOf(item)
         this.editedSiswa = Object.assign({}, item)
         this.editedSiswa.periode = sessionStorage.getItem('periode');
-        // this.selDudi._id = this.editedSiswa._dudi._id;
-        if (item._dudi == null){
-          this.editedSiswa._dudi = '0'
-          this.selDudi._id = 'default';
-          this.selDudi.namaDudi = 'Pilih Dudi';
-        }
-        if (item._guru == null) {
-          this.editedSiswa._guru = '0'
-          this.selGuru._id = 'default';
-          this.selGuru.nama = 'Pilih Guru';
-        }
-        this.selDudi._id = this.editedSiswa._dudi._id;
-        this.selDudi.namaDudi = this.editedSiswa._dudi.namaDudi;
-        this.selGuru._id = this.editedSiswa._guru._id;
-        this.selGuru.nama = this.editedSiswa._guru.nama;
         this.dialog = true
-        
-
     },
 
     deleteItem (item) {
       const index = this.siswas.indexOf(item)
       confirm('Yakin Menghapus Siswa: '+ item.nama+' ini?') 
-      // && this.siswas.splice(index, 1)
       var self = this;
-      var data = {_id: item._id};
-      axios.post(self.server+'/api/delsiswa', data, {headers: {'X-Access-Token': self.token}}). then((res) => {
-        if(res.data == 'ok_del'){
-          self.close();
+      var data = {id: item.uname};
+      console.log(self.token);
+      axios.delete(self.server+'/api/siswa/'+item.uname, {headers: {'Authorization': 'bearer '+self.token}}). then((res) => {
+        if(res.data.success === true){
+          alert(res.data.msg)
+          self.getSiswas()
+        } else {
+          alert(res.data.msg);
         }
       });
     },
@@ -268,10 +229,17 @@ export default {
       var self = this;
       var periode = sessionStorage.getItem('periode');
       // console.log('halo');
-      axios.get(self.server+'/api/getsiswas/'+periode, {headers: {'X-Access-Token': self.token}})
+      axios.get(self.server+'/api/allsiswas?periode='+periode, {headers: {'Authorization': 'bearer '+self.token}})
            .then((res) => {
-            self.siswas = res.data;
-            var data = res.data;
+            // console.log(res)
+            self.siswas = res.data.data;
+            // var data = res.data.data;
+
+            // data.forEach(function(item) {
+            //   var kelas = item.kelas.split(' ')
+            //   var progli = kelas[1]
+            //   self.siswas.progli += progli
+            // });
            });
     },
     cetak_data(){
@@ -320,19 +288,19 @@ export default {
         this.dialog = false
         setTimeout(() => {
           this.editedSiswa = Object.assign({}, this.defaultSiswa)
-          this.selDudi = Object.assign({_id: 'Default', namaDudi: 'Pilih Dudi'})
-          this.selGuru = Object.assign({_id: 'Default', nama: 'Pilih Guru'})
+          // this.selDudi = Object.assign({_id: 'Default', namaDudi: 'Pilih Dudi'})
+          // this.selGuru = Object.assign({_id: 'Default', nama: 'Pilih Guru'})
           this.editedIndex = -1
           this.add = false;
           this.getSiswas();
-          this.getDudis();
-          this.getGurus();
+          // this.getDudis();
+          // this.getGurus();
         }, 300)
     },
     save () {
       var self = this;
       var data = self.editedSiswa;
-      axios.post(self.server+'/api/newsiswa', data, {headers: {'X-Access-Token': self.token}})
+      axios.post(self.server+'/api/newsiswa', data, {headers: {'Authorization': 'bearer '+self.token}})
           .then((res) => {
             if (res.data == 'ok_save'){
               self.close();
@@ -342,7 +310,7 @@ export default {
     update () {
       var self = this;
       var data = self.editedSiswa;
-      axios.put(self.server+'/api/siswa', data, {headers: {'X-Access-Token': self.token},
+      axios.put(self.server+'/api/siswa', data, {headers: {'Authorization': 'bearer '+self.token},
             onUploadProgress: function (progressEvent) {
                         let currentProgress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
                         self.progress = currentProgress;
@@ -350,7 +318,8 @@ export default {
                     }
           })
           .then((res) => {
-            if ( res.data == 'ok_upd') {
+            if ( res.data.success === true) {
+              alert(res.data.msg)
               self.close();
               self.barColor='grey'
               self.progress=0
@@ -372,7 +341,7 @@ export default {
       var self = this;
       var files = e.target.files,
           fileUri = '',
-          filename = files[0].name;
+          filename = files[0].nama;
       self.filename = filename;
       const filereader = new FileReader();
       filereader.addEventListener('load', () => {
@@ -400,9 +369,24 @@ export default {
         var first_sheet_name = workbook.SheetNames[0];
         var ws = workbook.Sheets[first_sheet_name];
         var newSiswas = XLSX.utils.sheet_to_json(ws);
-        axios.post(self.server+'/api/importsiswas', newSiswas, {headers: {'X-Access-Token': self.token}}).then((res)=>{
-          self.getSiswas();
-          self.fileUrl = '';
+        // console.log(newSiswas)
+        axios.post(self.server+'/api/importsiswas', newSiswas, {headers: {'Authorization': 'bearer '+self.token},
+                  onUploadProgress: function (progressEvent) {
+                        // let currentProgress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                        // self.importProgress = currentProgress;
+                        self.importDlg = true;
+                    }
+
+        }).then((res)=>{
+          if (res.data.success === true) {
+            self.importDlg = false;
+            self.getSiswas();
+            self.fileUrl = '';
+          } else {
+            var info = document.getElementById('info-text');
+            info.innerHTML = res.data.msg;
+          }
+          
         })
         // self
       };
@@ -415,8 +399,11 @@ export default {
     
     formTitle () {
         return this.editedIndex == -1 ? 'Tambah Praktikan' : 'Edit Praktikan'
-      }
-    
+      },
+    // siswas () {
+    //   var self = this
+    //   // var datas = self.
+    // }
   }
 }
 </script>

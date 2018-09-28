@@ -97,10 +97,10 @@
                             )
                               img(:src="'/public/user-profiles/'+props.item.kode_guru+'.jpg'" alt="avatar")
                             
-                          td.text-xs-center {{ props.item._id }}
+                          td.text-xs-center {{ props.item.kode_guru }}
                           td.text-xs-center {{ props.item.uname }}
                           td.text-xs-center {{ props.item.nip }}
-                          td.text-xs-left {{ props.item.nama }}
+                          td.text-xs-left {{ props.item.name }}
                           td.text-xs-left {{ props.item.hp }}
                           td {{ props.item.alamat }}
 

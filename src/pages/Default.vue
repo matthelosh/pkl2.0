@@ -232,12 +232,12 @@ export default {
         },
       submit (dataLogin) {
         if (this.$refs.form.validate()) {
-            console.log(dataLogin)
+            // console.log(dataLogin)
             var self = this;
             // axios.post(self.server+'/user/authenticate', dataLogin) APke API Express
             axios.post(self.server+'/login', dataLogin) // API Lumen
                 .then(response => {
-                    console.log(response.data)
+                    // console.log(response.data)
                     var res = response.data
                     if (res.success === false) {
                         this.alert = true
