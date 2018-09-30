@@ -10,8 +10,18 @@
 							p Kalau Anda ingin berganti periode. Silahkan ubah periode di  bawah ini.
 							v-layout(row)
 							v-flex(xs12 md4)
-								<v-select label="Periode" v-model="selPeriode" :items="periodes" append-icon="mdi-arrow-down-drop-circle-outline" v-bind:value="periode" on:input="onSelectPeriod" item-value="value" item-text="text" @change="ubah"></v-select>
-							h3 {{periodeNow}}
+								v-select(
+									label="Periode" 
+									v-model="selPeriode" 
+									:items="periodes" 
+									
+									:menu-props="{periode}" 
+									on:input="onSelectPeriod" 
+									item-value="value" 
+									item-text="text" 
+									@change="ubah"
+									outline)
+							h3 Anda telah merubah Periode menjadi : {{periodeNow}}
 						span(v-else)
 							p Klik menu disamping.	
 </template>

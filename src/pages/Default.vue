@@ -4,14 +4,14 @@
         //-     v-btn.top-front(fab small flat title="Masuk" color="teal accent-2" top right absolute @click.native.stop="openLoginForm" v-if="loggedIn == false" div#body
     div#body
         header#showcase.grid
-            v-btn.top-front(fab small flat title="Masuk" color="white" right absolute @click.native.stop="openLoginForm" v-if="loggedIn == false" )
+            v-btn.top-front(fab small flat title="Masuk" color="white" right absolute @click.native.stop="openLoginForm" v-if="loggedIn == false" outline)
                 v-icon mdi-login
             .bg-image
             .content-wrap
                 h1 Selamat Datang
                 p Prakerlap merupakan salah satu program kerja sama antara pihak SMKN 10 Malang dengan Dunia Industri guna memperkaya kompetensi peserta didik dengan pendidikan sistem ganda. Peserta didik yang lulus program Prakerlap, diharapkan mampu menjadi pribadi yang profesional di dunia kerja.
-                v-btn(color="teal" dark) Show More
-                v-btn(color="orange" dark @click.native.stop="openLoginForm" )
+                v-btn(color="yellow" dark outline) Show More
+                v-btn(color="orange" dark @click.native.stop="openLoginForm" outline)
                     v-icon mdi-login
                     | Login
         main#main
@@ -25,28 +25,28 @@
 
         <!-- Dialogs -->
         <v-dialog v-model="dialog" max-width="500">
-            <v-card>
+            <v-card color="secondary">
                 <v-card-title class="headline">
                     <v-icon>mdi-lock</v-icon>
                     | Masuk Sistem
                     <v-spacer></v-spacer>
-                    <v-btn color="red darken-1" small fab depressed dark @click.native="close" flat>
+                    <v-btn color="white" small fab depressed dark @click.native="close" flat outline>
                         <v-icon>mdi-close</v-icon>
                     </v-btn>
                 </v-card-title>
                 <v-card-text>
-                    <v-alert color="error" icon="fa-warning" :value="alert">
+                    <v-alert color="error" icon="fa-warning" :menu-props="{alert}">
                     | {{alertMsg}}
                     </v-alert>
                     <v-form v-model="valid" ref="form" lazy-validation>
-                        <v-select label="Periode" v-model="selPeriode" :items="periodes" :rules="[v => !!v || 'Item is required']" required append-icon="mdi-arrow-down-drop-circle-outline" v-bind:value="login.periode" on:input="onSelectPeriod" item-value="kode" item-text="periode"></v-select>
-                        <v-text-field label="Masukkan Username" v-model="login.uname" :rules="nameRules" append-icon="mdi-account-circle" :counter="10" required></v-text-field>
-                        <v-text-field name="password" label="Masukkan Kata Kunci" hint="Klik tanda mata untuk melihat kata kunci" min="8" :append-icon="e2 ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"      :append-icon-cb="() => (e2 = !e2)"  :type="e2 ? 'password' : 'text'" v-model="login.password" required></v-text-field>
+                        <v-select label="Periode" v-model="selPeriode" :items="periodes" :rules="[v => !!v || 'Item is required']" required :menu-props="{periodes}" on:input="onSelectPeriod" item-value="kode" item-text="periode" outline color="#ccc"></v-select>
+                        <v-text-field label="Masukkan Username" v-model="login.uname" :rules="nameRules" append-icon="mdi-account-circle" :counter="10" required outline olor="#ccc"></v-text-field>
+                        <v-text-field name="password" label="Masukkan Kata Kunci" hint="Klik tanda mata untuk melihat kata kunci" min="8" :append-icon="e2 ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"      @click:append="() => (e2 = !e2)"  :type="e2 ? 'password' : 'text'" v-model="login.password" required outline olor="#ccc"></v-text-field>
                         //- <v-select label="Peran User" v-model="login._role" :items="roleItems" :rules="[v => !!v || 'Item is required']" required append-icon="mdi-arrow-down-drop-circle-outline"></v-select>
                         <v-layout row>
                             <v-flex class="text-xs-center">
-                                <v-btn @click="submit(login)" depressed dark color="teal"><v-icon>mdi-login-variant</v-icon> masuk</v-btn>
-                                <v-btn @click="clear" depressed dark color="orange"><v-icon>mdi-lock-reset</v-icon> reset</v-btn>
+                                <v-btn @click="submit(login)" depressed dark color="teal" outline><v-icon>mdi-login-variant</v-icon> masuk</v-btn>
+                                <v-btn @click="clear" depressed dark color="orange" outline><v-icon>mdi-lock-reset</v-icon> reset</v-btn>
                             </v-flex>
                         </v-layout>
                     </v-form>

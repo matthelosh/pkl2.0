@@ -13,6 +13,7 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.vue'],
     alias: {
+      vuetify: '@lzhoucs/vuetify',
       'vue$': 'vue/dist/vue.esm.js',
       'public': path.resolve(__dirname, './public'),
       '@components': path.resolve(__dirname, './src/components'),

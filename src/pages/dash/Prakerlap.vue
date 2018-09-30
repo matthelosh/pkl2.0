@@ -9,24 +9,24 @@
 					fab 
 					small 
 					@click.native="newPrakerlap" 
-					color="green darken-2" 
-					depressed 
+					color="white" 
+					outline
 					title="Daftarkan Praktikan")
 					v-icon(small) mdi-worker
 				v-btn(
 					fab 
 					small 
 					@click.native="mod='byDudi'" 
-					color="green darken-2" 
-					depressed 
+					color="white" 
+					outline
 					title="Penempatan berdasarkan Dudi")
 					v-icon(small) mdi-table
 				v-btn(
 					fab 
 					small 
 					@click.native="mod='asli'" 
-					color="green darken-2" 
-					depressed 
+					color="white" 
+					outline
 					title="Daftar Penempatan")
 					v-icon(small) mdi-view-list
 				
@@ -78,7 +78,7 @@
 										v-card-title
 											h4 Calon Peserta Belum Terdaftar
 											v-spacer
-											v-text-field.no-print(append-icon="fa fa-search" label="Pencarian" single-line hide-details v-model="searchCalon")
+											v-text-field.no-print(append-icon="fa fa-search" label="Pencarian" single-line hide-details v-model="searchCalon" clearable)
 											
 										v-card-text
 											v-layout(row)
@@ -121,7 +121,7 @@
 											v-container
 												v-layout(row wrap)
 													v-flex(xs4)
-														v-select(
+														v-autocomplete(
 															append-icon="fa fa-angle-down" 
 															:items="gurus" 
 															v-model="selGuru" 
@@ -131,9 +131,9 @@
 															return-object 
 															:hint="`${selGuru._id}`" 
 															input="selGuru._id" 
-															persistent-hint autocomplete)
+															persistent-hint autocomplete clearable)
 													v-flex(xs8)
-														v-select(
+														v-autocomplete(
 															append-icon="fa fa-angle-down" 
 															:items="dudis" 
 															v-model="selDudi" 
@@ -143,7 +143,7 @@
 															return-object 
 															:hint="`${selDudi._id}`" 
 															input="selDudi._id" 
-															persistent-hint autocomplete)
+															persistent-hint autocomplete clearable)
 												v-layout(row)
 													v-flex(xs12)
 														v-data-table#tblreg(
@@ -160,7 +160,7 @@
 																td {{ props.item.nama }}
 																td {{ props.item.kelas }}
 												v-layout(row)
-													v-btn(color="secondary" @click.native="saveNewPkl") Simpan
+													v-btn(color="secondary" @click.native="saveNewPkl" outline) Simpan
 					div(style="flex: 1 1 auto;")
 </template>
 

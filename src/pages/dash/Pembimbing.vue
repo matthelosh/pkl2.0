@@ -3,17 +3,18 @@
     v-card
       v-toolbar(color="amber darken-2" dark dense flat scroll-off-screen)
         v-toolbar-title Pembimbing
-        v-spacer
+        //- v-spacer
+      br
       v-layout(row)
         v-flex(xs12 md12)
           v-card(flat)
-            v-btn(color="primary" @click.native="dialog=true" depressed) 
+            v-btn(color="primary" @click.native="[dialog=true, add=1]" depressed outline) 
               i.fa.fa-user-plus
               | Tambah Guru
-            v-btn.hidden-xs-only(color="success" @click.native="cetak_data" depressed)
+            v-btn.hidden-xs-only(color="success" @click.native="cetak_data" depressed outline)
               i.fa.fa-print
               | &nbsp; Cetak
-            v-btn(color="warning" @click.native="export_xls" depressed)
+            v-btn(color="warning" @click.native="export_xls" depressed outline)
               i.fa.fa-table
               | &nbsp; Export
             //- v-layout(row)
@@ -24,8 +25,8 @@
         //- v-flex(xs12 md3)
         input(type="file" id="fileGuru" ref="fileGuru" style="display:none" @change="onFilePicked")
         v-spacer
-        v-text-field(label="Upload File" append-icon="mdi-file-excel-box" flat @click.native="pickFile" v-model="filename")
-        v-btn(color="green" dark @click.native="importGuru" flat)
+        v-text-field(label="Upload File" append-icon="mdi-file-excel-box" flat @click.native="pickFile" v-model="filename" outline clearable)
+        v-btn(color="green" dark @click.native="importGuru" flat outline)
           v-icon mdi-file-import
           | Import
       br
@@ -35,46 +36,50 @@
             v-card-title
               h4 Data Guru Pembimbing
               v-spacer
-              v-text-field.no-print(append-icon="fa fa-search" label="Pencarian" single-line hide-details v-model="search")
+              v-flex(xs12 md4)
+                v-text-field.no-print(append-icon="fa fa-search" label="Pencarian" single-line hide-details v-model="search" outline clearable)
             #printableTable
-              <v-dialog v-model="dialog" max-width="500px">
+              <v-dialog v-model="dialog" max-width="700px">
                 //- <v-btn color="primary" dark slot="activator" class="mb-2">New Item</v-btn>
-                <v-card>
+                <v-card color="grey lighten-2">
                   <v-card-title>
                     <span class="headline">{{ formTitle }}</span>
                   </v-card-title>
                   <v-card-text>
                     <v-container grid-list-md>
                       <v-layout wrap>
-                        <v-flex xs12 md3>
-                          <v-text-field id="_id" label="ID Guru" v-model="editedGuru._id" required  append-icon="fa code"></v-text-field>
-                        </v-flex>
-                        <v-flex xs12 md3>
-                          <v-text-field id="uname" label="Username" v-model="editedGuru.uname" required  append-icon="fa fa-user"></v-text-field>
+                        <v-flex xs12 md6>
+                          <span v-if="add == 1">
+                            <v-text-field id="kode_guru" label="Kode Guru" v-model="editedGuru.kode_guru" required  append-icon="fa fa-qrcode" outline></v-text-field>
+                          </span>
+                          <span v-if="add == 0">
+                            <v-text-field id="kode_guru" label="Kode Guru" v-model="editedGuru.kode_guru" required  append-icon="fa fa-qrcode" outline disabled></v-text-field>
+                          </span>
+
                         </v-flex>
                         <v-flex xs12 md6>
-                          <v-text-field id="password" label="Password" v-model="editedGuru.pasword" required  append-icon="fa fa-lock"></v-text-field>
+                          <v-text-field id="uname" label="Username" v-model="editedGuru.uname" required  append-icon="fa fa-user-circle " outline></v-text-field>
                         </v-flex>
                         <v-flex xs12 md6>
-                          <v-text-field id="nama" label="Nama" v-model="editedGuru.nama" required  append-icon="mdi mdi-label"></v-text-field>
+                          <v-text-field id="password" label="Password" v-model="editedGuru.password" required  append-icon="fa fa-key" outline></v-text-field>
                         </v-flex>
                         <v-flex xs12 md6>
-                          <v-text-field id="nip" label="NIP" v-model="editedGuru.nip" required  append-icon="mdi mdi-barcode"></v-text-field>
+                          <v-text-field id="nama" label="Nama" v-model="editedGuru.name" required  append-icon="mdi mdi-label" outline></v-text-field>
                         </v-flex>
                         <v-flex xs12 md12>
-                          <v-text-field id="alamat" label="Alamat" v-model="editedGuru.alamat" required  append-icon="mdi mdi-home" multi-line></v-text-field>
+                          <v-textarea id="alamat" label="Alamat" v-model="editedGuru.alamat" rows="2" required  append-icon="mdi mdi-map" multi-line outline></v-textarea>
                         </v-flex>
                         <v-flex xs12 md6>
-                          <v-text-field id="hp" label="HP" v-model="editedGuru.hp" required  append-icon="mdi mdi-cellphone-android"></v-text-field>
+                          <v-text-field id="hp" label="HP" v-model="editedGuru.hp" required  append-icon="mdi mdi-cellphone-android" outline></v-text-field>
                         </v-flex>
                       </v-layout>
                     </v-container>
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
-                    <v-btn color="blue darken-1" flat @click.native="save" v-if="add">Simpan</v-btn>
-                    <v-btn color="blue darken-1" flat @click.native="update" v-if="!add">Perbarui</v-btn>
+                    <v-btn color="red darken-1"  @click.native="close" outline>Cancel</v-btn>
+                    <v-btn color="green"  @click.native="save" v-if="add" outline>Simpan</v-btn>
+                    <v-btn color="blue darken-1" flat @click.native="update" v-if="!add" outline>Perbarui</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>
@@ -99,10 +104,14 @@
                             
                           td.text-xs-center {{ props.item.kode_guru }}
                           td.text-xs-center {{ props.item.uname }}
-                          td.text-xs-center {{ props.item.nip }}
                           td.text-xs-left {{ props.item.name }}
                           td.text-xs-left {{ props.item.hp }}
                           td {{ props.item.alamat }}
+                          td.text-xs-center
+                            v-btn(small fab outline color="red" title="Hapus" @click.native="hapus(props.item)")
+                              v-icon fa-trash
+                            v-btn(small fab outline color="green" title="Edit" @click.native="edit(props.item)")
+                              v-icon fa-pencil
 
                         v-alert(slot="no-results" 
                           :value="true" 
@@ -137,30 +146,28 @@ export default {
             sortable: false,
             value: 'index'
           },
-          { text: 'Foto', value: '_id' },
-          { text: 'Kode Guru', value: '_id' },
+          { text: 'Foto', value: 'kode_guru' },
+          { text: 'Kode Guru', value: 'kode_guru' },
           { text: 'Username', value: 'uname' },
-          { text: 'NIP', value: 'nip' },
           { text: 'Nama Guru', value: 'nama' },
           { text: 'No. HP', value: 'hp' },
-          { text: 'Alamat', value: 'alamat' }
+          { text: 'Alamat', value: 'alamat' },
+          { text: 'Opsi', value: 'aksi' },
 
         ],
       gurus: [],
       editedGuru: {
-        _id: '',
+        kode_guru: '',
         uname: '',
         password: '',
-        nip: '',
         nama: '',
         alamat: '',
         hp: ''
       },
       defaultGuru: {
-        _id: '',
+        kode_guru: '',
         uname: '',
         password: '',
-        nip: '',
         nama: '',
         alamat: '',
         hp: ''
@@ -180,6 +187,32 @@ export default {
     this.getGurus();
   },
   methods: {
+    save() {
+      alert('Simpan')
+    },
+
+    update() {
+      alert('Update')
+    },
+    edit(item) {
+      var self = this
+      
+        self.dialog = true,
+        self.add = '0'
+        self.editedGuru = Object.assign({}, item)
+        console.log(item);
+     
+    },
+    hapus(item) {
+      var self = this
+      var hapus = confirm('Yakin menghapus data pembimbing :'+item.name+'?')
+      if (hapus){
+        // Eksekusi penghapusan data.
+        alert('Hapus')
+      }
+      return false
+    },
+
     pickFile(){
       this.$refs.fileGuru.click()
     },
@@ -227,12 +260,11 @@ export default {
     close () {
         this.dialog = false
         setTimeout(() => {
-          this.editedDudi = Object.assign({}, this.defaultDudi)
+          this.editedGuru = Object.assign({}, this.defaultGuru)
           this.editedIndex = -1
           this.selGuru = Object.assign({_id: 'Default', nama: 'Pilih Guru'})
           this.editedIndex = -1
           this.add = false;
-          this.getDudis();
           this.getGurus();
         }, 300)
     },
@@ -291,7 +323,7 @@ export default {
   },
   computed: {
     formTitle () {
-        return this.editedIndex == -1 ? 'Tambah Dudi' : 'Edit Dudi'
+        return this.add == 1 ? 'Tambah Guru' : 'Edit Guru'
       }
   }
 }

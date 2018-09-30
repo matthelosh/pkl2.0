@@ -154,7 +154,7 @@
           var timeStamp = Math.floor(Date.now()/1000);
 
           var timeCheck = expTime.exp - timeStamp;
-          console.log(timeCheck);
+          // console.log(timeCheck);
           if(timeCheck <= 0) {
             alert('Maaf! Token Anda habis. Silahkan Login kembali');
             sessionStorage.removeItem("isLoggedIn");

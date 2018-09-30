@@ -5,89 +5,41 @@
       v-toolbar(color="orange darken-2" dark dense flat scroll-off-screen)
         v-toolbar-title Praktikan
         v-spacer
-      
+      br
       v-layout(row)
-        v-flex(xs12)
-          v-btn(color="teal darken-1" @click.native="[dialog=true, add=true]" depressed dark) 
+        v-flex(xs12 md4)
+          v-btn(color="teal darken-1" @click.native="[dialog=true, add=true]" depressed dark outline) 
             v-icon mdi-asterisk
             | &nbsp; Baru
-          v-btn.hidden-xs-only(color="teal lighten-1" @click.native="cetak_data" depressed dark)
+          v-btn.hidden-xs-only(color="teal lighten-1" @click.native="cetak_data" depressed dark outline)
             v-icon mdi-printer
             | &nbsp; Cetak
-          v-btn(color="teal lighten-2" @click.native="export_xls" depressed dark)
+          v-btn(color="teal lighten-2" @click.native="export_xls" depressed dark outline)
             v-icon mdi-file-excel-box
             | &nbsp; Export
-        v-flex(xs12)
-          input(type="file" ref="fileUpload" @change="onFilePicked" style="display:none")
+        v-flex(xs12 md3 offset-md3)
+          input(type="file" ref="fileUpload" @change="onFilePicked" style="display:none" outline)
     
-          v-text-field(@click.native="pickFile" color="green" depressed append-icon="mdi-attachment" label="Pilih file Excel" v-model="filename")
+          v-text-field(@click.native="pickFile" color="green" depressed append-icon="mdi-attachment" label="Pilih file Excel" v-model="filename" outline)
             v-icon mdi-file-excel-box
             | &nbsp; Import XLS
-        v-flex(xs12)
-          v-btn(color="teal lighten-1" depressed @click.native="import_xls" dark)
+        //- v-spacer
+        v-flex(xs12 md1)
+          v-btn(color="teal lighten-1" depressed @click.native="import_xls" dark outline)
             v-icon mdi-file-import
             | &nbsp; Import
         //- <vue-xlsx-table @on-select-file="handleSelectedFile"></vue-xlsx-table>
-      v-layout(row)
-        #tes
+      //- v-layout(row)
+      //-   #tes
       v-layout(row)
         v-flex(xs12)
           v-card
             v-card-title
               h4 Data Praktikan
               v-spacer
-              v-text-field.no-print(append-icon="fa fa-search" label="Pencarian" single-line hide-details v-model="search")
-              <v-dialog v-model="dialog" max-width="500px">
-                //- <!-- <v-btn color="primary" dark slot="activator" class="mb-2">New Item</v-btn> -->
-                <v-card>
-                  <v-card-title>
-                    v-progress-linear(
-                      height="3" slot="progress" 
-                      :color="barColor" 
-                      :value="progress" determinate)
-                      span(class="headline") {{ formTitle }}
-                  </v-card-title>
-                  <v-card-text>
-                    <v-container grid-list-md fluid>
-                      <v-layout wrap>
-                        <v-flex xs12 sm6 md4>
-                          <v-text-field label="NIS" v-model="editedSiswa.nis"></v-text-field>
-                        </v-flex>
-                        <v-flex xs12 sm6 md4>
-                          <v-text-field label="Username" v-model="editedSiswa.uname"></v-text-field>
-                        </v-flex>
-                        <v-flex xs12 sm6 md4>
-                          <v-text-field label="Password" v-model="editedSiswa.password"></v-text-field>
-                        </v-flex>
-                        <v-flex xs12 sm8 md8>
-                          <v-text-field label="Nama" v-model="editedSiswa.nama"></v-text-field>
-                        </v-flex>
-                        
-                        <v-flex xs12 sm6 md4>
-                          <v-text-field label="Kelas" v-model="editedSiswa.kelas"></v-text-field>
-                        </v-flex>
-                        <v-flex xs12 sm6 md4>
-                          <v-text-field label="No. HP" v-model="editedSiswa.hp"></v-text-field>
-                        </v-flex>
-                        //- <v-flex xs12 sm8 md8>
-                        //-   <v-select append-icon="fa fa-angle-down" v-bind:items="gurus" v-model="editedSiswa._guru" label="Pilih Guru" item-text="nama" item-value="_id" return-object :hint="`${selGuru.nama}, ${selGuru._id}`" input="selGuru._id" persistent-hint autocomplete v-bind:value="editedSiswa._guru"></v-select>
-                        //- </v-flex>
-                        //- <v-flex xs12 sm12 md12>
-                        //-   <v-select append-icon="fa fa-angle-down" v-bind:items="dudis" v-model="editedSiswa._dudi" label="Pilih Dudi" item-text="namaDudi" item-value="_id" return-object :hint="`${selDudi.namaDudi}, ${selDudi._id}`" input="selDudi._id" persistent-hint autocomplete v-bind:value="editedSiswa._dudi"></v-select>
-                        //- </v-flex>
-                        
-
-                      </v-layout>
-                    </v-container>
-                  </v-card-text>
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" flat @click.native="close">Batal</v-btn>
-                    <v-btn color="blue darken-1" flat @click.native="save" v-if="add">Simpan</v-btn>
-                    <v-btn color="blue darken-1" flat @click.native="update" v-if="!add">Perbarui</v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
+              v-flex(xs12 md4)
+                v-text-field.no-print(append-icon="fa fa-search" label="Pencarian" single-line hide-details v-model="search" outline clearable)
+              
           #printableTable
             v-data-table#tbl_praktikan(:headers="headers" 
               :items="siswas" 
@@ -121,12 +73,45 @@
                   v-alert(slot="no-results" 
                     :value="true" color="error" icon="warning")
                     | Pencarian Anda akan "{{ search }}" tidak ditemukan.
-  
-    v-dialog(v-model="importDlg" persistent)
-      v-card
-        v-card-text
-          h2#info-text Mohon Bersabar, Import Data Praktikan Sedang Dalam Proses ..
-    <iframe name="print_frame" width="0" height="0" frameborder="0" src="about:blank"></iframe>
+    
+      v-dialog(v-model="dialog" max-width="500px")
+        v-card
+          v-card-title
+            span(class="headline") {{ formTitle }}
+            v-progress-linear(
+              height="3" slot="progress" 
+              :color="barColor" 
+              :value="progress" determinate)
+            
+          v-card-text
+            v-container(grid-list-md fluid)
+              v-layout(wrap)
+                v-flex(xs12 sm6 md4)
+                  span(v-if="editedIndex == '-1'")
+                    v-text-field(label="NIS" v-model="editedSiswa.nis" outline height="35px")
+                  span(v-else)
+                    v-text-field(label="NIS" v-model="editedSiswa.nis" outline height="35px" disabled)
+                v-flex(xs12 sm6 md4)
+                  v-text-field(label="Username" v-model="editedSiswa.uname" outline height="35px")
+                v-flex(xs12 sm6 md4)
+                  v-text-field(label="Password" v-model="editedSiswa.password" outline height="35px")
+                v-flex(xs12 sm8 md8)
+                  v-text-field(label="Nama" v-model="editedSiswa.nama" outline height="35px")
+                v-flex(xs12 sm6 md4)
+                  v-text-field(label="Kelas" v-model="editedSiswa.kelas" outline height="35px")
+                v-flex(xs12 sm6 md4)
+                  v-text-field(label="No. HP" v-model="editedSiswa.hp" outline height="35px")
+          v-card-actions
+            v-spacer
+            v-btn(color="red darken-1" flat @click.native="close" outline) Batal
+            v-btn(color="green darken-1" flat @click.native="save" v-if="add" outline) Simpan
+            v-btn(color="blue darken-1" flat @click.native="update" v-if="!add" outline) Perbarui
+
+      v-dialog(v-model="importDlg" persistent)
+        v-card
+          v-card-text
+            h2#info-text Mohon Bersabar, Import Data Praktikan Sedang Dalam Proses ..
+      <iframe name="print_frame" width="0" height="0" frameborder="0" src="about:blank"></iframe>
 
 </template>
 
@@ -193,7 +178,8 @@ export default {
           { text: 'Aksi', sortable: false, value: '_id' }
       ],
       newSiswas: [],
-      server: this.$store.state.server
+      server: this.$store.state.server,
+      editedIndex: -1
     }
     
   },

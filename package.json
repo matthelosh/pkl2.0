@@ -9,6 +9,7 @@
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
+    "@lzhoucs/vuetify": "^1.2.4-modified.3",
     "@tinymce/tinymce-vue": "^1.0.8",
     "@xkeshi/vue-qrcode": "^1.0.0",
     "ajv": "^6.4.0",
@@ -37,7 +38,6 @@
     "vue2-editor": "^2.4.3",
     "vue2-editor-with-imageresize": "0.0.2",
     "vuelidate": "^0.6.2",
-    "vuetify": "^1.0.10",
     "vuex": "^3.0.1",
     "xlsx": "^0.12.10"
   },
