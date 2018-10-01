@@ -68,7 +68,7 @@
 							| &nbsp;Daftarkan Calon Praktikan
 						v-spacer
 						v-toolbar-items
-							v-btn(dark @click.native="dialog = false" color="red" small depressed title="Tutup") 
+							v-btn(dark @click.native="close" color="red" small depressed title="Tutup") 
 								v-icon mdi-close
 					v-card-text
 						v-container(fluid grid-list-md)
@@ -129,8 +129,8 @@
 															item-text="name" 
 															item-value="id" 
 															return-object 
-															:hint="`${selGuru._id}`" 
-															input="selGuru._id" 
+															:hint="`${selGuru.kode_guru}`" 
+															input="selGuru.kode_guru" 
 															persistent-hint autocomplete clearable)
 													v-flex(xs8)
 														v-autocomplete(
@@ -141,8 +141,8 @@
 															item-text="nama_dudi" 
 															item-value="id" 
 															return-object 
-															:hint="`${selDudi._id}`" 
-															input="selDudi._id" 
+															:hint="`${selDudi.kode_dudi}`" 
+															input="selDudi.kode_dudi" 
 															persistent-hint autocomplete clearable)
 												v-layout(row)
 													v-flex(xs12)
@@ -181,13 +181,13 @@ export default {
 			selected:[],
 			gurus: [],
 			token: sessionStorage.getItem('token'),
-			selGuru: {_id: '', nama: 'Pilih Guru'},
+			selGuru: {kode_guru: '', nama: 'Pilih Guru'},
 			editedSiswa: {},
 			allSiswas:[],
 			siswas: [],
-			selSiswa: {_id: '', nama: 'Pilih Siswa', nis: ''},
+			selSiswa: {id: '', nama: 'Pilih Siswa', nis: ''},
 			dudis: [],
-			selDudi: {_id: '', namaDudi: 'Pilih Dudi'},
+			selDudi: {kode_dudi: '', namaDudi: 'Pilih Dudi'},
 			pklSnackbar: false,
 			timeout: 10000,
 			pklsnacktext: '',
@@ -235,6 +235,11 @@ export default {
 		// this.jmlTerdaftar();
 	},
 	methods: {
+		close(){
+			var self = this
+			self.dialog = false
+			self.getPkls()
+		},
 		toggleMode(m) {
 			var self = this
 			self.mod = m
@@ -283,7 +288,7 @@ export default {
 		},
 		saveNewPkl(){
 			var self= this;
-			if(self.selGuru._id == '' || self.selDudi._id == ''){
+			if(self.selGuru.kode_guru == '' || self.selDudi.kode_dudi == ''){
 				alert('Pilih dulu Guru Atau Dudi');
 				return false;
 			} else {
@@ -342,10 +347,12 @@ export default {
 					} else {
 						var remSiswa = self.siswas.map(function(item){ return item.nis;}).indexOf(nis);
 						self.siswas.splice(remSiswa,1);
+						self.pklSnackbar = true;
+						self.pklsnacktext = res.data.msg;
 						self.selected = [];
 						self.selGuru = {kode_guru: '', nama: 'Pilih Guru'};
 						self.selDudi = {kode_dudi: '', namaDudi: 'Pilih Dudi'};
-						self.getSiswas();
+						self.getCalons();
 					}
 					// self.getSiswas();
 					

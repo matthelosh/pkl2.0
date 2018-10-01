@@ -284,7 +284,7 @@ export default {
           this.selGuru = Object.assign({_id: 'Default', nama: 'Pilih Guru'})
           
           this.getDudis();
-          this.getGurus();
+          // this.getGurus();
         }, 300)
     },
     save () {

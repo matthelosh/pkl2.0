@@ -74,6 +74,7 @@
             </v-card>
             //- </v-container>
         </v-dialog>
+        v-snackbar(v-model="alert" top color="red") {{alertMsg}}
             
 </template>
 <script>
@@ -260,11 +261,17 @@ export default {
                     if ( !error.response ) {
                         this.alert = true
                         this.alertMsg = 'Maaf. Sedang tidak terhubung ke Server.'
-                        // console.log(error);
+                        console.log(error);
                     } else {
-
+                      if (error == 'Error: Request failed with status code 403') {
+                        this.alert = true
+                        this.alertMsg = 'Password tidak sesuai. Coba lagi'
+                      } else {
+                        this.alert = true
+                        this.alertMsg = 'User belum terdaftar. Hubungi Admin'
+                      }
                     }
-                })
+                });
             
         }
       },
