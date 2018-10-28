@@ -49,7 +49,7 @@
                         </v-menu>
                       </v-flex>
                       <v-flex xs12 sm10 md10>
-                        <v-text-field label="Kegiatan" v-model="editedJadwal.kegiatan" required validate-on-blur :rules="[rules.required]" append-icon="fa fa-tasks" multi-line rows="3"></v-text-field>
+                        <v-textarea label="Kegiatan" v-model="editedJadwal.kegiatan" required validate-on-blur :rules="[rules.required]" append-icon="fa fa-tasks" multi-line rows="3"></v-textarea>
                       </v-flex>
                       <v-flex xs12 sm8 md8>
                         <v-text-field label="Pelaksana" v-model="editedJadwal.pelaksana" required validate-on-blur :rules="[rules.required]" append-icon="fa fa-users"></v-text-field>

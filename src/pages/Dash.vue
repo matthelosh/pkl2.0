@@ -6,6 +6,8 @@
       :clipped="clipped"
       v-model="drawer"
       app
+      width="200"
+      dark
     >
       <v-list>
         <v-list-tile 
@@ -17,20 +19,20 @@
           :title="item.title"
         >
           <v-list-tile-action>
-            <v-icon v-html="item.icon"></v-icon>
+            <v-icon v-html="item.icon" outline></v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title v-text="item.title"></v-list-tile-title>
+            <v-list-tile-title v-text="item.title" class="white--text"></v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar fixed app :clipped-left="clipped">
-      <v-btn @click.stop="drawer = !drawer" icon flat><v-icon>fa-bars</v-icon></v-btn>
-      <v-btn icon @click.stop="miniVariant = !miniVariant" class="hidden-xs-only">
+    <v-toolbar fixed app :clipped-left="clipped" dark>
+      <v-btn @click.stop="drawer = !drawer" icon flat outline><v-icon>fa-bars</v-icon></v-btn>
+      <v-btn icon @click.stop="miniVariant = !miniVariant" class="hidden-xs-only" outline>
         <v-icon v-html="miniVariant ? 'fa-chevron-right' : 'fa-chevron-left'"></v-icon>
       </v-btn>
-      <v-btn icon @click.stop="clipped = !clipped" class="hidden-xs-only">
+      <v-btn icon @click.stop="clipped = !clipped" class="hidden-xs-only" outline>
         <v-icon>fa-globe</v-icon>
       </v-btn>
       <!-- <v-btn icon @click.stop="fixed = !fixed">
@@ -38,7 +40,7 @@
       </v-btn> -->
       <v-toolbar-title>
         <v-avatar tile>
-          <img src="/public/favicon-32x32.svg" alt="" height="24px">
+          <img src="/public/logo-vocsten.png" alt="" height="15px">
         </v-avatar>  
         <span class="hidden-xs-only">{{title}}</span>
       </v-toolbar-title>
@@ -49,7 +51,7 @@
           <img :src="userFoto" alt="Profil" onerror="if (this.src != '/public/user-profiles/default-avatar.png') this.src = '/public/user-profiles/default-avatar.png';">
         </v-avatar>
       </v-btn> 
-      <v-btn icon @click.stop="logout" color="red" flat title="Keluar">
+      <v-btn icon @click.stop="logout" color="red" flat outline title="Keluar">
         <v-icon>fa-sign-out</v-icon>
       </v-btn>
       <!-- <v-btn icon @click.stop="rightDrawer = !rightDrawer">
@@ -89,7 +91,8 @@
         server: this.$store.state.server,
         progress: 0,
         barColor: 'red',
-        userFoto: ''
+        userFoto: '',
+        username: sessionStorage.getItem('nama')
       }
     },
     beforeCreate() {
@@ -196,9 +199,9 @@
       //   return foto
 
       // },
-      username(){
-        return this.$store.state.user.name;
-      },
+      // username(){
+      //   return this.$store.state.user.name; 
+      // },
       
     }
   }

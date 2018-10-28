@@ -12,27 +12,28 @@
 							v-icon mdi-close
 					v-card-text
 						v-layout(row)
-							v-flex(xs12 md8)
-								v-container(grid-list-md)
-									v-layout(row wrap)
-										v-flex(xs12 md6)
-											v-text-field(name="title" v-model="newInfo.title" label="Judul" clearable)
-										v-flex(xs12 md6)
-											v-text-field(name="img" v-model="newInfo.img" label="Url Gambar" clearable append-icon="mdi mdi-link")
+							v-flex(xs12 md12)
+								//- v-container(grid-list-md)
+								v-layout(row wrap)
+									v-flex(xs12 md6)
+										v-text-field(name="title" v-model="newInfo.judul" label="Judul" clearable)
+										//- v-flex(xs12 md6)
+										//- 	v-text-field(name="img" v-model="newInfo.img" label="Url Gambar" clearable append-icon="mdi mdi-link")
 										//- v-flex(xs12 md3)
 										//- 	img(:src="imageUrl" height="100" v-if="imageUrl")
 										//- v-flex(xs12 md3)
 										//- 	v-text-field(label="Url Gambar" append-icon="mdi mdi-link" @click.native="pickFile" v-model="newInfo.img")
 										//- 	input(type="file" style="display:none" ref="image" accept="image/*" @change="onFilePicked") 
-									v-layout(row wrap)
-										v-flex(xs12)
-											vue-editor(v-model="newInfo.content" :editorOptions="editorSettings")
-									v-card-actions
-										v-spacer
-										v-btn(color="blue darken-1" depressed dark @click.native="close") Cancel
-										v-btn(color="blue darken-1" depressed dark @click.native="saveInfo" v-if="add") Simpan
-										v-btn(color="blue darken-1" depressed dark @click.native="update" v-if="!add" ) Perbarui
-							v-flex(xs12 md4)
+								v-layout(row wrap)
+									v-flex(xs12)
+										vue-editor(v-model="newInfo.isi" 
+											:editorOptions="editorSettings")
+					v-card-actions
+						v-spacer
+						v-btn(color="blue darken-1" depressed dark @click.native="close") Cancel
+						v-btn(color="blue darken-1" depressed dark @click.native="saveInfo" v-if="add") Simpan
+						v-btn(color="blue darken-1" depressed dark @click.native="update" v-if="!add" ) Perbarui
+							//- v-flex(xs12 md12)
 								v-container
 									article
 										h1 Cara Menginput Info:
@@ -57,12 +58,15 @@
 									v-icon mdi-plus
 							v-layout(row)
 								v-flex(xs12)
-									v-data-table(:headers="infoHeaders" :items="infos")
+									v-data-table(:headers="infoHeaders" 
+										:items="infos")
 										template(slot="items" slot-scope="props")
 											td {{ props.index+1 }}
-											td {{ props.item._id}}
-											td {{ props.item.title}}
-											td {{ props.item.created_by}}
+											td {{ props.item.judul}}
+											td {{ props.item.author}}
+											td(v-html="props.item.isi")
+											td {{ props.item.created_at}}
+											td {{ props.item.updated_at}}
 											td {{ props.item.isActive}}
 											td.justify-center.layout.px-0
 												v-btn(icon class="mx-0" @click.native="showDetail(props.item)" title="Detil")
@@ -87,7 +91,7 @@
 									h5 Ditulis: {{detilItem.created_by}} <br/>
 										| pada: {{detilItem.created_at}}
 									v-container
-										div#contentInfo(v-html="detilItem.content")
+										div#contentInfo(v-html="detilItem.isi")
 
 		
 </template>
@@ -96,10 +100,7 @@
 import axios from 'axios'
 import { VueEditor } from 'vue2-editor'
 import ImageResize from 'quill-image-resize-module'
-// import { VueEditor } from 'vue2-editor-with-imageresize'
-// import Editor from '@tinymce/tinymce-vue';
 Quill.register('modules/imageResize', ImageResize)
-// import fileInput from '@pages/comps/FileInput'
 export default {
 
   name: 'Info',
@@ -119,13 +120,10 @@ export default {
 		periode: sessionStorage.getItem('periode'),
 		infos: [],
 		newInfo:{
-			// _id: '',
 			periode: sessionStorage.getItem('periode'),
-			img: '',
 			title: '',
-			content: '',
-			created_by: sessionStorage.getItem('_id'),
-			created_at: new Date(),
+			isi: '',
+			author: sessionStorage.getItem('nama'),
 			isActive: '1'
 		},
 		infoHeaders: [
@@ -135,15 +133,12 @@ export default {
 			sortable: false,
 			value: 'index'
 		  },
-		  { text: 'ID', value: '_id' },
-		  { text: 'Judul', value: 'title' },
-		  // { text: 'Konten', value: 'content' },
-		  { text: 'Penulis', value: 'created_by' },
-		  // { text: 'Ditulis Pada', value: 'created_at' },
-		  { text: 'Status', sortable: false, value: 'isActive' },
-		  // { text: 'Dudi', sortable: false, value: '_dudi.namaDudi' },
-		  // { text: 'Pembimbing', sortable: true, value: '_guru.nama' },
-		  { text: 'Aksi', sortable: false, value: '_id' }
+		  { text: 'Judul', value: 'judul' },
+		  { text: 'Penulis', value: 'author' },
+		  { text: 'Isi', value: 'isi' },
+		  { text: 'Ditulis Pada', value: 'created_at' },
+		  { text: 'Diperbarui Pada', value: 'updated_at' },
+		  { text: 'Status', sortable: false, value: 'isActive' }
 		],
 		server: this.$store.state.server,
 		detilItem: {},
@@ -186,12 +181,13 @@ export default {
 
 
   	formData (e) {
-  		console.log(e)
+  		// console.log(e)
   	},
   	showDetail (item) {
   		let self = this
   		self.detilDlg = true
   		self.detilItem = Object.assign({}, item)
+  		self.detilItem.isi = readblob(item.isi)
   	},
   	editItem ( item ) {
 
@@ -259,22 +255,23 @@ export default {
 	},
   	getInfos(){
   		var self = this;
-  		axios.get(self.server+'/api/getinfos', {headers: {'X-Access-Token': self.token}})
+  		axios.get(self.server+'/api/infos')
   				.then(res=>{
   					// console.log(res);
-  					self.infos = res.data;
+  					self.infos = res.data.data;
   				});
   	},
   	saveInfo() {
   		var self = this;
   		var data = self.newInfo;
-  		axios.post(self.server+'/api/info', data, {headers: {'X-Access-Token': self.token}})
+  		axios.post(self.server+'/api/info', data, {headers: {'Authorization': 'bearer '+self.token}})
 			.then(res => {
 				alert(res.data.msg)
 			})
 			.catch(err => {
 				console.log(err)
 			})
+		// console.log(data)
   	}
   	// newInfo(){
   	// 	var self = this;

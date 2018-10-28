@@ -2,7 +2,7 @@
 	v-layout(column)
 		
 		v-flex(xs12 md-12)
-			v-toolbar(color="green" dark dense flat scroll-off-screen)
+			v-toolbar(color="#444" dark dense flat scroll-off-screen)
 				v-toolbar-title Prakerlap
 				v-spacer
 				v-btn(
@@ -62,7 +62,7 @@
 			:overlay="false" 
 			scrollable)
 				v-card(tile)
-					v-toolbar(card dark color="secondary")
+					v-toolbar(card dark color="secondary" dense)
 						v-toolbar-title 
 							v-icon mdi-worker
 							| &nbsp;Daftarkan Calon Praktikan
@@ -76,9 +76,9 @@
 								v-flex(xs12 md6)
 									v-card.blue--text(color="grey lighten-3")
 										v-card-title
-											h4 Calon Peserta Belum Terdaftar
-											v-spacer
-											v-text-field.no-print(append-icon="fa fa-search" label="Pencarian" single-line hide-details v-model="searchCalon" clearable)
+											h4 Calon Peserta Belum Terdaftar <br><small>Jika tidak muncul checkbox berarti Calon belum memenuhi persyaratan</small>
+											v-flex(xs12 md6 offset-md6)
+												v-text-field.no-print(append-icon="fa fa-search" label="Pencarian" single-line hide-details v-model="searchCalon" clearable solo)
 											
 										v-card-text
 											v-layout(row)
@@ -100,7 +100,7 @@
 												select-all item-key="id")
 												template(slot="items" slot-scope="props")
 													td
-														v-checkbox(primary v-model="props.selected" hide-details)
+														v-checkbox(primary v-model="props.selected" hide-details v-if="props.item.ket == '100%'")
 													td {{ props.index+1 }}
 													td {{ props.item.nis }}
 													td {{ props.item.nama }}
@@ -131,7 +131,8 @@
 															return-object 
 															:hint="`${selGuru.kode_guru}`" 
 															input="selGuru.kode_guru" 
-															persistent-hint autocomplete clearable)
+															persistent-hint 
+															solo)
 													v-flex(xs8)
 														v-autocomplete(
 															append-icon="fa fa-angle-down" 
@@ -143,7 +144,8 @@
 															return-object 
 															:hint="`${selDudi.kode_dudi}`" 
 															input="selDudi.kode_dudi" 
-															persistent-hint autocomplete clearable)
+															persistent-hint
+															solo)
 												v-layout(row)
 													v-flex(xs12)
 														v-data-table#tblreg(
@@ -412,6 +414,30 @@ export default {
 		jmlAllCalons(){
 			var jml = this.allSiswas.length;
 			return jml;
+		},
+		filterDudis(){
+			var self = this
+			var dudis = self.dudis
+			var pkls = self.pkls
+			var dudi = []
+			var quota = []
+			var jml = {}
+
+			dudis.forEach((e1)=>pkls.forEach((e2)=>
+				{
+					if(e1.kode_dudi !== e2._dudi) {
+						dudi.push(e1)
+					}
+				}
+			))
+			pkls.forEach(function(i) {
+				jml[i.kode_dudi] = (jml[i.kode_dudi] || 0 ) + 1
+				if ( i.kuota > jml[i.kode_dudi]) {
+					dudi.push(i)
+				}
+			})
+
+			return dudi
 		}
 		
 	}

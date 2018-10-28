@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     v-card
-      v-toolbar(color="amber darken-2" dark dense flat scroll-off-screen)
+      v-toolbar(color="#444" dark dense flat scroll-off-screen)
         v-toolbar-title Pembimbing
         //- v-spacer
       br
@@ -25,7 +25,7 @@
         //- v-flex(xs12 md3)
         input(type="file" id="fileGuru" ref="fileGuru" style="display:none" @change="onFilePicked")
         v-spacer
-        v-text-field(label="Upload File" append-icon="mdi-file-excel-box" flat @click.native="pickFile" v-model="filename" outline clearable)
+        v-text-field(label="Upload File" append-icon="mdi-file-excel-box" @click.native="pickFile" v-model="filename" solo clearable)
         v-btn(color="green" dark @click.native="importGuru" flat outline)
           v-icon mdi-file-import
           | Import
@@ -37,7 +37,7 @@
               h4 Data Guru Pembimbing
               v-spacer
               v-flex(xs12 md4)
-                v-text-field.no-print(append-icon="fa fa-search" label="Pencarian" single-line hide-details v-model="search" outline clearable)
+                v-text-field.no-print(append-icon="fa fa-search" label="Pencarian" single-line hide-details v-model="search" solo clearable)
             #printableTable
               <v-dialog v-model="dialog" max-width="700px">
                 //- <v-btn color="primary" dark slot="activator" class="mb-2">New Item</v-btn>
@@ -188,7 +188,15 @@ export default {
   },
   methods: {
     save() {
-      alert('Simpan')
+      var self = this
+      axios.post(self.server+'/register', self.editedGuru)
+        .then(res => {
+          alert(res.data.msg)
+          self.getGurus()
+        })
+        .catch(err => {
+          console.log(err.response)
+        })
     },
 
     update() {

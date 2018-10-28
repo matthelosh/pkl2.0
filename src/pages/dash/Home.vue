@@ -14,38 +14,45 @@
 									label="Periode" 
 									v-model="selPeriode" 
 									:items="periodes" 
-									
 									:menu-props="{periode}" 
 									on:input="onSelectPeriod" 
-									item-value="value" 
-									item-text="text" 
+									item-value="kode" 
+									item-text="periode" 
 									@change="ubah"
-									outline)
+									solo) 
 							h3 Anda telah merubah Periode menjadi : {{periodeNow}}
 						span(v-else)
-							p Klik menu disamping.	
+							p Klik menu disamping.
 </template>
 
 <script>
+import axios from 'axios'
 export default {
     data () {
         return {
             periodes: [
-				{text: '10.1', value: '10.1'},
-				{text: '10.2', value: '10.2'},
-				{text: '11.1', value: '11.1'},
-				{text: '11.2', value: '11.2'}
 			],
 			selPeriode: '',
 			periode: '',
-			role: sessionStorage.getItem('role')
+			role: sessionStorage.getItem('role'),
+			server: this.$store.state.server
         }
+    },
+    created(){
+    	this.getPeriodes();
     },
     methods: {
     	ubah(p){
     		var self = this
     		sessionStorage.setItem('periode', p)
-    	}
+    	},
+    	getPeriodes(){
+  		var self = this
+  		axios.get(self.server+'/umum/periode')
+  			.then((res) => {
+  				self.periodes = res.data.data
+  			});
+	  	}
     },
     computed: {
     		periodeNow(){
@@ -60,5 +67,5 @@ export default {
 </script>
 
 <style scoped>
-
+	
 </style>

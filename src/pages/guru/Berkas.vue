@@ -2,8 +2,7 @@
   div
     v-layout
         v-flex(xs3)
-            v-subheader
-                h1 Berkas Penting
+            h2 Dokumen Prakerlap
         v-flex(xs3 )
             v-select(
                 append-icon="fa fa-angle-down"
@@ -36,66 +35,69 @@
         v-flex(xs1 offset-xs1)
             //- v-btn(color="success" @click.stop="getMonKe")
             //-     i.fa.fa-search
-            <v-btn fab depressed fixed right color="info" @click.stop="print" v-if="select.val == 'form_nilai' || select.val == 'monitoring' || select.val == 'permohonan' || select.val == 'srt_antar' || select.val == 'ba_antar' || select.val == 'lamp_permohonan'"><i class="fa fa-print"></i></v-btn>
+            <v-btn fab depressed fixed right color="info" @click.stop="print(select.val)" v-if="select.val == 'form_nilai' || select.val == 'monitoring' || select.val == 'permohonan' || select.val == 'srt_antar' || select.val == 'ba_antar' || select.val == 'lamp_permohonan'"><i class="fa fa-print"></i></v-btn>
             //- <v-btn color="info" @click.stop="cetak" v-if="select.val == 'form_nilai' || select.val == 'monitoring' || select.val == 'permohonan' || select.val == 'srt_antar' || select.val == 'ba_antar' || select.val == 'lamp_permohonan'"><i class="fa fa-print"></i> Cetak</v-btn>
 
     br
-    .sheet#blangkoNilai(v-if="select.val == 'form_nilai'")
-        form-nilai(:dudi="selDudi" :siswas="siswas")
-    
+    .sheet#blangkoNilai.form_nilai(v-if="select.val == 'form_nilai'")
+        form-nilai(:dudi="selDudi" 
+        :siswas="siswas")
+    .sheet#formJemput.ba_jemput(v-if="select.val == ba_jemput")
+        form-jemput
     .sheet#default(v-if="select.val == 'default'")
         h2 Data Dudi Saya.
         v-layout(row wrap)
-            //- v-flex(xs3 v-for="dudi in dudis")
+            v-flex(xs3 v-for="dudi in dudist" 
+                :key="dudi._id")
                 v-container(grid-md-column)
-                    v-card(tile color="blue-grey lighten-2" dark)
+                    v-card(style="border:1px solid teal")
                         v-card-title
                             h3 {{dudi.namaDudi}}
                         v-card-text
-                            p ID: {{dudi._id}}
+                            p Kode Dudi: {{dudi._id}}
                             p Alamat: {{dudi.alamat}}
                             p Pemilik: {{dudi.pemilik}}
                             p No. Telp/HP: {{dudi.telp}}
         
 
-    .sheet#mohon(v-if="select.val == 'permohonan' || select.val == 'srt_antar' || select.val == 'ba_antar'" )
-        //- <v-btn color="info" @click.stop="print"><i class="fa fa-print"></i>&nbsp; Cetak</v-btn>
-        
+    .sheet#mohon.permohonan.srt_antar.ba_antar(v-if="select.val == 'permohonan' || select.val == 'srt_antar' || select.val == 'ba_antar'" )
         div.lembar.print
             article#srt_permohonan(xs8 offset-xs2)
                 v-layout.kop(row)
                     v-flex(xs1)
                         .logo
-                            img.logo-surat(src='/public/img/jatim.jpg')
+                            img.logo-surat(src='/public/img/jatim.jpg' width="50px")
                     v-flex.text-xs-center(xs11)
                         h3 PEMERINTAH PROVINSI JAWA TIMUR
                         h3 DINAS PENDIDIKAN
-                        h1 SEKOLAH MENENGAN KEJURUAN NEGERI 10
+                        h3 SEKOLAH MENENGAN KEJURUAN NEGERI 10
                         p Jl. Raya Tlogowaru Kec. Kedungkandang Telp. (0341) 754086 Fax. (0341) 754087
                         p Home Page: http://smkn10-mlg.sch.id Email: smk10_malang@yahoo.co.id
                         p.text-xs-right <span class="malang">MALANG</span>  <span class="kode-pos">Kode Pos.65133</span>
-                hr
+                hr.garis-kop
                 v-layout.hal(row v-if="select.val == 'permohonan'")
-                    v-flex(xs-6)
-                        tr
-                            td(style="width:80px;") Nomor		
-                            td : {{no_surat}}
-                        tr
-                            td(style="width:80px;") Lampiran
-                            td : 1 Lembar
-                        tr 
-                            td(style="width:80px;") Perihal
-                            td : Permohonan Praktek Kerja Lapangan
+                    v-flex.nmr(xs-6)
+                        table()
+                            tr
+                                td(style="width:80px;") Nomor		
+                                td : {{no_surat}}
+                            tr
+                                td(style="width:80px;") Lampiran
+                                td : 1 Lembar
+                            tr 
+                                td(style="width:80px;") Perihal
+                                td : Permohonan Praktek Kerja Lapangan
                         br
-                    v-flex(xs-3 offset-xs2)
+                    v-flex.tmpt(xs-3 offset-xs2)
                         p Malang {{tgl}}
                 v-layout.hal(row v-if="select.val == 'permohonan'")
                     v-flex(xs12)
-                        tr
-                            td(style="width:80px;") Kepada Yth	
-                            td : Pimpinan {{selDudi.namaDudi}}
-                        tr
-                            td Di Tempat
+                        table
+                            tr
+                                td(style="width:80px;") Kepada Yth	
+                                td : Pimpinan {{selDudi.namaDudi}}
+                            tr
+                                td Di Tempat
                     
                 v-layout(v-if="select.val == 'srt_antar'" class="bg-success")
                     v-flex.text-xs-center(v-if="select.val == 'srt_antar'" class="bg-success")
@@ -108,8 +110,8 @@
 
                 v-layout.isi(row)
                     v-flex.text-xs-justify(v-if="select.val == 'ba_antar'")
-                        p Sehubungan dengan dimulainya Praktek Kerja Lapangan (Prakerlap) SMK Negeri 10 Malang ke {{tahap[0]}} tahap {{tahap[1]}} yang dilaksanakan mulai {{pelaksanaan}}, maka pada hari ini, ........................,  tanggal ........................ bulan ........................   tahun ........................dilakukan pengantaran siswa Prakerlap oleh guru pembimbing SMK Negeri 10 Malang ke:
-                        table(style="margin-left: 50px; width: 75%")
+                        p Sehubungan dengan dimulainya Praktek Kerja Lapangan (Prakerlap) SMK Negeri 10 Malang ke {{tahap[0]}} tahap {{tahap[1]}} yang dilaksanakan mulai {{pelaksanaan}}, maka pada hari ini, ........................,  tanggal ........................ bulan ........................   tahun ........................ dilakukan pengantaran siswa Prakerlap oleh guru pembimbing SMK Negeri 10 Malang ke:
+                        table#tbl_mohon(style="margin-left: 50px; width: 75%")
                             tr
                                 td Nama Du/Di
                                 td : {{selDudi.namaDudi}}
@@ -125,7 +127,7 @@
                             tr
                                 td(colspan="2") Dengan  data  siswa peserta Prakerlap sebagai berikut :  
                         //- br
-                        table#tbl_ba_antar_siswa(border="1" style="border-collapse: collapse;margin-left: 50px")
+                        table#tbl_ba_antar_siswa(border="1" style="border-collapse: collapse; margin: auto;")
                             thead
                                 tr
                                     th(style="padding: 5px 10px;") NO
@@ -136,15 +138,15 @@
                             tbody
                                 tr(v-for="(siswa, index) in siswaterpilih")
                                     td(style="padding: 5px 10px; font-size: 10pt; text-align: left;") {{index+1}}
-                                    td(style="padding: 5px 10px; font-size: 10pt; text-align: left;") {{siswa._siswa.nama}}
-                                    td(style="padding: 5px 10px; font-size: 10pt; text-align: left;") {{siswa._siswa.nis}}
-                                    td(style="padding: 5px 10px; font-size: 10pt; text-align: left;") {{siswa._siswa.hp}} 
-                                    td(style="padding: 5px 10px; font-size: 10pt; text-align: left;") {{siswa._siswa.progli}}
+                                    td(style="padding: 5px 10px; font-size: 10pt; text-align: left;") {{siswa.nama_siswa}}
+                                    td(style="padding: 5px 10px; font-size: 10pt; text-align: left;") {{siswa.nis}}
+                                    td(style="padding: 5px 10px; font-size: 10pt; text-align: left;") {{siswa.nis}} 
+                                    td(style="padding: 5px 10px; font-size: 10pt; text-align: left;") {{siswa.kelas}}
                         br
                         table(style="margin-left: 50px")
                             tr
                                 td Nama Guru Pembimbing
-                                td : {{guru.nama}}
+                                td : {{guru.name}}
                             tr
                                 td No. Telepon / HP
                                 td : {{guru.hp}}
@@ -152,26 +154,24 @@
                         p Demikian berita acara ini dibuat dengan sebenarnya, atas kerja sama dan bimbingannya diucapkan banyak terima kasih.
                     v-flex.text-xs-justify(xs12 v-if="select.val == 'permohonan'")
                         p Dalam rangka melaksanakan Kebijakan Pemerintah tentang program Pendidikan Sistem Ganda (PSG) untuk siswa SMK maka setiap siswa SMK Negeri 10 Malang diwajibkan untuk melaksanakan magang/bekerja di Industri atau dunia usaha dalam jangka waktu tertentu. Program magang tersebut disebut dengan istilah Praktik Kerja Lapangan (Prakerlap) dan dilaksanakan dengan ketentuan sebagai berikut:
-                        ol
+                        ol(style="margin-left:50px;")
                             li Waktu pelaksanaan Praktek Kerja Lapangan (Prakerlap) mulai 1 Juli 2018 s/d  30 Desember 2018.
                             li Jam kerja Prakerlap selama 6 sampai 8 jam setiap hari dan berakhir paling lambat pada jam 17.00 WIB / sesuai shift
 
                         p Sehubungan dengan hal tersebut, kami mohon agar Bapak/Ibu berkenan memberikan ijin dan kesempatan pada siswa kami  di bawah ini untuk melaksanakan Prakerlap di tempat kerja Bapak/Ibu.
-                            table#tbl_permohonan(border="1" style="border-collapse: collapse;margin-left: 50px;")
+                            table#tbl_permohonan(border="1" style="border-collapse: collapse;")
                                 thead
                                     tr
                                         th(style="text-indent: 0!important; padding: 5px") NO
                                         th(style="text-indent: 0!important; padding: 5px") Nama
                                         th(style="text-indent: 0!important; padding: 5px") NIS
-                                        th(style="text-indent: 0!important; padding: 5px") No. HP
-                                        th(style="text-indent: 0!important; padding: 5px") Kempetensi Keahlian
+                                        th(style="text-indent: 0!important; padding: 5px") Kelas
                                 tbody
                                     tr(v-for="(siswa, index) in siswaterpilih")
                                         td(style="text-indent: 0!important; padding: 5px") {{index+1}}
-                                        td(style="text-indent: 0!important; padding: 5px") {{siswa._siswa.nama}}
-                                        td(style="text-indent: 0!important; padding: 5px") {{siswa._siswa.nis}}
-                                        td(style="text-indent: 0!important; padding: 5px") {{siswa._siswa.hp}} 
-                                        td(style="text-indent: 0!important; padding: 5px") {{siswa._siswa.progli}}
+                                        td(style="text-indent: 0!important; padding: 5px") {{siswa.nama_siswa}}
+                                        td(style="text-indent: 0!important; padding: 5px") {{siswa.nis}}
+                                        td(style="text-indent: 0!important; padding: 5px") {{siswa.kelas}}
 
                         p Selanjutnya kami mohon agar Bapak/Ibu berkenan memberikan jawaban diterima atau tidak diterima atas permohonan kami, melalui lembar balasan (terlampir).
 
@@ -196,7 +196,7 @@
                                 td Dengan ini menugaskan kepada:
                             tr
                                 td  Nama 
-                                td : {{guru.nama}}
+                                td : {{guru.name}}
                             tr 
                                 td NIP
                                 td : <span v-if="guru.nip == 'undefined'"> - </span>
@@ -206,7 +206,7 @@
                                 td : Guru
                         br
                         p(style="text-indent:0!important") untuk melakukan pengantaran siswa peserta Praktek Kerja Lapangan (Prakerlap) angkatan {{tahap[0]}} tahap {{tahap[1]}} berikut ini:
-                        table#tbl_antar_siswa(border="1" style="border-collapse:collapse")
+                        table#tbl_antar_siswa(border="1" style="border-collapse:collapse; margin: 20px auto; min-width:50%; width:auto;")
                             thead
                                 tr
                                     th No
@@ -216,10 +216,9 @@
                             tbody
                                 tr(v-for="(siswa, index) in siswaterpilih")
                                     td {{index+1}}
-                                    td {{siswa._siswa.nis}}
-                                    td {{siswa._siswa.nama}}
-                                    td {{siswa._siswa.kelas}}
-                        br
+                                    td {{siswa.nis}}
+                                    td {{siswa.nama_siswa}}
+                                    td {{siswa.kelas}}
                         table
                             tr
                                 td pada:
@@ -263,7 +262,7 @@
                         br
                         br
                         br
-                        p <strong><u>{{guru.nama}}</u></strong>
+                        p <strong><u>{{guru.name}}</u></strong>
                         p NIP. {{guru.nip}}
                     v-flex.ttd-ba_antar(xs4 v-if="select.val == 'ba_antar'")
                         p Malang, ............................... 2018
@@ -275,22 +274,27 @@
                         p ..............................................................
 
 
-                v-layout.kaki(row v-if="select.val !== 'ba_antar'")
-                    v-flex(xs6)
-                        p Teknik Kendaraan Ringan, Teknik Ototronika, Teknik dan Bisnis Sepeda Motor, Teknik Komputer dan Jaringan, Multimedia
-                    v-flex(xs6)
-                        .foot-logo.text-xs-center
-                            img(src="/public/img/ahm.png")
-                            img(src="/public/img/10.jpg")
-                            img(src="/public/img/kan.png")
-                            img(src="/public/img/honda.png")
-                v-layout.kaki(row v-if="select.val == 'ba_antar'")
-                    v-flex(xs12)
-                        h6 No. Dokumen : Humas-CM-7.5-4-15-rev-0
-            br(v-if="select.val == 'permohonan' || select.val == 'srt_antar'")
-            br(v-if="select.val == 'permohonan' || select.val == 'srt_antar'")
-            br(v-if="select.val == 'permohonan' || select.val == 'srt_antar'")
-            br(v-if="select.val == 'permohonan' || select.val == 'srt_antar'")
+        v-layout.kaki(row v-if="select.val !== 'ba_antar'")
+            //- v-flex(xs6)
+            p.foot-p Teknik Kendaraan Ringan, Teknik Ototronika, Teknik dan Bisnis Sepeda Motor, Teknik Komputer dan Jaringan, Multimedia
+            .foot-img(style="display: flex; justify-content:center;")
+                img(src="/public/img/ahm.png" height="30")
+                img(src="/public/img/10.jpg" height="30")
+                img(src="/public/img/kan.png" height="30")
+                img(src="/public/img/honda.png" height="30")
+                    //- v-flex(xs6)
+                    //-     .foot-logo.text-xs-center
+                    //-         img(src="/public/img/ahm.png" height="30")
+                    //-         img(src="/public/img/10.jpg" height="30")
+                    //-         img(src="/public/img/kan.png" height="30")
+                    //-         img(src="/public/img/honda.png" height="30")
+        v-layout.kaki(row v-if="select.val == 'ba_antar'")
+            v-flex(xs12)
+                h6 No. Dokumen : Humas-CM-7.5-4-15-rev-0
+            //- br(v-if="select.val == 'permohonan' || select.val == 'srt_antar'")
+            //- br(v-if="select.val == 'permohonan' || select.val == 'srt_antar'")
+            //- br(v-if="select.val == 'permohonan' || select.val == 'srt_antar'")
+            //- br(v-if="select.val == 'permohonan' || select.val == 'srt_antar'")
             //- br(v-if="select.val == 'permohonan' || select.val == 'srt_antar'")
             //- br(v-if="select.val == 'permohonan' || select.val == 'srt_antar'")
             //- br(v-if="select.val == 'permohonan' || select.val == 'srt_antar'")
@@ -302,7 +306,7 @@
             //- br(v-if="select.val == 'permohonan'")
             //- br(v-if="select.val == 'permohonan'")
             
-    .sheet#lamp_mohon(v-if="select.val == 'lamp_permohonan'")
+    .sheet#lamp_mohon.lamp_permohonan(v-if="select.val == 'lamp_permohonan'")
         .lembar.print#lamp_permohonan
             //- .v-layout(row)
             v-flex(xs12)
@@ -370,7 +374,7 @@
                 br
                 p.nb *) Coret yang tidak perlu
 
-    .sheet#monitoring(v-if="select.val == 'monitoring'")
+    .sheet#monitoring.monitoring(v-if="select.val == 'monitoring'")
         .lembar-monitoring
             v-layout.kop-m(row style="border-bottom: 5px double black;")
                 v-flex(xs12)
@@ -392,9 +396,9 @@
                     p NAMA PERUSAHAAN <span class="no-print">(DU/DI)</span>
                     p JUMLAH PRAKTIKAN
                 v-flex(xs6)
-                    p : {{guru.nama}}
+                    p : {{guru.name}}
                     p : {{selDudi.namaDudi}}
-                    p : {{siswas.length}}
+                    p : {{siswaterpilih.length}}
                 v-flex(xs2)
                     p KOMPETENSI KEAHLIAN
                     p HARI/TANGGAL <span class="no-print">MONITORING</span>
@@ -422,7 +426,7 @@
                         tbody(v-for="(siswa, index) in siswaterpilih")
                             tr
                                 td(style="padding: 5px; text-align: center") {{index+1}}
-                                td(style="padding: 10px") {{siswa._siswa.nama}}
+                                td(style="padding: 10px") {{siswa.nama_siswa}}
                                 td(style="padding: 5px") 
                                 td(style="padding: 5px") 
                                 td(style="padding: 5px") 
@@ -435,7 +439,7 @@
                     br
                     br
                     br
-                    p <strong><u>LUKI EMILIYA HIDAYAT, M.Pd</u></strong>
+                    p <strong><u>Luki Emiliya Hidayat, M.Pd</u></strong>
                     p.nip NIP. 19790219 200903 2 003
                 v-flex.text-xs-center(xs3)
                     p KAPROGLI
@@ -456,7 +460,7 @@
                     br
                     br
                     br
-                    p <strong><u>{{guru.nama}}</u></strong>
+                    p <strong><u>{{guru.name}}</u></strong>
                     p NIP. 
     <iframe name="print_frame" width="0" height="0" frameborder="0" src="about:blank"></iframe>
     v-snackbar(v-model="snack" color="red" top)
@@ -465,10 +469,11 @@
 <script>
 import axios from 'axios'
 import FormNilai from '@pages/comps/FormNilai'
+import FormJemput from '@pages/comps/FormJemput'
 // import Penempatan from '@pages/comps/Penempatan'
 // import Api from './../../lib/conf.js'
 export default {
-  components: {FormNilai},
+  components: {FormNilai, FormJemput},
   data () {
       return {
         snack: false,
@@ -483,6 +488,7 @@ export default {
             { text: 'Lamp. Surat Permohonan', val: 'lamp_permohonan' },
             { text: 'Surat Tugas Pengantaran', val: 'srt_antar' },
             { text: 'Berita Acara Pengantaran', val: 'ba_antar' },
+            { text: 'Berita Acara Penjemputan', val: 'ba_jemput' },
             { text: 'Blangko Nilai', val: 'form_nilai' },
         ],
         selDudi: { namaDudi: 'Pilih Dudi', _id: 'default'},
@@ -501,30 +507,202 @@ export default {
         // },
         siswas: [],
         dudis: [],
-        server: this.$store.state.server
+        server: this.$store.state.server,
+        pkls:[]
       }
   },
     created(){
-        this.get_no();
+        // this.get_no();
         // this.getSiswas();
-        this.getMyDudi();
+        this.getMyPkl();
         this.getJadwals();
     },
     methods : {
-        print() {
-            window.print();
-            var self = this;
-            var no = String(self.no);
-            var data = {no : no};
-            if (self.select.val == 'permohonan' || self.select.val == 'srt_antar') {
-            
-            axios.post(self.server+'/api/nosurat', data, {headers: {'X-Access-Token': self.token}})
-                .then(function(res){
-                    // console.log(res);
-                });
-            this.get_no();
+        print(berkas) {
+            var berkasClass = document.getElementsByClassName(berkas);
+            // alert(berkas)
+            var page = berkasClass[0].outerHTML;
+            var newWin = window.open("", "Cetak Berkas");
+            var styleMonitoring =`
+                @page{size:landscape;}
+                body, html{
+                    writing-mode: tb-lr;
+                    margin: 0;
+                    padding: 0;
+                }
+                #monitoring {
+                    width: 100%;
+                }
+                .kop-m{
+                    width: 100%;
+                    position : relative;
+                    padding-bottom: 10px;
+                }
+                .kop-m .logo{
+                    width: 75px;
+                    position : absolute;
+                    left: 5%;
+                }
+                .kop-m h3, 
+                .kop-m h2,
+                .kop-m p{
+                    margin: 0;
+                }
                 
+                .title-m h1{
+                    font-size: 1.5em;
+                }
+                .meta-m {
+                    display: flex;
+                    justify-content: space-around;
+                }
+                .meta-m p{
+                    margin:0;
+                }
+                .ttd-m{
+                    margin-top: 20px;
+                    display: flex;
+                    justify-content: space-around;
+                }
+                .ttd-m p{
+                    margin: 0;
+                }
+                .no-print {
+                    display: none;
+                }
+            `;
+            var styleBebas =`
+                @page{
+                    size:potrait;
+                    padding: 0;
+                    margin-bottom:0;
+                }
+                body{
+                    margin:0;
+                    padding: 0;
+                    
+                }
+                .kop{
+                    width: 100%;
+                    
+                }
+                .kop .logo-surat{
+                    width: 80px;
+                    position: absolute;
+                    left: 5%;
+                }
+                .kop h1, h3, p {
+                    margin: 0;
+                }
+                .kop p {
+                    font-size: 10pt;
+                }
+                hr.garis-kop{
+                    margin: 5px 30px 20px 30px;
+                    border-bottom: double 5px #000;
+                    color: #fff;
+                }
+                .hal{
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 0 50px;
+                    
+                }
+                .isi {
+                    margin: 20px 50px;
+                    text-align: justify;
+                }
+                .isi table#tbl_permohonan{
+                    margin: 20px auto;
+                }
+                .isi p {
+                    text-indent: 60px;
+                }
+                .ttd{
+                    
+                    display: flex;
+                    justify-content: space-between;
+                    margin: auto 50px;
+                }
+                .note{
+                    font-size: 0.8em;
+                    padding-top: 50px;
+                    padding-left: 20px;
+                }
+                .kaki{
+                    position: absolute;
+                    bottom: 20px;
+                    padding-top: 5px;
+                    display: flex;
+                    justify-content: space-around;
+                    border-top: solid 1px #333;
+                }
+                .foot-p{
+                    padding: 10px;
+                    font-size: 8pt;
+                    background: #2a5892;
+                    color: #fff;
+                    width: 40%;
+                }
+            `;
+            var style;
+            if (berkas == 'monitoring'){
+                style = styleMonitoring;
+            } else {
+                style = styleBebas;
             }
+            var html =`
+                <html>
+                    <head>
+                        <title>Cetak Berkas Prakerlap</title>
+                        <style>
+                            @media print{
+                                html, body{
+                                    height: 100%;
+                                    margin: 0;
+                                    padding: 0;
+                                }
+                            }
+                           
+                            .text-xs-center{
+                                text-align: center;
+                            }
+                            .kode-pos{
+                                position : absolute;
+                                right: 5%;
+                            }
+                            .lembar{
+                                position : relative;
+                            }
+                        `+style+`
+                        </style>
+                    </head>
+                    <body>
+                    `+page+`
+                    </body>
+                </html>
+
+            `;
+            newWin.document.write(html);
+            setTimeout(function(){
+                newWin.print();
+                // newWin.close();
+            }, 100)
+            
+            // window.print();
+            // var self = this;
+            // var no = String(self.no);
+            // var data = {no : no};
+            // if (self.select.val == 'permohonan' || self.select.val == 'srt_antar') {
+            
+            // axios.post(self.server+'/api/nosurat', data, {headers: {'X-Access-Token': self.token}})
+            //     .then(function(res){
+            //         // console.log(res);
+            //     });
+            // this.get_no();
+                
+            // }
+            // alert(berkas);
         },
         get_no(){
             var self = this;
@@ -536,39 +714,34 @@ export default {
                     self.no_surat = '421.5/'+(nmr-1)+'/101/6/10.20/III/2018';
                 });
         },
+        // getRange() 
         getJadwals() {
             var self = this;
             var token = self.token;
             var periode = sessionStorage.getItem('periode');
-            axios.get(self.server+'/api/jadwal/'+periode, {headers: {'X-Access-Token': token}})
+            axios.get(self.server+'/api/jadwals?periode='+periode, {headers: {'Authorization': 'bearer '+token}})
                 .then(res => {
-                    console.log(res.data)
-                    self.jadwals = res.data;
+                    // console.log(res.data)
+                    self.jadwals = res.data.data;
                 });
         },
         btn_srt_antar() {
             alert('Cetak Surat Pengantaran');
         },
-        getMyDudi() {
+        getMyPkl() {
             var self = this;
             var id = sessionStorage.getItem("_id");
             var periode = sessionStorage.getItem("periode");
-            axios.get(self.server+'/api/getmypkl?id='+id+'&periode='+periode, {headers: {'X-Access-Token': self.token}})
+            axios.get(self.server+'/api/mypkl?id='+id+'&periode='+periode, {headers: {'Authorization': 'bearer '+self.token}})
                 .then(function(res){
                     // console.log(res.data)
-                    var data = res.data;
+                    var data = res.data.data;
                     for (var i = 0 ; i < data.length; i++ ) {
-//                         {{index+1}}
-                        // {{siswa.nama}}
-                        // {{siswa.nis}}
-                        // {{siswa.hp}}
-                        // {{siswa.progli}}
-                        var itemDudi = {'_id': data[i]._dudi._id, 'namaDudi': data[i]._dudi.namaDudi, 'alamat': data[i]._dudi.alamat, 'telp': data[i]._dudi.telp};
-                        // var itemSiswa = {'_id': data[i]._siswa._id, 'nama': data[i]._siswa.nama, '_dudi': data[i]._dudi._id, 'progli': data[i]._siswa.progli, 'hp': data[i]._siswa.hp, 'nis': data[i]._siswa.nis}
-                        // console.log(item);
+                        var itemDudi = {'_id': data[i]._dudi, 'namaDudi': data[i].nama_dudi, 'alamat': data[i].alamat, 'telp': data[i].telp};
+
                         self.dudis.push(itemDudi);
-                        // self.siswas.push(itemSiswa);
                     }
+                    self.pkls = data;
                 });
         },
         getSiswas(i){
@@ -576,31 +749,39 @@ export default {
             var id = sessionStorage.getItem("_id");
             var dudi = i._id;
             var periode = sessionStorage.getItem('periode');
+
+            var items = self.pkls;
+            self.siswas = []
+            items.forEach(function(item) {
+                var siswa = {nis: item.nis, nama_siswa: item.nama, kelas: item.kelas, _dudi: item.kode_dudi}
+                self.siswas.push(siswa);
+            });
             // console.log(i);
-            axios.get(self.server+'/api/getmysiswas?id='+id+"&dudi="+dudi+"&periode="+periode, {headers: {'X-Access-Token': self.token}})
-                .then(function(res){
-                    if (res.data.length < 1) {
-                        self.snack = true
-                        self.snackMsg = 'Tidak ada data Siswa untuk dudi ini. Mohon hubungi Admin.'
-                        // console.log('Tidak ada data Siswa untuk dudi ini.')
-                    } else {
-                        self.siswas = res.data;
-                        console.log(res.data);
-                    }
+            // axios.get(self.server+'/api/getmysiswas?id='+id+"&dudi="+dudi+"&periode="+periode, {headers: {'X-Access-Token': self.token}})
+            //     .then(function(res){
+            //         if (res.data.length < 1) {
+            //             self.snack = true
+            //             self.snackMsg = 'Tidak ada data Siswa untuk dudi ini. Mohon hubungi Admin.'
+            //             // console.log('Tidak ada data Siswa untuk dudi ini.')
+            //         } else {
+            //             self.siswas = res.data;
+            //             console.log(res.data);
+            //         }
                     
                     
-                });
+            //     });
             // console.log(obj);
         },
-        cetak() {
-            var sheet = document.getElementsByClassName("sheet");
-            window.frames["print_frame"].document.head.innerHTML ="<style> </style>";
-            window.frames["print_frame"].document.body.innerHTML += "<h3 style='text-align:center'>DATA GURU PEMBIMBING</h3>";
-            window.frames["print_frame"].document.body.outerHTML += sheet[0].innerHTML;
-            window.frames["print_frame"].window.focus();
-            window.frames["print_frame"].window.print();
+        cetak(berkas) {
+            // var sheet = document.getElementsByClassName("sheet");
+            // window.frames["print_frame"].document.head.innerHTML ="<style> </style>";
+            // window.frames["print_frame"].document.body.innerHTML += "<h3 style='text-align:center'>DATA GURU PEMBIMBING</h3>";
+            // window.frames["print_frame"].document.body.outerHTML += sheet[0].innerHTML;
+            // window.frames["print_frame"].window.focus();
+            // window.frames["print_frame"].window.print();
             // console.log(sheet);
             // alert(sheet[0])
+            alert(berkas);
         },
         getMonKe(){
             var self = this;
@@ -623,7 +804,7 @@ export default {
         tahap(){
             // var self = this
             var periode = sessionStorage.getItem('periode')
-            var angkatan = periode.split('-')
+            var angkatan = periode.split('.')
             return angkatan
         },
         pelaksanaan() {
@@ -658,7 +839,7 @@ export default {
         kaprog(){
             var self = this;
             var jur = self.selDudi._id;
-            if ( jur.substr(1,1) == 'M' || jur.substr(1,1) == 'T') 
+            if ( jur.substr(1,1) == 'M' || jur.substr(1,1) == 'J') 
             {
                 return 'Nanang Wahyudianto, S.Kom';
             } else {
@@ -668,7 +849,7 @@ export default {
         nipKaprog(){
             var self = this;
             var jur = self.selDudi._id;
-            if ( jur.substr(1,1) == 'M' || jur.substr(1,1) == 'T') 
+            if ( jur.substr(1,1) == 'M' || jur.substr(1,1) == 'J') 
             {
                 return '19800403 201001 1 021';
             } else {
@@ -696,10 +877,9 @@ export default {
             if (siswas.length < 1) {
                 return '..........................';
             
-            } else if (!siswas[0]._siswa.progli) { return 'NO Data'}
-            else {
-                return siswas[0]._siswa.progli.toUpperCase()
-                // return siswas.length;
+            } else {
+                var kelas = siswas[0].kelas.split(' ');
+                return kelas[1];
             }
         },
         guru(){
@@ -734,14 +914,23 @@ export default {
                 ]
             } else {
             return siswas.filter((i) => {
-              if(i._dudi._id == self.selDudi._id) {
-                return i._siswa;
+              if(i._dudi == self.selDudi._id) {
+                return i;
               }
             });
             }
         },
         dudist() {
-            
+            var dudis = this.dudis
+            var items = []
+            var obj = {}
+            // for(let i in dudis) {
+            //     obj[i] = dudis[i]._id
+            // }
+            dudis.forEach(function(item) {
+                obj[item._id] = item
+            })
+            return obj;
         }
     }
 }

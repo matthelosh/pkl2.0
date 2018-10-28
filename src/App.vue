@@ -23,11 +23,11 @@
 
 <style scoped>
   .page-enter-active, .page-leave-active {
-    transition: opacity .5s, transform .5s;
+    transition: opacity 1s, transform 1s;
   }
   .page-enter, .page-leave-to {
     opacity: 0;
-    transform: translateX(-50%);
+    transform: translateY(0%);
   }
   
 

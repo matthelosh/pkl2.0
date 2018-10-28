@@ -2,7 +2,7 @@
   div
     v-card
       //- v-layout
-      v-toolbar(color="orange darken-2" dark dense flat scroll-off-screen)
+      v-toolbar(color="#444" dark dense flat scroll-off-screen)
         v-toolbar-title Praktikan
         v-spacer
       br
@@ -18,9 +18,9 @@
             v-icon mdi-file-excel-box
             | &nbsp; Export
         v-flex(xs12 md3 offset-md3)
-          input(type="file" ref="fileUpload" @change="onFilePicked" style="display:none" outline)
+          input(type="file" ref="fileUpload" @change="onFilePicked" style="display:none" solo)
     
-          v-text-field(@click.native="pickFile" color="green" depressed append-icon="mdi-attachment" label="Pilih file Excel" v-model="filename" outline)
+          v-text-field(@click.native="pickFile" color="green" depressed append-icon="mdi-attachment" label="Pilih file Excel" v-model="filename" solo)
             v-icon mdi-file-excel-box
             | &nbsp; Import XLS
         //- v-spacer
@@ -38,7 +38,7 @@
               h4 Data Praktikan
               v-spacer
               v-flex(xs12 md4)
-                v-text-field.no-print(append-icon="fa fa-search" label="Pencarian" single-line hide-details v-model="search" outline clearable)
+                v-text-field.no-print(append-icon="fa fa-search" label="Pencarian" single-line hide-details v-model="search" solo clearable)
               
           #printableTable
             v-data-table#tbl_praktikan(:headers="headers" 

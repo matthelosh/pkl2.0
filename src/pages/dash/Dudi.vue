@@ -1,21 +1,21 @@
 <template lang="pug">
   div
     v-card
-      v-toolbar(color="green lighten-2" dark dense flat scroll-off-screen)
+      v-toolbar(color="#444" dark dense flat scroll-off-screen)
         v-toolbar-title
           h3 Du/Di Rekanan
         v-spacer
         v-toolbar-items
-          v-btn(color="primary" depressed dark @click.native="[dialog=true, add=true]" class="mb-2") <i class="fa fa-building"></i> &nbsp;Tambah Dudi
-          v-btn(color="success" depressed @click.native="cetak_data")
+          v-btn(color="green darken-1" depressed dark @click.native="[dialog=true, add=true]" solo) <i class="fa fa-building"></i> &nbsp;Tambah Dudi
+          v-btn(color="green darken-2" depressed @click.native="cetak_data")
             i.fa.fa-print
             | &nbsp; Cetak
-          v-btn(color="red" depressed dark @click.native="export_xls")
+          v-btn(color="green darken-3" depressed dark @click.native="export_xls")
             i.fa.fa-table
             | &nbsp; Export
           input(type="file" ref="dudiFile" style="display:none" @change="onFilePicked")
-          v-text-field(append-icon="mdi-attachment" label="Ambil File" @click.native="pickFile" v-model="filename" box color="pink")
-          v-btn(color="white" dark flat @click.native="import_dudi" )
+          v-text-field(append-icon="mdi-attachment" label="Ambil File" solo @click.native="pickFile" v-model="filename" box color="pink")
+          v-btn(color="green darken-4" dark @click.native="import_dudi" )
             v-icon mdi-file-import
             | &nbsp; Import
       v-layout(row)
@@ -24,44 +24,45 @@
             v-card-title 
               h3 Data DU/DI
               v-spacer
-              v-text-field.no-print(append-icon="fa fa-search" label="Pencarian" single-line hide-details v-model="search" clearable)
+              v-flex(xs12 md4)
+              v-text-field.no-print(append-icon="fa fa-search" label="Pencarian" single-line hide-details v-model="search" clearable solo)
             v-layout(row)
               v-flex(xs4 offset-xs8)
                 v-switch(:label="`Dudi Aktif: ${dudiaktif.toString()}`" v-model="dudiaktif" label="Yang memiliki Pembimbing")  
             div#printableTable
               <v-dialog v-model="dialog" max-width="500px" persistent>
                 //- <v-btn color="primary" dark slot="activator" class="mb-2">New Item</v-btn>
-                <v-card>
+                <v-card color="secondary">
                   <v-card-title>
-                    <span class="headline">{{ formTitle }}</span>
+                    <span class="headline white--text">{{ formTitle }}</span>
                   </v-card-title>
                   <v-card-text>
                     <v-form ref="form" v-model="valid" lazy-validation>
                       <v-container grid-list-md>
                         <v-layout wrap>
                             <v-flex xs12 sm6 md4>
-                              <v-text-field id="kode_dudi" label="Kode Dudi" v-model="editedDudi.kode_dudi" validate required :rules="[rules.required]" @blur="lastDudi" append-icon="fa fa-qrcode" required></v-text-field>
+                              <v-text-field id="kode_dudi" label="Kode Dudi" v-model="editedDudi.kode_dudi" validate required :rules="[rules.required]" @blur="lastDudi" append-icon="fa fa-qrcode" required solo></v-text-field>
                             </v-flex>
                             <v-flex xs12 sm8 md8>
-                              <v-text-field label="Nama Dudi" v-model="editedDudi.nama_dudi" required validate-on-blur :rules="[rules.required]" append-icon="fa fa-building"></v-text-field>
+                              <v-text-field label="Nama Dudi" v-model="editedDudi.nama_dudi" required validate-on-blur :rules="[rules.required]" append-icon="fa fa-building" solo></v-text-field>
                             </v-flex>
                             <v-flex xs12 sm8 md8>
-                              <v-text-field label="Alamat" v-model="editedDudi.alamat" required validate-on-blur :rules="[rules.required]" append-icon="fa fa-map-signs"></v-text-field>
+                              <v-text-field label="Alamat" v-model="editedDudi.alamat" required validate-on-blur :rules="[rules.required]" append-icon="fa fa-map-signs" solo></v-text-field>
                             </v-flex>
                             <v-flex xs12 sm4 md4>
-                              <v-text-field label="Kota" v-model="editedDudi.kota" required validate-on-blur :rules="[rules.required]" append-icon="fa fa-map-marker" ></v-text-field>
+                              <v-text-field label="Kota" v-model="editedDudi.kota" required validate-on-blur :rules="[rules.required]" append-icon="fa fa-map-marker" solo ></v-text-field>
                             </v-flex>
                             <v-flex xs12 sm6 md6>
-                              <v-text-field label="No. Telp" v-model="editedDudi.telp" required validate-on-blur :rules="[rules.required]" append-icon="mdi-phone" ></v-text-field>
+                              <v-text-field label="No. Telp" v-model="editedDudi.telp" required validate-on-blur :rules="[rules.required]" append-icon="mdi-phone" solo></v-text-field>
                             </v-flex>
                             <v-flex xs12 sm6 md6>
-                              <v-text-field label="Pemilik" v-model="editedDudi.pemilik" required validate-on-blur :rules="[rules.required]" append-icon="mdi-account-circle" ></v-text-field>
+                              <v-text-field label="Pemilik" v-model="editedDudi.pemilik" required validate-on-blur :rules="[rules.required]" append-icon="mdi-account-circle" solo></v-text-field>
                             </v-flex>
                             <v-flex xs12 sm8 md8>
-                              <v-text-field label="Email" v-model="editedDudi.email" required validate-on-blur :rules="[rules.required]" append-icon="mdi-email" ></v-text-field>
+                              <v-text-field label="Email" v-model="editedDudi.email" required validate-on-blur :rules="[rules.required]" append-icon="mdi-email" solo></v-text-field>
                             </v-flex>
                             <v-flex xs12 sm4 md4>
-                              <v-text-field label="Kuota" v-model="editedDudi.kuota" required validate-on-blur :rules="[rules.required]" append-icon="mdi-table" ></v-text-field>
+                              <v-text-field label="Kuota" v-model="editedDudi.kuota" required validate-on-blur :rules="[rules.required]" append-icon="mdi-table" solo></v-text-field>
                             </v-flex>
                         </v-layout>
                       </v-container>
@@ -69,9 +70,9 @@
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
-                    <v-btn color="blue darken-1" flat @click.native="save" v-if="add">Simpan</v-btn>
-                    <v-btn color="blue darken-1" flat @click.native="update" v-if="!add">Perbarui</v-btn>
+                    <v-btn color="red darken-1" outline @click.native="close">Cancel</v-btn>
+                    <v-btn color="green darken-1" outline @click.native="save" v-if="add">Simpan</v-btn>
+                    <v-btn color="blue darken-1" outline @click.native="update" v-if="!add">Perbarui</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>

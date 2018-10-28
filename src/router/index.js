@@ -85,8 +85,8 @@ var router = new Router({
           component: load('dash/Jurnal')
         },
         {
-          path: '/dashboard/pembekalan',
-          component: load('dash/Pembekalan')
+          path: '/dashboard/praprakerlap',
+          component: load('dash/Praprakerlap')
         },
         {
           path: '/guru/profil',
@@ -110,7 +110,7 @@ var router = new Router({
         },
         {
           path: '/praktikan/profil',
-          component: load('comps/SiswaProfile')
+          component: load('praktikan/Profil')
         },
         {
           path: '/praktikan/jurnal',

@@ -7,10 +7,10 @@ const store = new Vuex.Store({
     state: {
         isLoggedIn: !!sessionStorage.getItem('token'),
         user: {
-            _id: sessionStorage.getItem('_id'),
-            name: sessionStorage.getItem('nama'),
-            nip: sessionStorage.getItem('nip'),
-            hp: sessionStorage.getItem('hp')
+            // _id: sessionStorage.getItem('_id'),
+            // name: sessionStorage.getItem('nama'),
+            // nip: sessionStorage.getItem('nip'),
+            // hp: sessionStorage.getItem('hp')
         },
         versi: 'v0.0.1a',
         server: appConfig.apiServer,
@@ -42,9 +42,9 @@ const store = new Vuex.Store({
             axios.get(this.state.server+'/api/profile/'+user+'/'+role, {headers: {'Authorization': 'bearer '+token}})
                 .then( response => {
                     var userData = response.data.data
-                    // console.log(userData)
-                    sessionStorage.setItem('nama', userData.name)
-                    sessionStorage.setItem('_id', userData.id)
+                    var nama = userData.name?userData.name : userData.nama// console.log(userData)
+                    sessionStorage.setItem('nama', nama)
+                    sessionStorage.setItem('_id', userData.kode_guru)
                     // sessionStorage.setItem('nip', userData[0].nip)
                     sessionStorage.setItem('hp', userData.hp)
                     return userData;
