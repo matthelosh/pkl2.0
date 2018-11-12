@@ -22,12 +22,14 @@
 									solo) 
 							h3 Anda telah merubah Periode menjadi : {{periodeNow}}
 						span(v-else)
-							p Klik menu disamping.
+							home-praktikan
 </template>
 
 <script>
 import axios from 'axios'
+import HomePraktikan from '@pages/comps/HomePraktikan'
 export default {
+	components: {HomePraktikan},
     data () {
         return {
             periodes: [
