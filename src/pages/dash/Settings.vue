@@ -54,6 +54,7 @@ import Periode from '@pages/comps/Periode'
 import Kelas from '@pages/comps/Kelas'
 import Surat from '@pages/comps/Surat'
 export default {
+  // components: {Jadwal, Periode, Kelas},
   components: {Jadwal, Periode, Kelas, Surat},
   name: 'Settings',
 
